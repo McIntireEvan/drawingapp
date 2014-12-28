@@ -1,0 +1,41 @@
+.right-click {
+    z-index:1000;
+    position:absolute;
+    border:1px solid black;
+    background:#ECECEC;
+    padding:2px;
+    font-family:lato;
+}
+
+ul
+{
+    list-style-type: none;
+    padding:0;
+    margin:0;
+}
+
+.menu:hover {
+    background-color:#ECECEC;
+}
+
+
+li.menu-item {
+    -webkit-transition:background-color .5s, -webkit-transform .5s;
+    transition:background-color .5s;
+}
+
+li.menu-item:hover{
+        background: #6C7A89;
+}
+
+.exit {
+    float:right;
+}
+
+.exit:hover {
+    background:#6C7A89 
+}
+
+#close:hover {
+    background:#ECECEC;
+}

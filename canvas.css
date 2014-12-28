@@ -1,0 +1,62 @@
+.window {
+    z-index:1001;
+    position: absolute;
+    background-color:#ECECEC;
+    border:1px solid black;
+    table-layout: fixed;
+}
+
+.window, .window td {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    text-align: center;
+}
+
+.windowTitle {
+    cursor: -webkit-grab;
+    cursor:-moz-grab;
+    cursor: grab;
+}
+
+#colorpicker {
+    padding: 0px;
+    margin: 0px 16px 0px 0px;
+    width: 100%;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+#cpholder {
+    padding: 0px;
+    margin: 0px 2px 0px 0px;
+    width: 100%;
+}
+
+img {
+    padding: 2px; 
+}
+
+.tool {
+    display: inline-block;
+    max-height: 36px;
+    max-width: 36px;
+}
+
+.layerVisible {
+    width: 32px;
+    height: 32px;
+}
+
+.selectedLayer {
+    background-color:#345678
+}
+
+.selected {
+    -webkit-filter: invert(100%);
+    filter: invert(100%);
+}
