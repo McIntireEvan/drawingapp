@@ -406,6 +406,19 @@ function drawStrokeToCanvas(canvas) {
     c.stroke();
 }
 
+function drawCursor(canvas, context, pos, color, radius){
+    context.clearRect(0,0, canvas.width, canvas.height);
+    context.beginPath();
+    context.arc(pos.x, pos.y, radius, 0, 2 * Math.PI, false);
+    if(tool == "pencil") {
+	    context.fillStyle=color;
+    } else if (tool == "eraser") {
+	    context.fillStyle="rgba(0,0,0,0)";
+    }
+    context.fill();
+    context.stroke();
+}
+
 function prepareCanvas(canvas) {
    canvas.width = Jcanvas.css("width").replace("px","");
    canvas.height = Jcanvas.css("height").replace("px","");
