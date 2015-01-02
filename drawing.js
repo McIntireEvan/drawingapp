@@ -285,18 +285,12 @@ $(document).ready(function() {
         tool = 'eraser';
     });
 
-    toolbox.addItem( 1, 0, "<img src='img/save.png'>", "toolbox-save", function() {
-        saveCanvasToImage(mergeCanvases($("#background").get(0), layers));
-        clearCanvas($("#background").get(0));
+    toolbox.addItem( 1, 0, "<img src='img/color.png'>", "toolbox-color", function() {
+        alert('Coming soon!');
     });
 
-    toolbox.addItem( 1, 1, "<img src='img/clear.png'>", "toolbox-clear", function() {
-        if(confirm('Clear all layers?')) {
-            for(var i=0; i<layers.length; i++) {
-                clearCanvas(layers[i]);
-            }
-            clearCanvas($("#background").get(0)); 
-         }
+    toolbox.addItem( 1, 1, "<img src='img/brush.png'>", "toolbox-brush", function() {
+        alert('Coming soon!');
     });
 
     toolbox.addItem( 2, 0, "<img src='img/undo.png'>", "toolbox-undo", function() {
@@ -307,15 +301,22 @@ $(document).ready(function() {
         redo();
     });
 
-    toolbox.addItem( 3, 0, "<img src=''>", "toolbox-color", function() {
-        
+    toolbox.addItem( 3, 0, "<img src='img/save.png'>", "toolbox-save", function() {
+        saveCanvasToImage(mergeCanvases($("#background").get(0), layers));
+        clearCanvas($("#background").get(0));
     });
 
-    toolbox.addItem( 3, 1, "<img src=''>", "toolbox-brush", function() {
-        
+    toolbox.addItem( 3, 1, "<img src='img/clear.png'>", "toolbox-clear", function() {
+        if(confirm('Clear all layers?')) {
+            for(var i=0; i<layers.length; i++) {
+                clearCanvas(layers[i]);
+            }
+            clearCanvas($("#background").get(0)); 
+         }
     });
 
     contextMenu.addItem('<a target="_blank" href="https://www.github.com/McIntireEvan/drawingapp">Code can be found here!</a>', "source-link", function(){});
+    contextMenu.addItem('<a target="_blank" href="http://draw.evanmcintire.com/beta/drawingapp">The beta for this can be found here</a>', "beta-link", function(){});
     contextMenu.addItem('[Close]', 'CCM-Close', function() {
         contextMenu.close(); 
     });

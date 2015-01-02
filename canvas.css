@@ -12,25 +12,6 @@
     cursor: grab;
 }
 
-#colorpicker {
-    padding: 0px;
-    margin: 0px 16px 0px 0px;
-    width: 100%;
-    box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-}
-
-#cpholder {
-    padding: 0px;
-    margin: 0px 2px 0px 0px;
-    width: 100%;
-}
-
-img {
-    padding: 2px; 
-}
-
 .selectedLayer {
     background-color:#345678
 }
