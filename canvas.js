@@ -23,7 +23,7 @@ function mergeCanvases(mergeTo, mergeFrom) {
  * @param {canvas} canvas - The canvas to be cleared
  */
 function clearCanvas(canvas) { 
-    canvas.getContext('2d').clearRect(0,0, layer.width, layer.height);
+    canvas.getContext('2d').clearRect(0,0, canvas.width, canvas.height);
 }
 
 /*
