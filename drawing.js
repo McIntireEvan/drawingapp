@@ -30,6 +30,8 @@ var currentContext = layers[currentLayer].getContext("2d");
 
 var pos = {mouse: {x: 0,y: 0}};
 
+var toolbox = new AppWindow(1,2,"Toolbox");
+
 function canvasSetup() {
     prepareCanvas(canvas);
     for(var i = 0; i < layers.length; i++) {
@@ -307,8 +309,24 @@ function prepareCanvas(canvas) {
 }
 
 $(document).ready(function() {
+    //TODO: Move these somewhere else
+    toolbox.addItem( 0, 0, "<img src='img/pencil.png'>", "toolbox-pencil", function() {
+        $(".selected").removeClass('selected');
+        $("#toolbox-pencil").addClass('selected');
+        tool = 'pencil';
+    });
+
+    toolbox.addItem( 0, 1, "<img src='img/eraser.png'>", "toolbox-eraser", function() {
+        $(".selected").removeClass('selected');
+        $("#toolbox-eraser").addClass('selected');
+        tool = 'eraser';
+        console.log("a");
+    });
+
     canvasSetup();
     contextmenuSetup();
     console.log('Loading complete');
     $("#splash").fadeOut(1500);
+
+    $("body").append(toolbox.toHTML());
 });

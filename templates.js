@@ -34,13 +34,13 @@ var AppWindow = function(rows, columns, title) {
 };
 
 AppWindow.prototype.toHTML = function() {
-    var html = '<table style="position:absolute" id=' + this.title + 'Window>' + 
+    var html = '<table style="z-index:1000 ;position:absolute" id=' + this.title + 'Window>' + 
         '<tr><th id="' + this.title  + '"colspan=' + this.columns + '>' + this.title + '</th></tr>';
     
     for(var i = 0; i < this.rows; i++) {
         html += '<tr>';
         for(var j = 0; j < this.columns; j++) {
-            html += '<td>' + this.content[i][j]  + '</td>';
+            html += this.content[i][j];
         }
         html += '</tr>';
     }
@@ -54,7 +54,7 @@ AppWindow.prototype.toggle = function() {
 }
 
 AppWindow.prototype.addItem = function(row, column, html, id, onClick) {
-    this.content[row][column] = html;
+    this.content[row][column] = '<td id="' + id + '">' + html + '</td>';
     $(document).on('click', '#' + id, onClick);
 }
 
