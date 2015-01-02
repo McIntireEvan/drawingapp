@@ -20,8 +20,6 @@ var tempCanvas;
 var changes = [];
 var currentChange = 0;
 
-var contextMenu = templates.contextMenu;
-
 var strokeLayer = $("#stroke").get(0);
 var strokeContext = strokeLayer.getContext("2d");
 
@@ -29,6 +27,7 @@ var currentLayer = 1;
 var currentContext = layers[currentLayer].getContext("2d");
 
 var toolbox = new AppWindow( 4, 2, "Toolbox");
+var contextMenu = new CustomContextMenu();
 
 function canvasSetup() {
     prepareCanvas(canvas);
@@ -131,18 +130,7 @@ function canvasSetup() {
     });
 }
 
-function contextmenuSetup() {
-    contextMenu.addEvent("close", "<span class='menu' style='width:100%; height:100%;'>Menu|<span class='exit'>  X</span></span>", function() {
-        $("div.right-click").hide(100);
-    });   
-    contextMenu.addEvent("toolboxOpen", "Tools", function() {
-
-    });
-   contextMenu.addEvent("layersOpen", "Layers", function(){});
-    
-    contextMenu.addEvent("todo", "<a href='https://github.com/McIntireEvan/drawingapp'>Source Code</a>", function(){});
-    contextMenu.load();
-
+function contextmenuSetup() { 
     //TODO: Phase this section out as the new windows are implemented 
     $(document).bind("click", function(event) {
         var target = $(event.target);
@@ -325,6 +313,11 @@ $(document).ready(function() {
 
     toolbox.addItem( 3, 1, "<img src=''>", "toolbox-brush", function() {
         
+    });
+
+    contextMenu.addItem('<a target="_blank" href="https://www.github.com/McIntireEvan/drawingapp">Code can be found here!</a>', "source-link", function(){});
+    contextMenu.addItem('[Close]', 'CCM-Close', function() {
+        contextMenu.close(); 
     });
 
     canvasSetup();

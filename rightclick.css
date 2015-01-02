@@ -1,4 +1,4 @@
-.right-click {
+.CustomContextMenu {
     z-index:1000;
     position:absolute;
     border:1px solid black;
@@ -7,35 +7,23 @@
     font-family:lato;
 }
 
-ul
+.CustomContextMenu ul
 {
     list-style-type: none;
     padding:0;
     margin:0;
 }
 
-.menu:hover {
+.CustomContextMenu:hover {
     background-color:#ECECEC;
 }
 
 
-li.menu-item {
+li.CCM-Item {
     -webkit-transition:background-color .5s, -webkit-transform .5s;
     transition:background-color .5s;
 }
 
-li.menu-item:hover{
+li.CCM-Item:hover{
         background: #6C7A89;
-}
-
-.exit {
-    float:right;
-}
-
-.exit:hover {
-    background:#6C7A89 
-}
-
-#close:hover {
-    background:#ECECEC;
 }
