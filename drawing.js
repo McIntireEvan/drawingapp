@@ -28,22 +28,7 @@ var strokeContext = strokeLayer.getContext("2d");
 var currentLayer = 1;
 var currentContext = layers[currentLayer].getContext("2d");
 
-var dragging = {layers: false, brush: false};
-var isOpen = {layers: true, brush:false};
-var pos = {mouse: {x: 0,y: 0}, layers: {x: 100, y: 0}, brush: {x: 200,  y: 100}};
-
-var toolbox = templates.window;
-var layersStart = "<table class='window' id='layers'>" 
-		+ "<tr><td id='layersTitle' colspan='3' class='windowTitle'> Layers </td><td id='layersExit'>X</td></tr>"
-		+ "<tr id='layer-control'><td class='tool'><img src='img/layerAdd.png' id='addLayer'/></td><td class='tool'><img src='img/layerRemove.png' id='removeLayer'></td>"
-		+ "<td class='tool'><img src='img/save.png' id='saveLayer'/></td><td class='tool'><img src='img/clear.png' id='clearLayer'/></td></tr>";
-var layersEnd =  "</table>";
-
-var brushHTML = "<table class='window' id='brushes'>"
-	      + "<tr><td class='windowTitle' id='brushesTitle'> Brush  </td><td id='brushesExit'> X </td></tr>"
-	      + "<tr><td><input label='Brushsize' type='range'/></td><td></td></tr>"
-	      + "<tr><td></td></tr></table>";
-
+var pos = {mouse: {x: 0,y: 0}};
 
 function canvasSetup() {
     prepareCanvas(canvas);
@@ -130,15 +115,8 @@ function canvasSetup() {
 	    undo();
 	} else if(e.which==89 && e.ctrlKey) {
 	    redo();
-	} else if(e.which == 49 && e.ctrlKey) {
-	    e.preventDefault();
-	    if(!$("#toolbox").length) {
-	        displayToolbox();
-	    } else {
-		$("#toolbox").remove();
-	    	toolbox.isOpen = false;
-	    }
 	} 
+	 
         drawCursor(canvas, context, pos.mouse, color, radius);  
         currentContext.lineWidth = radius * 2;
 	strokeContext.lineWidth = radius * 2;
@@ -158,56 +136,14 @@ function contextmenuSetup() {
         $("div.right-click").hide(100);
     });   
     contextMenu.addEvent("toolboxOpen", "Tools", function() {
-        if(!toolbox.isOpen) {
-	    toolbox.open();	   
-	}
+          
+	
     });
-   contextMenu.addEvent("layersOpen", "Layers", function() {
-        if(!isOpen.layers) {
-	    displayLayerSelecter();	    
-	}
-    });
+   contextMenu.addEvent("layersOpen", "Layers", function(){});
     
     contextMenu.addEvent("todo", "<a href='https://trello.com/b/KzbX8TxT/drawing-thing' target='_blank'> Todo List </a>", function(){});
     contextMenu.addEvent("bugs", "<a href='http://goo.gl/forms/gUKiIIhPSm' target='_blank'>Bug Reports</a>", function(){});
     contextMenu.load();
-
-toolbox.id = "toolbox";
-toolbox.header = "<tr><td class='windowTitle' id='toolboxTitle'> Tools </td><td title='Close' id='toolboxExit'>X</td></tr>";
-toolbox.beginRow();
-toolbox.addElement("pencil", "selected tool",1, "<img title='Pencil' src='img/pencil.png'/>",function() {
-    $(".selected").removeClass('selected');
-    $("#pencil").addClass('selected');
-    tool = 'pencil';
-});
-toolbox.addElement("eraser","tool",1,"<img title='Eraser' src='img/eraser.png'/>", function() {
-    $(".selected").removeClass('selected');
-    $("#eraser").addClass('selected');
-    tool = 'eraser';
-});
-toolbox.endRow();
-toolbox.beginRow();
-toolbox.addElement("cpholder","",2,"<input value='" + color + "' id='colorpicker' type='color' />", function() {});
-toolbox.endRow();
-toolbox.beginRow();
-toolbox.addElement("toolbox-clear","tool",1,"<img src='img/clear.png'/>", function(){
-    if(confirm('Clear all layers?')) {
-        for(var i=0; i<layers.length; i++) {
-	    clearCanvas(layers[i]);
-        }
-	clearCanvas($("#background").get(0)); 
-    }
-});
-toolbox.addElement("toolbox-save","tool",1,"<img src='img/save.png'/>", function(){
-    var c = mergeLayers($("#background").get(0), layers);
-    saveToImage(c);
-    clearCanvas($("#background").get(0));
-});
-toolbox.endRow();
-toolbox.beginRow();
-toolbox.addElement("toolbox-undo","tool",1,"<img src='img/undo.png'/>", function(){ undo(); });
-toolbox.addElement("toolbox-redo","tool",1,"<img src='img/redo.png'/>", function(){ redo(); });
-toolbox.endRow();
 
     $(document).bind("click", function(event) {
         var target = $(event.target);
@@ -264,71 +200,17 @@ toolbox.endRow();
 	});
 
     $(document).on('mouseup', function(evt) {
-	toolbox.dragging = false;
-	dragging.layers = false;
+	
     });
 
     $(document).on('mousemove', function(evt) {
          document.getSelection().removeAllRanges();
-
-	 if(toolbox.dragging) {
-	    if((evt.pageY > 0) && ((evt.pageY + $("#toolbox").height()) < canvas.height) && (evt.pageX > 0) && (evt.pageX + $("#toolbox").width() < canvas.width)) {
-	        $("#toolbox").css({left: evt.pageX + "px"});
-	        $("#toolbox").css({top:  evt.pageY + "px"});
-   	        toolbox.pos.x = evt.pageX;
-	        toolbox.pos.y = evt.pageY;
-	    }
-	} else if(dragging.layers) {
-	    if((evt.pageY > 0) && ((evt.pageY + $("#layers").height()) < canvas.height) && (evt.pageX > 0) && (evt.pageX + $("#layers").width() < canvas.width)) {
-	        $("#layers").css({left: evt.pageX + "px"});
-	        $("#layers").css({top:  evt.pageY + "px"});
-   	        pos.layers.x = evt.pageX;
-	        pos.layers.y = evt.pageY;
-	    }
-	}
     });
 
     $(document).on('input', '#colorpicker', function() {
         color = $("#colorpicker").val();
 	$("div.right-click").hide(100);
     });
-}
-
-toolbox.open = function() {
-    $(toolbox.html).appendTo("body").css({top: toolbox.pos.y+"px", left: toolbox.pos.x+"px"});
-    $("div.right-click").hide(100);
-    $("#colorpicker").val(color);
-    toolbox.isOpen = true;
-    $(".selected").removeClass("selected");
-    $("#" + tool).addClass("selected");
-    _self = this;
-    $(document).on('mousedown', function(evt) {
-        if(!($(evt.target).is("canvas"))) {
-            if(typeof evt.preventDeault == 'function') {
-		evt.preventDefault();
-	    }
-	}
-	if($(evt.target).parent().attr("id") == _self.headerID) {
-	    _self.dragging = true;
-	}
-    });
-};
-
-function displayLayerSelecter() {
-    var layersHTML = layersStart;
-    for(var i = 0; i<layers.length; i++) {
-	layersHTML += "<tr class='layerSelectRow' id='" + layers[i].id  + "Control'><td colspan='3'>" + layers[i].id + "</td><td class='temp'><img class='layerVisible' src='img/visible.png'/></td></tr>";
-    }
-    $(layersHTML + layersEnd).appendTo("body").css({top: pos.layers.y +"px", left: pos.layers.x+"px"});
-    $("div.right-click").hide(100);
-    isOpen.layers = true;
-    $("#" + layers[currentLayer].id+ "Control").addClass('selectedLayer');
-}
-
-function displayBrushSelecter() {
-    $(brushHTML).appendTo("body").css({top: pos.brush.y +"px", left: pos.brush.x+"px"});
-    $("div.right-click").hide(100);
-    isOpen.brush = true;
 }
 
 function undo() { 
@@ -429,7 +311,4 @@ $(document).ready(function() {
     contextmenuSetup();
     console.log('Loading complete');
     $("#splash").fadeOut(1500);
-    
-    toolbox.open();
-    displayLayerSelecter();
 });
