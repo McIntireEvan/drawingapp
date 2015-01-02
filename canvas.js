@@ -33,7 +33,7 @@ function clearCanvas(canvas) {
  * @param {canvas} canvas - The canvas to save
  */
 function saveToImage(canvas) { 
-    saveLayerToImage(canvas); 
+    saveCanvasToImage(canvas); 
 }
 
 /*
