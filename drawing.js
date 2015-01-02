@@ -28,8 +28,6 @@ var strokeContext = strokeLayer.getContext("2d");
 var currentLayer = 1;
 var currentContext = layers[currentLayer].getContext("2d");
 
-var pos = {mouse: {x: 0,y: 0}};
-
 var toolbox = new AppWindow(2,2,"Toolbox");
 
 function canvasSetup() {
@@ -45,14 +43,14 @@ function canvasSetup() {
     changes.push({layer: currentLayer, context: layers[currentLayer].toDataURL()});
     currentChange=1;
     var mousemove = function(evt) {
-	    previousPos = pos.mouse;
+	    previousPos = pos;
 	    if(evt.type == "mousemove") {
-            pos.mouse = getMousePos(canvas, evt);
+            pos = getMousePos(canvas, evt);
         }
-	    drawCursor(canvas, context, pos.mouse, color, radius);
+	    drawCursor(canvas, context, pos, color, radius);
         if(mouseDown) {
 	        if(tool == "eraser" || tool == "pencil") {
-		        stroke.push(pos.mouse);
+		        stroke.push(pos);
 		        clearCanvas(strokeLayer);
 		        drawStrokeToCanvas(strokeLayer);
 	        }
@@ -63,8 +61,8 @@ function canvasSetup() {
 
     var mouseup = function(evt) {
 	    if(evt.which == 1) {
-            pos.mouse = getMousePos(canvas, evt);
-	        stroke.push(pos.mouse);
+            pos = getMousePos(canvas, evt);
+	        stroke.push(pos);
 	        clearCanvas(strokeLayer);
 	        mouseDown = false;
 	        drawStrokeToCanvas(layers[currentLayer]);
@@ -82,14 +80,14 @@ function canvasSetup() {
 
     var mousedown = function(evt) {
 	    if(evt.which == 1) {
-	        stroke.push(pos.mouse);
-	        pos.mouse = getMousePos(canvas, evt);
+	        stroke.push(pos);
+	        pos = getMousePos(canvas, evt);
 	        if(tool == "pencil") {
                 strokeContext.globalCompositeOperation="source-over";
 	        } else if (tool == "eraser") {
 	            strokeContext.globalCompositeOperation="destination-out";		
             }
-	        stroke.push(pos.mouse);
+	        stroke.push(pos);
 	        drawStrokeToCanvas(strokeLayer);
             mouseDown = true;
 	    }
@@ -121,7 +119,7 @@ function canvasSetup() {
 	        redo();
 	    } 
 	 
-        drawCursor(canvas, context, pos.mouse, color, radius);  
+        drawCursor(canvas, context, pos, color, radius);  
         currentContext.lineWidth = radius * 2;
 	    strokeContext.lineWidth = radius * 2;
         $("#opacity").text = opacity;
