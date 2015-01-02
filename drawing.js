@@ -1,6 +1,6 @@
 var color="#149AB4";
 var backgroundColor = "#ffffff";
-var radius = 10;
+var radius = 3;
 var pos = {x: 0, y: 0};
 
 var canvas = $("#mouse").get(0);
@@ -28,15 +28,15 @@ var strokeContext = strokeLayer.getContext("2d");
 var currentLayer = 1;
 var currentContext = layers[currentLayer].getContext("2d");
 
-var toolbox = new AppWindow(2,2,"Toolbox");
+var toolbox = new AppWindow( 3, 2, "Toolbox");
 
 function canvasSetup() {
     prepareCanvas(canvas);
     for(var i = 0; i < layers.length; i++) {
-	    prepareCanvas(layers[i]);
+	    prepareCanvas( layers[i]);
     }
-    context.lineWidth=1;
-    context.strokeStyle="black";
+    context.lineWidth = 1;
+    context.strokeStyle = 'black';
 
     prepareCanvas($("#background").get(0));
     prepareCanvas(strokeLayer);
@@ -44,9 +44,7 @@ function canvasSetup() {
     currentChange=1;
     var mousemove = function(evt) {
 	    previousPos = pos;
-	    if(evt.type == "mousemove") {
-            pos = getMousePos(canvas, evt);
-        }
+        pos = getMousePos(canvas, evt);
 	    drawCursor(canvas, context, pos, color, radius);
         if(mouseDown) {
 	        if(tool == "eraser" || tool == "pencil") {
@@ -138,60 +136,58 @@ function contextmenuSetup() {
         $("div.right-click").hide(100);
     });   
     contextMenu.addEvent("toolboxOpen", "Tools", function() {
-          
-	
+
     });
    contextMenu.addEvent("layersOpen", "Layers", function(){});
     
-    contextMenu.addEvent("todo", "<a href='https://trello.com/b/KzbX8TxT/drawing-thing' target='_blank'> Todo List </a>", function(){});
-    contextMenu.addEvent("bugs", "<a href='http://goo.gl/forms/gUKiIIhPSm' target='_blank'>Bug Reports</a>", function(){});
+    contextMenu.addEvent("todo", "<a href='https://github.com/McIntireEvan/drawingapp'>Source Code</a>", function(){});
     contextMenu.load();
 
+    //TODO: Phase this section out as the new windows are implemented 
     $(document).bind("click", function(event) {
         var target = $(event.target);
-	var id = target.attr("id");
-	if(id=="layersExit") {
-	    $("#layers").remove();
-	    isOpen.layers = false;
-	} else if(id=="toolboxExit") {
-	    $("#toolbox").remove();
-	    toolbox.isOpen = false;	        
-	} else if(target.hasClass("layerVisible")) {
-	    var pId = $(target.parent().parent()).attr("id").replace("Control","");
-	    $("#"+pId).toggle();
+	    var id = target.attr("id");
+	    if(id=="layersExit") {
+	        $("#layers").remove();
+	        isOpen.layers = false;
+	    } else if(id=="toolboxExit") {
+	        $("#toolbox").remove();
+	        toolbox.isOpen = false;	        
+	    } else if(target.hasClass("layerVisible")) {
+	        var pId = $(target.parent().parent()).attr("id").replace("Control","");
+	        $("#"+pId).toggle();
 	    
-	    if($(target).attr("src") == "img/visible.png") {
-	    	$(target).attr('src',"img/hidden.png");
-	    } else {
-		$(target).attr('src',"img/visible.png");
-	    }
-	}  else if(target.parent().attr("class") == "layerSelectRow") {    
-	    $(".selectedLayer").removeClass("selectedLayer");
-	    target.parent().addClass("selectedLayer");
-	    currentLayer = layers.indexOf($("#" + (target.parent().attr("id").replace('Control', ''))).get(0));
-	    currentContext = layers[currentLayer].getContext('2d');
-	    $(strokeLayer).css("z-index",currentLayer+2);
-	    
-	} else if(id=="addLayer") {
-	    addLayer();	    
-	} else if(id=="removeLayer") {
-	    if(layers.length > 1) {
-		var layerId = layers[currentLayer].id.replace("Control","");
-		if(confirm('Remove Layer ' + layerId + "?")) {
-		    layers.splice(currentLayer, 1);
-		    currentLayer = Math.max(0, currentLayer-1);
-		    currentContext = layers[currentLayer].getContext('2d');
-		    $("#"+layerId).remove();
-		    $("#layers").remove();
-	            displayLayerSelecter();
+	        if($(target).attr("src") == "img/visible.png") {
+	    	    $(target).attr('src',"img/hidden.png");
+	        } else {
+		        $(target).attr('src',"img/visible.png");
 	        }
-	    }
-	}  else if(id=="saveLayer") {
-	    saveToImage(layers[currentLayer]);
-	    clearCanvas($("#background").get(0));
-	} else if(id=="clearLayer") {
-	    clearCanvas(layers[currentLayer]);
-	}	
+	    } else if(target.parent().attr("class") == "layerSelectRow") {    
+	        $(".selectedLayer").removeClass("selectedLayer");
+	        target.parent().addClass("selectedLayer");
+	        currentLayer = layers.indexOf($("#" + (target.parent().attr("id").replace('Control', ''))).get(0));
+	        currentContext = layers[currentLayer].getContext('2d');
+	        $(strokeLayer).css("z-index",currentLayer+2);
+	    } else if(id=="addLayer") {
+	        addLayer();	    
+	    } else if(id=="removeLayer") {
+	        if(layers.length > 1) {
+		        var layerId = layers[currentLayer].id.replace("Control","");
+		        if(confirm('Remove Layer ' + layerId + "?")) {
+		            layers.splice(currentLayer, 1);
+		            currentLayer = Math.max(0, currentLayer-1);
+		            currentContext = layers[currentLayer].getContext('2d');
+		            $("#"+layerId).remove();
+		            $("#layers").remove();
+	                displayLayerSelecter();
+	            }
+	        }
+	    }  else if(id=="saveLayer") {
+	        saveToImage(layers[currentLayer]);
+	        clearCanvas($("#background").get(0));
+	    } else if(id=="clearLayer") {
+	        clearCanvas(layers[currentLayer]);
+	    }	
     });
  
     $(document).on('input', '#colorpicker', function() {
@@ -263,10 +259,10 @@ function drawStrokeToCanvas(canvas) {
       
     c.moveTo(stroke[0].x+0.1, stroke[0].y);
     for(var i = 0; i < stroke.length; i++) {
-	c.lineTo(stroke[i].x, stroke[i].y);
+	    c.lineTo(stroke[i].x, stroke[i].y);
         if(i < 2) {
-	    c.closePath();
-   	}
+	        c.closePath();
+    	}
     } 
     
     c.moveTo(stroke[stroke.length-1].x, stroke[stroke.length-1].y);
@@ -319,6 +315,14 @@ $(document).ready(function() {
             }
             clearCanvas($("#background").get(0)); 
          }
+    });
+
+    toolbox.addItem( 2, 0, "<img src='img/undo.png'>", "toolbox-undo", function() {
+        undo();
+    });
+
+    toolbox.addItem( 2, 1, "<img src='img/redo.png'>", "toolbox-redo", function() {
+        redo();
     });
 
     canvasSetup();
