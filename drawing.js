@@ -28,7 +28,7 @@ var strokeContext = strokeLayer.getContext("2d");
 var currentLayer = 1;
 var currentContext = layers[currentLayer].getContext("2d");
 
-var toolbox = new AppWindow( 3, 2, "Toolbox");
+var toolbox = new AppWindow( 4, 2, "Toolbox");
 
 function canvasSetup() {
     prepareCanvas(canvas);
@@ -189,17 +189,12 @@ function contextmenuSetup() {
 	        clearCanvas(layers[currentLayer]);
 	    }	
     });
- 
-    $(document).on('input', '#colorpicker', function() {
-        color = $("#colorpicker").val();
-	    $("div.right-click").hide(100);
-    });
 }
 
 function undo() { 
     console.log(currentChange);
     if(currentChange > 0) {
-	currentChange--;
+	    currentChange--;
         var newElement = changes[currentChange];
         var newLayer =  layers[newElement.layer];
         clearCanvas(newLayer);
@@ -209,18 +204,18 @@ function undo() {
         newLayer.getContext('2d').drawImage(img,0,0);
         newLayer.getContext('2d').globalAlpha = opacity;
         layers[newElement.layer]=newLayer;
-	if(currentChange === 0) {
-	    currentChange = 1;
-	}
+    	if(currentChange === 0) {
+	        currentChange = 1;
+	    }
     }
 }
 
 function redo() {
     if(currentChange < changes.length - 1) {
         console.log(currentChange);
-	currentChange++;
-	var newElement = changes[currentChange];
-	
+	    currentChange++;
+
+	    var newElement = changes[currentChange];
         var newLayer =  layers[newElement.layer];
         clearCanvas(newLayer);
         var img= new Image();
@@ -229,8 +224,7 @@ function redo() {
         newLayer.getContext('2d').drawImage(img,0,0);
         newLayer.getContext('2d').globalAlpha = opacity;
  
-        layers[newElement.layer]=newLayer;
-        
+        layers[newElement.layer]=newLayer;    
     }
 }
 
@@ -323,6 +317,14 @@ $(document).ready(function() {
 
     toolbox.addItem( 2, 1, "<img src='img/redo.png'>", "toolbox-redo", function() {
         redo();
+    });
+
+    toolbox.addItem( 3, 0, "<img src=''>", "toolbox-color", function() {
+        
+    });
+
+    toolbox.addItem( 3, 1, "<img src=''>", "toolbox-brush", function() {
+        
     });
 
     canvasSetup();
