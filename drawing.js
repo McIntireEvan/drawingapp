@@ -35,7 +35,7 @@ var toolbox = new AppWindow(1,2,"Toolbox");
 function canvasSetup() {
     prepareCanvas(canvas);
     for(var i = 0; i < layers.length; i++) {
-	prepareCanvas(layers[i]);
+	    prepareCanvas(layers[i]);
     }
     context.lineWidth=1;
     context.strokeStyle="black";
@@ -45,91 +45,93 @@ function canvasSetup() {
     changes.push({layer: currentLayer, context: layers[currentLayer].toDataURL()});
     currentChange=1;
     var mousemove = function(evt) {
-	previousPos = pos.mouse;
-	if(evt.type == "mousemove") {
+	    previousPos = pos.mouse;
+	    if(evt.type == "mousemove") {
             pos.mouse = getMousePos(canvas, evt);
         }
-	drawCursor(canvas, context, pos.mouse, color, radius);
+	    drawCursor(canvas, context, pos.mouse, color, radius);
         if(mouseDown) {
-	    if(tool == "eraser" || tool == "pencil") {
-		stroke.push(pos.mouse);
-		clearCanvas(strokeLayer);
-		drawStrokeToCanvas(strokeLayer);
+	        if(tool == "eraser" || tool == "pencil") {
+		        stroke.push(pos.mouse);
+		        clearCanvas(strokeLayer);
+		        drawStrokeToCanvas(strokeLayer);
+	        }
 	    }
-	}
 
     };
     canvas.addEventListener('mousemove', mousemove, false);
 
     var mouseup = function(evt) {
-	if(evt.which == 1) {
+	    if(evt.which == 1) {
             pos.mouse = getMousePos(canvas, evt);
-	    stroke.push(pos.mouse);
-	    clearCanvas(strokeLayer);
-	    mouseDown = false;
-	    drawStrokeToCanvas(layers[currentLayer]);
-	    if(currentChange != changes.length) { 
-	        changes.splice(currentChange, changes.length  - currentChange);
-	    }
-	    currentChange++;
+	        stroke.push(pos.mouse);
+	        clearCanvas(strokeLayer);
+	        mouseDown = false;
+	        drawStrokeToCanvas(layers[currentLayer]);
+	        if(currentChange != changes.length) { 
+	            changes.splice(currentChange, changes.length  - currentChange);
+	        }
+	        currentChange++;
 
-	    changes.push({layer: currentLayer, context: layers[currentLayer].toDataURL()});
-	    stroke=[];
-	}
+	        changes.push({layer: currentLayer, context: layers[currentLayer].toDataURL()});
+	        stroke=[];
+	    }
     };
 
     canvas.addEventListener('mouseup', mouseup, false);
 
     var mousedown = function(evt) {
-	if(evt.which == 1) {
-	    stroke.push(pos.mouse);
-	    pos.mouse = getMousePos(canvas, evt);
-	    if(tool == "pencil") {
+	    if(evt.which == 1) {
+	        stroke.push(pos.mouse);
+	        pos.mouse = getMousePos(canvas, evt);
+	        if(tool == "pencil") {
                 strokeContext.globalCompositeOperation="source-over";
-	    } else if (tool == "eraser") {
-	        strokeContext.globalCompositeOperation="destination-out";		
-        }
-	    stroke.push(pos.mouse);
-	    drawStrokeToCanvas(strokeLayer);
+	        } else if (tool == "eraser") {
+	            strokeContext.globalCompositeOperation="destination-out";		
+            }
+	        stroke.push(pos.mouse);
+	        drawStrokeToCanvas(strokeLayer);
             mouseDown = true;
-	}
+	    }
     };
 
     canvas.addEventListener('mousedown', mousedown, false); 
 
+    //TODO: Possibly rewrite this to be shorter?
     $(document).keydown(function(e) {
         if(e.which == 187) {
 	        if(e.shiftKey) {
-		        if(opacity < 1.0)
+		        if(opacity < 1.0) {
                    opacity += 0.01;
-	            } else {
-	                radius++;
-	            }
-            } else if(e.which == 189) {
-                if(radius>1) { 
-		            if(e.shiftKey) {
-		                if(opacity > 0) {
-		                    opacity -= 0.01;
-		                }
-		            } else {radius--; }
-	            }
+                }
+	        } else {
+	            radius++;
+	        }
+        } else if(e.which == 189) {
+            if(radius>1) { 
+		        if(e.shiftKey) {
+		            if(opacity > 0) {
+		                opacity -= 0.01;
+		            }
+		        } else {radius--; }
+	        }
         } else if(e.which==90 && e.ctrlKey) {
-	    undo();
-	} else if(e.which==89 && e.ctrlKey) {
-	    redo();
-	} 
+	        undo();
+	    } else if(e.which==89 && e.ctrlKey) {
+	        redo();
+	    } 
 	 
         drawCursor(canvas, context, pos.mouse, color, radius);  
         currentContext.lineWidth = radius * 2;
-	strokeContext.lineWidth = radius * 2;
-    $("#opacity").text = opacity;
+	    strokeContext.lineWidth = radius * 2;
+        $("#opacity").text = opacity;
     });
 
     $(document).mouseout(function(evt) {
-	mouseDown = false;
+	    mouseDown = false;
     });
     $(document).mouseenter(function(evt) {
-	mouseDown = false;
+	    mouseDown = false;
     });
 }
 
