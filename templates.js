@@ -26,7 +26,6 @@ var AppWindow = function(rows, columns, title) {
         evt.preventDefault();
         document.getSelection().removeAllRanges();
         if(_this.isDragging) { 
-            console.log(_this.id);
             $(_this.id).css({left: evt.pageX + "px"});
 	        $(_this.id).css({top:  evt.pageY + "px"});
         }
