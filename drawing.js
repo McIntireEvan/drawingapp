@@ -74,6 +74,7 @@ function canvasSetup() {
     };
 
     canvas.addEventListener('mouseup', mouseup, false);
+    document.addEventListener('mouseout', mouseup, false)
 
     var mousedown = function(evt) {
 	    if(evt.which == 1) {
@@ -120,13 +121,6 @@ function canvasSetup() {
         currentContext.lineWidth = radius * 2;
 	    strokeContext.lineWidth = radius * 2;
         $("#opacity").text = opacity;
-    });
-
-    $(document).mouseout(function(evt) {
-	    mouseDown = false;
-    });
-    $(document).mouseenter(function(evt) {
-	    mouseDown = false;
     });
 }
 
