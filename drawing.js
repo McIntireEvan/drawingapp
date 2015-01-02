@@ -2,7 +2,7 @@ var color="#149AB4";
 var backgroundColor = "#ffffff";
 var radius = 10;
 var pos = {x: 0, y: 0};
-var Jcanvas = $("#mouse");
+
 var canvas = $("#mouse").get(0);
 var context = canvas.getContext("2d");
 var mouseDown = false;
@@ -30,7 +30,7 @@ var currentContext = layers[currentLayer].getContext("2d");
 
 var pos = {mouse: {x: 0,y: 0}};
 
-var toolbox = new AppWindow(1,2,"Toolbox");
+var toolbox = new AppWindow(2,2,"Toolbox");
 
 function canvasSetup() {
     prepareCanvas(canvas);
@@ -195,25 +195,10 @@ function contextmenuSetup() {
 	    clearCanvas(layers[currentLayer]);
 	}	
     });
-
-    $(document).on('mousedown', function(evt) {
-	    if ($(evt.target).attr("id") == "layersTitle") {
-		evt.preventDefault();
-		dragging.layers = true;
-	    }
-	});
-
-    $(document).on('mouseup', function(evt) {
-	
-    });
-
-    $(document).on('mousemove', function(evt) {
-         document.getSelection().removeAllRanges();
-    });
-
+ 
     $(document).on('input', '#colorpicker', function() {
         color = $("#colorpicker").val();
-	$("div.right-click").hide(100);
+	    $("div.right-click").hide(100);
     });
 }
 
@@ -274,7 +259,7 @@ function drawStrokeToCanvas(canvas) {
     if(c.strokeStyle != color) { c.strokeStyle = color; }
     if(c.fillStyle != color) { c.fillStyle = color;}
     if(c.globalCompositeOperation != strokeContext.globalCompositeOperation) {
-	c.globalCompositeOperation = strokeContext.globalCompositeOperation;
+	    c.globalCompositeOperation = strokeContext.globalCompositeOperation;
     }
     c.beginPath();
       
@@ -306,8 +291,8 @@ function drawCursor(canvas, context, pos, color, radius){
 }
 
 function prepareCanvas(canvas) {
-   canvas.width = Jcanvas.css("width").replace("px","");
-   canvas.height = Jcanvas.css("height").replace("px","");
+   canvas.width = $('#mouse').css("width").replace("px","");
+   canvas.height = $('#mouse').css("height").replace("px","");
 }
 
 $(document).ready(function() {
@@ -322,13 +307,26 @@ $(document).ready(function() {
         $(".selected").removeClass('selected');
         $("#toolbox-eraser").addClass('selected');
         tool = 'eraser';
-        console.log("a");
+    });
+
+    toolbox.addItem( 1, 0, "<img src='img/save.png'>", "toolbox-save", function() {
+        saveCanvasToImage(mergeCanvases($("#background").get(0), layers));
+        clearCanvas($("#background").get(0));
+    });
+
+    toolbox.addItem( 1, 1, "<img src='img/clear.png'>", "toolbox-clear", function() {
+        if(confirm('Clear all layers?')) {
+            for(var i=0; i<layers.length; i++) {
+                clearCanvas(layers[i]);
+            }
+            clearCanvas($("#background").get(0)); 
+         }
     });
 
     canvasSetup();
     contextmenuSetup();
     console.log('Loading complete');
-    $("#splash").fadeOut(1500);
+    $('#splash').fadeOut(1500);
 
-    $("body").append(toolbox.toHTML());
+    $('body').append(toolbox.toHTML());
 });
