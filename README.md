@@ -1,10 +1,13 @@
 drawingapp
 ==========
+This is provided under the GNU GPL v2
 
-A web based drawing application written in Javascript
+A web based drawing application written in Javascript, using jQuery
 
-Live at http://draw.evanmcintire.com/
+Live versions of this project can be found either at
+http://draw.evanmcintire.com/ for the version running the latest commit or
+http://draw.evanmcintire.com/beta/drawingapp/ for the version that is currenly being developed
 
 Eventually, the code will follow the standards at https://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml
 
-Currently, the todo list is at https://trello.com/b/KzbX8TxT/drawing-thing but it will soon be ported over to Github's issue tracker
+Currently, the todo list is split between https://trello.com/b/KzbX8TxT/drawing-thing and the issue tracker here.
