@@ -57,4 +57,5 @@ function getMousePos(canvas, evt) {
 	    x: (evt.clientX - rect.left)/(rect.right-rect.left)*canvas.width,
 	    y: (evt.clientY - rect.top)/(rect.bottom-rect.top)*canvas.height
     };
+}
 
