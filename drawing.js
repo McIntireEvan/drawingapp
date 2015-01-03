@@ -261,8 +261,8 @@ function drawCursor(canvas, context, pos, color, radius){
 }
 
 function prepareCanvas(canvas) {
-   canvas.width = $('#mouse').css("width").replace("px","");
-   canvas.height = $('#mouse').css("height").replace("px","");
+   canvas.width = $('#mouse').css('width').replace('px','');
+   canvas.height = $('#mouse').css('height').replace('px','');
 }
 
 $(document).ready(function() {
@@ -321,4 +321,16 @@ $(document).ready(function() {
     $('#splash').fadeOut(1500);
 
     $('body').append(toolbox.toHTML());
+
+    $(window).on('resize',function() {
+        prepareCanvas(canvas);
+        for(var i = 0; i < layers.length; i++) {
+	        merge($('#background').get(0), layers[i] );
+            prepareCanvas( layers[i]); 
+            layers[i].getContext('2d').drawImage($('#background').get(0), 0, 0);
+            clearCanvas($('#background').get(0));
+        }
+        prepareCanvas($("#background").get(0));
+        prepareCanvas(strokeLayer);
+    });
 });

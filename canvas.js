@@ -2,10 +2,24 @@
  * A collection of generic methods to aid with canvas manipulation
  */
 
+//TODO: Merge following two methods
 /*
- * Copies a list of layers onto a single layer
+ * Copies a canvas onto another canvas
  *
  * @param {canvas} mergeTo - The layer to mergo onto
+ * @param {array} mergeFrom - The canvas to merge from 
+ */
+function merge(mergeTo, mergeFrom) {
+    mergeContext = mergeTo.getContext('2d');
+  	mergeContext.drawImage(mergeFrom, 0, 0);
+    return mergeTo;
+}
+
+
+/*
+ * Copies a list of canvases onto a single canvas
+ *
+ * @param {canvas} mergeTo - The canvas to mergo onto
  * @param {array} mergeFrom - The list of canvases to merge together 
  */
 function mergeCanvases(mergeTo, mergeFrom) {
