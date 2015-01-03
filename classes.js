@@ -57,6 +57,17 @@ AppWindow.prototype.addItem = function(row, column, html, id, onClick) {
     $(document).on('click', '#' + id, onClick);
 }
 
+AppWindow.prototype.addRow = function() {
+    for(var j = 0; j < this.columns; j++) {
+        this.content[rows][j] = '';
+    }
+    this.rows++;
+}
+
+AppWindow.prototype.removeRow = function(row) {
+    this.rows--;
+    this.content.splice(row, 1);
+}
 
 var CustomContextMenu = function() {
     var items = [];

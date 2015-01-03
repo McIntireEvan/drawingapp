@@ -26,9 +26,10 @@ var strokeContext = strokeLayer.getContext("2d");
 var currentLayer = 1;
 var currentContext = layers[currentLayer].getContext("2d");
 
-var toolbox = new AppWindow( 4, 2, "Toolbox");
+var toolbox = new AppWindow( 4, 2, 'Toolbox');
 var contextMenu = new CustomContextMenu();
-var colorwindow = new AppWindow( 1, 1, 'Colors');
+var colorwindow = new AppWindow( 2, 1, 'Colors');
+var layerwindow = new AppWindow( 3, 4, 'Layers');
 
 function init() {
     prepareCanvas(canvas);
@@ -44,35 +45,35 @@ function init() {
     changes.push({layer: currentLayer, context: layers[currentLayer].toDataURL()});
     currentChange=1;
 
-    toolbox.addItem( 0, 0, "<img src='img/pencil.png'>", "toolbox-pencil", function() {
+    toolbox.addItem( 0, 0, "<img src='img/pencil.png' class='selected' />", "toolbox-pencil", function() {
         $(".selected").removeClass('selected');
         $("#toolbox-pencil").addClass('selected');
         tool = 'pencil';
     });
 
-    toolbox.addItem( 0, 1, "<img src='img/eraser.png'>", "toolbox-eraser", function() {
+    toolbox.addItem( 0, 1, "<img src='img/eraser.png' />", "toolbox-eraser", function() {
         $(".selected").removeClass('selected');
         $("#toolbox-eraser").addClass('selected');
         tool = 'eraser';
     });
 
-    toolbox.addItem( 1, 0, "<img src='img/color.png'>", "toolbox-color", function() {
+    toolbox.addItem( 1, 0, "<img src='img/color.png' />", "toolbox-color", function() {
+        colorwindow.toggle();
+    });
+
+    toolbox.addItem( 1, 1, "<img src='img/brush.png' />", "toolbox-brush", function() {
         alert('Coming soon!');
     });
 
-    toolbox.addItem( 1, 1, "<img src='img/brush.png'>", "toolbox-brush", function() {
-        alert('Coming soon!');
-    });
-
-    toolbox.addItem( 2, 0, "<img src='img/undo.png'>", "toolbox-undo", function() {
+    toolbox.addItem( 2, 0, "<img src='img/undo.png' />", "toolbox-undo", function() {
         undo();
     });
 
-    toolbox.addItem( 2, 1, "<img src='img/redo.png'>", "toolbox-redo", function() {
+    toolbox.addItem( 2, 1, "<img src='img/redo.png' />", "toolbox-redo", function() {
         redo();
     });
 
-    toolbox.addItem( 3, 0, "<img src='img/save.png'>", "toolbox-save", function() {
+    toolbox.addItem( 3, 0, "<img src='img/save.png' />", "toolbox-save", function() {
         saveCanvasToImage(mergeCanvases($("#background").get(0), layers));
         clearCanvas($("#background").get(0));
     });
@@ -84,6 +85,24 @@ function init() {
             }
             clearCanvas($("#background").get(0)); 
          }
+    });
+
+    layerwindow.addItem( 0, 0, "<img src='img/layerAdd.png' />", "layer-add", function() {
+        console.log("ADD LAYER");
+    });
+
+    layerwindow.addItem( 0, 1, "<img src='img/layerRemove.png' />", "layer-remove", function() {
+        console.log("REMOVE LAYER");
+    });
+
+    layerwindow.addItem( 0, 2, "<img src='img/clear.png' />", "layer-clear", function() {
+        if( confirm( 'Clear current Layer?' ) ){
+            clearCanvas( layers[ currentLayer ] );
+        }
+    });
+
+    layerwindow.addItem( 0, 3, "<img src='img/save.png' />", "layer-save", function() {
+        saveCanvasToImage( layers[ currentLayer ] );
     });
 
     contextMenu.addItem('<a target="_blank" href="https://www.github.com/McIntireEvan/drawingapp">Code can be found here!</a>', "source-link", function(){});
@@ -283,4 +302,6 @@ $(document).ready(function() {
 
     $('body').append(toolbox.toHTML());
     $('body').append(colorwindow.toHTML());
+    colorwindow.toggle();
+    //$('body').append(layerwindow.toHTML());
 });
