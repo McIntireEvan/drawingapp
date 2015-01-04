@@ -1,30 +1,25 @@
-var color="#149AB4";
-var backgroundColor = "#ffffff";
-var radius = 3;
 var pos = {x: 0, y: 0};
 
-var canvas = $("#mouse").get(0);
-var context = canvas.getContext("2d");
-var mouseDown = false;
 var tool = 'pencil';
-
-var layers = [$("#layer1").get(0), $("#layer0").get(0)];
-var nextLayerId = 2;
-
-var stroke = [];
-
+var color="#149AB4";
+var radius = 3;
 var opacity = 1;
 
-var tempCanvas;
+var mouseLayer = $("#mouse").get(0);
+var mouseContext = mouseLayer.getContext("2d");
+var mouseDown = false;
 
-var changes = [];
-var currentChange = 0;
+var layers = [$("#layer1").get(0), $("#layer0").get(0)];
+var currentLayer = 1;
+var nextLayerId = 2;
+var currentContext = layers[currentLayer].getContext("2d");
 
+var stroke = [];
 var strokeLayer = $("#stroke").get(0);
 var strokeContext = strokeLayer.getContext("2d");
 
-var currentLayer = 1;
-var currentContext = layers[currentLayer].getContext("2d");
+var changes = [];
+var currentChange = 0;
 
 var cursorInWindow;
 
@@ -34,15 +29,15 @@ var colorwindow = new AppWindow( 2, 1, 'Colors');
 var layerwindow = new AppWindow( 3, 4, 'Layers');
 
 function init() {
-    prepareCanvas(canvas);
+    prepareCanvas(mouseLayer);
     for(var i = 0; i < layers.length; i++) {
 	    prepareCanvas( layers[i]);
     }
     prepareCanvas($("#background").get(0));
     prepareCanvas(strokeLayer);
 
-    context.lineWidth = 1;
-    context.strokeStyle = 'black';
+    mouseContext.lineWidth = 1;
+    mouseContext.strokeStyle = 'black';
     
     changes.push({layer: currentLayer, context: layers[currentLayer].toDataURL()});
     currentChange=1;
@@ -144,7 +139,7 @@ function addEventListeners() {
 	    } 
 	 
         if(cursorInWindow) {
-            drawCursor(canvas, context, pos, color, radius);  
+            drawCursor(mouseLayer, mouseContext, pos, color, radius);  
         }
         currentContext.lineWidth = radius * 2;
 	    strokeContext.lineWidth = radius * 2;
@@ -154,7 +149,7 @@ function addEventListeners() {
     var mouseup = function(evt) {
 	    if(evt.which == 1) {
             if(mouseDown) {
-                pos = getMousePos(canvas, evt);
+                pos = getMousePos(mouseLayer, evt);
 	            stroke.push(pos);
 	            clearCanvas(strokeLayer);
 	            mouseDown = false;
@@ -166,19 +161,19 @@ function addEventListeners() {
 
 	            changes.push({layer: currentLayer, context: layers[currentLayer].toDataURL()});
 	            stroke=[];
-                clearCanvas(canvas);
+                clearCanvas(mouseLayer);
             }
 	    }
     };
 
-    canvas.addEventListener('mouseup', mouseup, false);
+    mouseLayer.addEventListener('mouseup', mouseup, false);
     document.addEventListener('mouseout', mouseup, false)
 
-    canvas.addEventListener('mousemove', function(evt) {
+    mouseLayer.addEventListener('mousemove', function(evt) {
 	    previousPos = pos;
-        pos = getMousePos(canvas, evt);
+        pos = getMousePos(mouseLayer, evt);
 	    if(cursorInWindow) {
-            drawCursor(canvas, context, pos, color, radius);
+            drawCursor(mouseLayer, mouseContext, pos, color, radius);
         }
         if(mouseDown) {
 	        if(tool == "eraser" || tool == "pencil") {
@@ -191,10 +186,10 @@ function addEventListeners() {
     }, false);
 
 
-    canvas.addEventListener('mousedown', function(evt) {
+    mouseLayer.addEventListener('mousedown', function(evt) {
 	    if(evt.which == 1) {
 	        stroke.push(pos);
-            pos = getMousePos(canvas, evt);
+            pos = getMousePos(mouseLayer, evt);
 	        if(tool == "pencil") {
                 strokeContext.globalCompositeOperation="source-over";
 	        } else if (tool == "eraser") {
@@ -208,17 +203,17 @@ function addEventListeners() {
     
     $(document).on('mouseleave', function() {
         cursorInWindow = false;
-        clearCanvas(canvas);
+        clearCanvas( mouseLayer );
     });
     
     $(document).on('mouseenter', function() {
         cursorInWindow = true;
-        clearCanvas(canvas);
+        clearCanvas( mouseLayer );
     });
 
 
     $(window).on('resize',function() {
-        prepareCanvas(canvas);
+        prepareCanvas( mouseLayer );
         for(var i = 0; i < layers.length; i++) {
 	        merge($('#background').get(0), layers[i] );
             prepareCanvas( layers[i]); 
