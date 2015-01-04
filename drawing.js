@@ -166,6 +166,7 @@ function addEventListeners() {
 
 	            changes.push({layer: currentLayer, context: layers[currentLayer].toDataURL()});
 	            stroke=[];
+                clearCanvas(canvas);
             }
 	    }
     };
