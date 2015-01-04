@@ -26,6 +26,8 @@ var strokeContext = strokeLayer.getContext("2d");
 var currentLayer = 1;
 var currentContext = layers[currentLayer].getContext("2d");
 
+var cursorInWindow;
+
 var toolbox = new AppWindow( 4, 2, 'Toolbox');
 var contextMenu = new CustomContextMenu();
 var colorwindow = new AppWindow( 2, 1, 'Colors');
@@ -141,7 +143,9 @@ function addEventListeners() {
 	        redo();
 	    } 
 	 
-        drawCursor(canvas, context, pos, color, radius);  
+        if(cursorInWindow) {
+            drawCursor(canvas, context, pos, color, radius);  
+        }
         currentContext.lineWidth = radius * 2;
 	    strokeContext.lineWidth = radius * 2;
         $("#opacity").text = opacity;
@@ -172,7 +176,9 @@ function addEventListeners() {
     canvas.addEventListener('mousemove', function(evt) {
 	    previousPos = pos;
         pos = getMousePos(canvas, evt);
-	    drawCursor(canvas, context, pos, color, radius);
+	    if(cursorInWindow) {
+            drawCursor(canvas, context, pos, color, radius);
+        }
         if(mouseDown) {
 	        if(tool == "eraser" || tool == "pencil") {
 		        stroke.push(pos);
@@ -197,7 +203,19 @@ function addEventListeners() {
 	        drawStrokeToCanvas(strokeLayer);
             mouseDown = true;
 	    }
-    }, false); 
+    }, false);
+    
+    $(document).on('mouseleave', function() {
+        cursorInWindow = false;
+        clearCanvas(canvas);
+    });
+    
+    $(document).on('mouseenter', function() {
+        cursorInWindow = true;
+        clearCanvas(canvas);
+    });
+
+
     $(window).on('resize',function() {
         prepareCanvas(canvas);
         for(var i = 0; i < layers.length; i++) {
@@ -209,6 +227,8 @@ function addEventListeners() {
         prepareCanvas($("#background").get(0));
         prepareCanvas(strokeLayer);
     });
+
+    
 
     $(document).on('change', '#color-select', function() {
       color = $('#color-select').val()
@@ -305,5 +325,6 @@ $(document).ready(function() {
     $('body').append(toolbox.toHTML());
     $('body').append(colorwindow.toHTML());
     colorwindow.toggle();
+    cursorInWindow = true;
     //$('body').append(layerwindow.toHTML());
 });
