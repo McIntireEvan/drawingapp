@@ -149,18 +149,20 @@ function addEventListeners() {
     
     var mouseup = function(evt) {
 	    if(evt.which == 1) {
-            pos = getMousePos(canvas, evt);
-	        stroke.push(pos);
-	        clearCanvas(strokeLayer);
-	        mouseDown = false;
-	        drawStrokeToCanvas(layers[currentLayer]);
-	        if(currentChange != changes.length) { 
-	            changes.splice(currentChange, changes.length  - currentChange);
-	        }
-	        currentChange++;
+            if(mouseDown) {
+                pos = getMousePos(canvas, evt);
+	            stroke.push(pos);
+	            clearCanvas(strokeLayer);
+	            mouseDown = false;
+	            drawStrokeToCanvas(layers[currentLayer]);
+	            if(currentChange != changes.length) {
+	                changes.splice(currentChange, changes.length  - currentChange);
+	            }
+	            currentChange++;
 
-	        changes.push({layer: currentLayer, context: layers[currentLayer].toDataURL()});
-	        stroke=[];
+	            changes.push({layer: currentLayer, context: layers[currentLayer].toDataURL()});
+	            stroke=[];
+            }
 	    }
     };
 
@@ -185,7 +187,7 @@ function addEventListeners() {
     canvas.addEventListener('mousedown', function(evt) {
 	    if(evt.which == 1) {
 	        stroke.push(pos);
-	        pos = getMousePos(canvas, evt);
+            pos = getMousePos(canvas, evt);
 	        if(tool == "pencil") {
                 strokeContext.globalCompositeOperation="source-over";
 	        } else if (tool == "eraser") {
