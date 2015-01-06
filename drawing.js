@@ -19,14 +19,15 @@ var strokeLayer = $("#stroke").get(0);
 var strokeContext = strokeLayer.getContext("2d");
 
 var changes = [];
-var currentChange = 0;
+var currentChange ;
 
 var cursorInWindow;
 
 var toolbox = new AppWindow( 4, 2, 'Toolbox');
 var contextMenu = new CustomContextMenu();
 var colorwindow = new AppWindow( 2, 1, 'Colors');
-var layerwindow = new AppWindow( 3, 4, 'Layers');
+var layerwindow = new AppWindow( 1, 4, 'Layers');
+
 
 function init() {
     prepareCanvas(mouseLayer);
@@ -40,24 +41,24 @@ function init() {
     mouseContext.strokeStyle = 'black';
     
     changes.push({layer: currentLayer, context: layers[currentLayer].toDataURL()});
-    currentChange=1;
+    currentChange=0;
 
-    toolbox.addItem( 0, 0, "<img src='img/pencil.png' class='selected' />", "toolbox-pencil", function() {
-        $(".selected").removeClass('selected');
-        $("#toolbox-pencil").addClass('selected');
+    toolbox.addItem( 0, 0, "<img src='img/pencil.png' class='selectedTool' />", "toolbox-pencil", function() {
+        $(".selectedTool").removeClass('selectedTool');
+        $("#toolbox-pencil").addClass('selectedTool');
         tool = 'pencil';
     });
 
     toolbox.addItem( 0, 1, "<img src='img/eraser.png' />", "toolbox-eraser", function() {
-        $(".selected").removeClass('selected');
-        $("#toolbox-eraser").addClass('selected');
+        $(".selectedTool").removeClass('selectedTool');
+        $("#toolbox-eraser").addClass('selectedTool');
         tool = 'eraser';
     });
 
     toolbox.addItem( 1, 0, "<img src='img/color.png' />", "toolbox-color", function() {
         colorwindow.toggle();
     });
-
+ 
     toolbox.addItem( 1, 1, "<img src='img/brush.png' />", "toolbox-brush", function() {
         alert('Coming soon!');
     });
@@ -137,7 +138,7 @@ function addEventListeners() {
 	    } else if(e.which==89 && e.ctrlKey) {
 	        redo();
 	    } 
-	 
+ 
         if(cursorInWindow) {
             drawCursor(mouseLayer, mouseContext, pos, color, radius);  
         }
@@ -154,11 +155,12 @@ function addEventListeners() {
 	            clearCanvas(strokeLayer);
 	            mouseDown = false;
 	            drawStrokeToCanvas(layers[currentLayer]);
-	            if(currentChange != changes.length) {
-	                changes.splice(currentChange, changes.length  - currentChange);
-	            }
 	            currentChange++;
 
+                if(currentChange != changes.length) {
+	                changes.splice(currentChange, changes.length  - currentChange);
+	            }
+ 
 	            changes.push({layer: currentLayer, context: layers[currentLayer].toDataURL()});
 	            stroke=[];
                 clearCanvas(mouseLayer);
@@ -182,7 +184,6 @@ function addEventListeners() {
 		        drawStrokeToCanvas(strokeLayer);
 	        }
 	    }
-
     }, false);
 
 
@@ -210,8 +211,7 @@ function addEventListeners() {
         cursorInWindow = true;
         clearCanvas( mouseLayer );
     });
-
-
+    
     $(window).on('resize',function() {
         prepareCanvas( mouseLayer );
         for(var i = 0; i < layers.length; i++) {
@@ -224,19 +224,17 @@ function addEventListeners() {
         prepareCanvas(strokeLayer);
     });
 
-    
-
     $(document).on('change', '#color-select', function() {
       color = $('#color-select').val()
     });
 }
 
 function undo() { 
-    console.log(currentChange);
     if(currentChange > 0) {
 	    currentChange--;
+        console.log(currentChange);
         var newElement = changes[currentChange];
-        var newLayer =  layers[newElement.layer];
+        var newLayer = layers[newElement.layer];
         clearCanvas(newLayer);
         var img= new Image();
         img.src = newElement.context;
@@ -244,17 +242,17 @@ function undo() {
         newLayer.getContext('2d').drawImage(img,0,0);
         newLayer.getContext('2d').globalAlpha = opacity;
         layers[newElement.layer]=newLayer;
-    	if(currentChange === 0) {
-	        currentChange = 1;
-	    }
+    } else {
+        for(var i=0; i<layers.length; i++) {
+            clearCanvas(layers[i]);
+        }
+        clearCanvas($("#background").get(0)); 
     }
 }
 
 function redo() {
     if(currentChange < changes.length - 1) {
-        console.log(currentChange);
 	    currentChange++;
-
 	    var newElement = changes[currentChange];
         var newLayer =  layers[newElement.layer];
         clearCanvas(newLayer);
@@ -279,7 +277,7 @@ function drawStrokeToCanvas(canvas) {
 	    c.globalCompositeOperation = strokeContext.globalCompositeOperation;
     }
     c.beginPath();
-      
+
     c.moveTo(stroke[0].x+0.1, stroke[0].y);
     for(var i = 0; i < stroke.length; i++) {
 	    c.lineTo(stroke[i].x, stroke[i].y);
