@@ -33,8 +33,8 @@ var AppWindow = function(rows, columns, title) {
 };
 
 AppWindow.prototype.toHTML = function() {
-    var html = '<table style="z-index:1000 ;position:absolute" id=' + this.title + 'Window>' + 
-        '<tr><th id="' + this.title  + '" colspan=' + this.columns + '>' + this.title + '</th></tr>';
+    var html = '<table class="AppWindow" id=' + this.title + 'Window>' + 
+        '<tr><th class="windowTitle" id="' + this.title  + '" colspan=' + this.columns + '>' + this.title + '</th></tr>';
     
     for(var i = 0; i < this.rows; i++) {
         html += '<tr>';

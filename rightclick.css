@@ -14,11 +14,6 @@
     margin:0;
 }
 
-.CustomContextMenu:hover {
-    background-color:#ECECEC;
-}
-
-
 li.CCM-Item {
     -webkit-transition:background-color .5s, -webkit-transform .5s;
     transition:background-color .5s;

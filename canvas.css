@@ -2,12 +2,10 @@
     font-family: 'Roboto', sans-serif;
 }
 
-.window {
+.AppWindow {
     z-index:1001;
     position: absolute;
-    background-color:#ECECEC;
     border:1px solid black;
-    table-layout: fixed;
 }
 
 .windowTitle {
@@ -16,11 +14,7 @@
     cursor: grab;
 }
 
-.selectedLayer {
-    background-color:#345678
-}
-
-.selected {
+.selectedTool {
     -webkit-filter: invert(100%);
     filter: invert(100%);
 }
