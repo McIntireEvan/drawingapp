@@ -146,9 +146,19 @@ function addEventListeners() {
 	    strokeContext.lineWidth = radius * 2;
         $("#opacity").text = opacity;
     });
+
+    $(document).on('mousedown', '.AppWindowItem', function() {
+        $(this).addClass('selectedTool');
+    });
     
+    $(document).mouseup(function() {
+        $('.selectedTool').removeClass('selectedTool');
+        $('#toolbox-' + tool).addClass('selectedTool');
+    });
+
+    //TODO: Clean up the event attaching
     var mouseup = function(evt) {
-	    if(evt.which == 1) {
+        if(evt.which == 1) {
             if(mouseDown) {
                 pos = getMousePos(mouseLayer, evt);
 	            stroke.push(pos);
@@ -168,7 +178,7 @@ function addEventListeners() {
 	    }
     };
 
-    mouseLayer.addEventListener('mouseup', mouseup, false);
+    mouseLayer.addEventListener('mouseup', mouseup);
     document.addEventListener('mouseout', mouseup, false)
 
     mouseLayer.addEventListener('mousemove', function(evt) {

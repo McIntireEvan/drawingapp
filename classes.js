@@ -53,7 +53,7 @@ AppWindow.prototype.toggle = function() {
 }
 
 AppWindow.prototype.addItem = function(row, column, html, id, onClick) {
-    this.content[row][column] = '<td id="' + id + '">' + html + '</td>';
+    this.content[row][column] = '<td id="' + id + '" class="AppWindowItem">' + html + '</td>';
     $(document).on('click', '#' + id, onClick);
 }
 
