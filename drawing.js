@@ -242,16 +242,7 @@ function addEventListeners() {
 function undo() { 
     if(currentChange > 0) {
 	    currentChange--;
-        console.log(currentChange);
-        var newElement = changes[currentChange];
-        var newLayer = layers[newElement.layer];
-        clearCanvas(newLayer);
-        var img= new Image();
-        img.src = newElement.context;
-        newLayer.getContext('2d').globalAlpha = 1;
-        newLayer.getContext('2d').drawImage(img,0,0);
-        newLayer.getContext('2d').globalAlpha = opacity;
-        layers[newElement.layer]=newLayer;
+        doLayerRedraw();
     } else {
         for(var i=0; i<layers.length; i++) {
             clearCanvas(layers[i]);
@@ -263,17 +254,23 @@ function undo() {
 function redo() {
     if(currentChange < changes.length - 1) {
 	    currentChange++;
-	    var newElement = changes[currentChange];
-        var newLayer =  layers[newElement.layer];
-        clearCanvas(newLayer);
-        var img= new Image();
-        img.src = newElement.context;
-        newLayer.getContext('2d').globalAlpha = 1;
-        newLayer.getContext('2d').drawImage(img,0,0);
-        newLayer.getContext('2d').globalAlpha = opacity;
- 
-        layers[newElement.layer]=newLayer;    
-    }
+        doLayerRedraw();
+	}
+}
+
+//TODO: Give this a better name
+function doLayerRedraw() {
+    var newElement = changes[currentChange];
+    var newLayer =  layers[newElement.layer];
+    clearCanvas(newLayer);
+    var img= new Image();
+    img.src = newElement.context;
+
+    newLayer.getContext('2d').globalAlpha = 1;
+    newLayer.getContext('2d').drawImage(img,0,0);
+    newLayer.getContext('2d').globalAlpha = opacity;
+
+    layers[newElement.layer]=newLayer;
 }
 
 function drawStrokeToCanvas(canvas) {
