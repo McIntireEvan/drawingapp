@@ -69,6 +69,10 @@ AppWindow.prototype.removeRow = function(row) {
     this.content.splice(row, 1);
 }
 
+AppWindow.prototype.setPos = function(x, y) {
+    $('#' + this.title + 'Window').css({left: x,top: y});
+}
+
 var CustomContextMenu = function() {
     var items = [];
     this.items = items;
