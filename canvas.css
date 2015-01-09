@@ -20,7 +20,7 @@
     filter: invert(100%);
 }
 
-td img {
+#ToolboxWindow img {
     -webkit-filter: invert(100%);
     filter: invert(100%);
 

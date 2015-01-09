@@ -91,6 +91,14 @@ var CustomContextMenu = function() {
 
 }
 
+AppWindow.prototype.appendToBody = function(hide, x, y) {
+    $("body").append(this.toHTML());
+    this.setPos(x, y);
+    if(hide) {
+        this.toggle();
+    }
+}
+
 CustomContextMenu.prototype.addItem = function(html, id, onClick) {
     this.items.push('<li class="CCM-Item" id="#' + id + '">' + html + '</li>');
     $(document).on('click', '#' + id, onClick);

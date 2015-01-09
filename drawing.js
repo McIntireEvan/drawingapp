@@ -27,7 +27,8 @@ var toolbox = new AppWindow( 4, 2, 'Toolbox');
 var contextMenu = new CustomContextMenu();
 var colorwindow = new AppWindow( 2, 1, 'Colors');
 var layerwindow = new AppWindow( 1, 4, 'Layers');
-
+var aboutwindow = new AppWindow( 1, 1, 'About');
+var helpwindow = new AppWindow(1, 1, 'Help');
 
 function init() {
     prepareCanvas(mouseLayer);
@@ -109,7 +110,21 @@ function init() {
         contextMenu.close(); 
     });
 
-    colorwindow.addItem(0, 0, "<div><input type='color' id='color-select'></input></div>", "color-main", function() {});
+    colorwindow.addItem(0, 0, "<input type='color' id='color-select'></input>", "color-main", function() {});
+
+    aboutwindow.addItem(0, 0,
+        '<div style="max-width: 500px">' +
+        '<img style="float:left; width:250px; height:250px;" src="img/doodle.png"/>' +
+        '<p>Hello! This project is still in development, but thank you for using it!</p>'+
+        '<p>If you have comments or suggestions, feel free to email me at mcintire.evan@gmail.com, Id love to hear from you!</p>' +
+        '<p> If you want, you can try out the beta <a href="http://draw.evanmcintire.com/beta/drawingapp/"> here</a>.</p>' +
+        '<p style="clear: both"> You can also look at the source code <a href="https://github.com/McIntireEvan/drawingapp"> here</a>. This program is provided under the GNU GPL v2</p>' +
+        '<h3>Credits</h3>' +
+        '<ul>' +
+        '<li> Programming: Evan McIntire (mcintire.evan@gmail.com)</li>' +
+        '<li> Graphics: Andy Hoang (powergrip776@gmail.com)</li>' +
+        '</ul>' +
+        '</div', 'about-main', function() {});
 
     addEventListeners();
 }
@@ -147,7 +162,7 @@ function addEventListeners() {
         $("#opacity").text = opacity;
     });
 
-    $(document).on('mousedown', '.AppWindowItem', function() {
+    $(document).on('mousedown', '#ToolboxWindow .AppWindowItem', function() {
         $(this).addClass('selectedTool');
     });
     
@@ -323,9 +338,9 @@ $(document).ready(function() {
     console.log('Loading complete');
     $('#splash').fadeOut(1500);
 
-    $('body').append(toolbox.toHTML());
-    $('body').append(colorwindow.toHTML());
-    colorwindow.toggle();
-    cursorInWindow = true;
+    toolbox.appendToBody(false, 0, 0);
+    //TODO: Center this
+    //aboutwindow.appendToBody(false, 100, 100);
+    colorwindow.appendToBody(true, 100, 0);
     //$('body').append(layerwindow.toHTML());
 });
