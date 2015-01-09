@@ -19,12 +19,11 @@ var strokeLayer = $("#stroke").get(0);
 var strokeContext = strokeLayer.getContext("2d");
 
 var changes = [];
-var currentChange ;
+var currentChange;
 
-var cursorInWindow;
+var cursorInWindow = true;
 
-var toolbox = new AppWindow( 4, 2, 'Toolbox');
-var contextMenu = new CustomContextMenu();
+var toolbox = new AppWindow( 5, 2, 'Toolbox');
 var colorwindow = new AppWindow( 2, 1, 'Colors');
 var layerwindow = new AppWindow( 1, 4, 'Layers');
 var aboutwindow = new AppWindow( 1, 1, 'About');
@@ -86,6 +85,11 @@ function init() {
          }
     });
 
+    toolbox.addItem( 4, 0, "<img src='img/info.png'>", "toolbox-info", function() {
+            aboutwindow.toggle();
+    });
+
+
     layerwindow.addItem( 0, 0, "<img src='img/layerAdd.png' />", "layer-add", function() {
         console.log("ADD LAYER");
     });
@@ -103,13 +107,7 @@ function init() {
     layerwindow.addItem( 0, 3, "<img src='img/save.png' />", "layer-save", function() {
         saveCanvasToImage( layers[ currentLayer ] );
     });
-
-    contextMenu.addItem('<a target="_blank" href="https://www.github.com/McIntireEvan/drawingapp">Code can be found here!</a>', "source-link", function(){});
-    contextMenu.addItem('<a target="_blank" href="http://draw.evanmcintire.com/beta/drawingapp">The beta for this can be found here</a>', "beta-link", function(){});
-    contextMenu.addItem('[Close]', 'CCM-Close', function() {
-        contextMenu.close(); 
-    });
-
+ 
     colorwindow.addItem(0, 0, "<input type='color' id='color-select'></input>", "color-main", function() {});
 
     aboutwindow.addItem(0, 0,
@@ -340,7 +338,7 @@ $(document).ready(function() {
 
     toolbox.appendToBody(false, 0, 0);
     //TODO: Center this
-    //aboutwindow.appendToBody(false, 100, 100);
+    aboutwindow.appendToBody(true, 100, 100);
     colorwindow.appendToBody(true, 100, 0);
     //$('body').append(layerwindow.toHTML());
 });
