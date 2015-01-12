@@ -250,6 +250,10 @@ function addEventListeners() {
     $(document).on('change', '#color-select', function() {
       color = $('#color-select').val()
     });
+
+    $(document).bind("contextmenu", function(event) {       
+        event.preventDefault();              
+    });
 }
 
 function undo() { 
