@@ -173,14 +173,11 @@ function addEventListeners() {
     $(document).on('mousedown', '#ToolboxWindow .AppWindowItem', function() {
         $(this).addClass('selectedTool');
     });
-    
-    $(document).mouseup(function() {
+
+    var mouseup = function(evt) {
         $('.selectedTool').removeClass('selectedTool');
         $('#toolbox-' + tool).addClass('selectedTool');
-    });
 
-    //TODO: Clean up the event attaching
-    var mouseup = function(evt) {
         if(evt.which == 1) {
             if(mouseDown) {
                 pos = getMousePos(mouseLayer, evt);
@@ -201,10 +198,9 @@ function addEventListeners() {
         }
     };
 
-    $( mouseLayer ).on( 'mouseup', mouseup );
-    $( document ).on( 'mouseout', mouseup );
+    $( document ).on( 'mouseup mouseout', mouseup );
 
-    $( mouseLayer ).on( 'mousemove', function(evt) {
+    $( document ).on( 'mousemove', function(evt) {
         previousPos = pos;
         pos = getMousePos(mouseLayer, evt);
         drawCursor( pos );
@@ -213,7 +209,7 @@ function addEventListeners() {
             clearCanvas(strokeLayer);
             drawStrokeToCanvas(strokeLayer);
         }
-    }, false);
+    });
 
     $( mouseLayer ).on( 'mousedown', function(evt) {
         if( evt.which == 1 ) {
@@ -223,7 +219,7 @@ function addEventListeners() {
             drawStrokeToCanvas(strokeLayer);
             mouseDown = true;
         }
-    }, false);
+    });
     
     $(document).on('mouseleave', function() {
         cursorInWindow = false;
@@ -283,7 +279,8 @@ function doLayerRedraw() {
     var newElement = changes[currentChange];
     var newLayer =  layers[newElement.layer];
     clearCanvas(newLayer);
-    var img= new Image();
+    //TODO: Find a way around this?
+    var img = new Image();
     img.src = newElement.context;
 
     newLayer.getContext('2d').globalAlpha = 1;
