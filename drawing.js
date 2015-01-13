@@ -150,7 +150,11 @@ function addEventListeners() {
 	        undo();
 	    } else if(e.which==89 && e.ctrlKey) {
 	        redo();
-	    } 
+	    } else if(e.which==81 && e.ctrlKey) {
+            toolbox.setPos(0, 0);
+            aboutwindow.setPos(100, 100);
+            colorwindow.setPos(100, 0)
+        }
  
         if(cursorInWindow) {
             drawCursor(mouseLayer, mouseContext, pos, color, radius);  
