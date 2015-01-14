@@ -95,6 +95,11 @@ function init() {
             aboutwindow.toggle();
     });
 
+    toolbox.addItem( 4, 1, "<img src='img/help.png'>", "toolbox-help", function() {
+            helpwindow.toggle();
+    });
+
+
     layerwindow.addItem( 0, 0, "<img src='img/layerAdd.png' />", "layer-add", function() {
         console.log("ADD LAYER");
     });
@@ -128,6 +133,17 @@ function init() {
         '<li> Graphics: Andy Hoang (powergrip776@gmail.com)</li>' +
         '</ul>' +
         '</div', 'about-main', function() {});
+
+    helpwindow.addItem(0, 0, 
+        '<table><tr><th colspan=2>Controls</th></tr>' +
+        '<tr><td> + </td><td> Increase brush size</td></tr>' +
+        '<tr><td> - </td><td> Decrease brush size</td></tr>' +
+        '<tr><td> Shift & + </td><td> Increase opacity</td></tr>' +
+        '<tr><td> Shift & - </td><td> Decrease opacity</td></tr>' +
+        '<tr><td> Control & Z </td><td> Undo </td></tr>' +
+        '<tr><td> Control & Y </td><td> Redo</td></tr>' +
+        '<tr><td> Control & Q </td><td> Reset window positions </td></tr>' +
+        '</table>', 'help-main', function() {});
 
     addEventListeners();
 }
@@ -339,6 +355,6 @@ $(document).ready(function() {
     toolbox.appendToBody(false, 0, 0);
     aboutwindow.appendToBody(true, 100, 100);
     colorwindow.appendToBody(true, 100, 0);
-    //$('body').append(layerwindow.toHTML());
+    helpwindow.appendToBody(false, 100, 50);
     $('#color-select').val(color);
 });
