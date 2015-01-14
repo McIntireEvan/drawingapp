@@ -355,6 +355,6 @@ $(document).ready(function() {
     toolbox.appendToBody(false, 0, 0);
     aboutwindow.appendToBody(true, 100, 100);
     colorwindow.appendToBody(true, 100, 0);
-    helpwindow.appendToBody(false, 100, 50);
+    helpwindow.appendToBody(true, 100, 50);
     $('#color-select').val(color);
 });
