@@ -168,7 +168,8 @@ function addEventListeners() {
             } else if ( e.which==81 ) {
                 toolbox.setPos( 0, 0);
                 aboutwindow.setPos( 100, 100 );
-                colorwindow.setPos( 100, 0 )
+                colorwindow.setPos( 100, 0 );
+                helpwindow.setPos( 100, 50);
             }
         } else {
             if ( e.which == 187) {
