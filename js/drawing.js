@@ -118,7 +118,7 @@ function init() {
         saveCanvasToImage( layers[ currentLayer ] );
     });
  
-    colorwindow.addItem(0, 0, "<input type='color' id='color-select'></input>", "color-main", function() {});
+    colorwindow.addItem(1, 0, "<input type='color' id='color-select'></input>", "color-main", function() {});
 
     aboutwindow.addItem(0, 0,
         '<div style="max-width: 500px">' +
@@ -190,63 +190,38 @@ function addEventListeners() {
         $(this).addClass('selectedTool');
     });
 
-    var mouseup = function(evt) {
+    $( document ).on('mouseup mouseout', function(evt) {
         $('.selectedTool').removeClass('selectedTool');
         $('#toolbox-' + tool).addClass('selectedTool');
 
         if(evt.which == 1) {
-            if(mouseDown) {
-                pos = getMousePos(mouseLayer, evt);
-                stroke.push(pos);
-                clearCanvas(strokeLayer);
-                mouseDown = false;
-                drawStrokeToCanvas(layers[currentLayer]);
-                currentChange++;
-
-                if(currentChange != changes.length) {
-                    changes.splice(currentChange, changes.length  - currentChange);
-                }
- 
-                changes.push({layer: currentLayer, context: layers[currentLayer].toDataURL()});
-                stroke=[];
-                clearCanvas(mouseLayer);
-            }
+            endStroke(evt);
         }
-    };
-
-    $( document ).on( 'mouseup mouseout', mouseup );
+    });
 
     $( document ).on( 'mousemove', function(evt) {
         previousPos = pos;
         pos = getMousePos(mouseLayer, evt);
         drawCursor( pos );
-        if(mouseDown) {
-            stroke.push(pos);
-            clearCanvas(strokeLayer);
-            drawStrokeToCanvas(strokeLayer);
-        }
+        updateStroke();
     });
 
     $( mouseLayer ).on( 'mousedown', function(evt) {
         if( evt.which == 1 ) {
-            stroke.push(pos);
-            pos = getMousePos(mouseLayer, evt);
-            stroke.push(pos);
-            drawStrokeToCanvas(strokeLayer);
-            mouseDown = true;
+            beginStroke(evt);
         }
-    });
-    
-    $(document).on('mouseleave', function() {
-        cursorInWindow = false;
-        clearCanvas( mouseLayer );
     });
     
     $(document).on('mouseenter', function() {
         cursorInWindow = true;
         clearCanvas( mouseLayer );
     });
-    
+
+    $(document).on('mouseleave', function() {
+        cursorInWindow = false;
+        clearCanvas( mouseLayer );
+    });
+
     $(window).on('resize',function() {
         prepareCanvas( mouseLayer );
         for(var i = 0; i < layers.length; i++) {
@@ -304,6 +279,41 @@ function doLayerRedraw() {
     newLayer.getContext('2d').globalAlpha = opacity;
 
     layers[newElement.layer] = newLayer;
+}
+
+function beginStroke(evt) {
+    stroke.push(pos);
+    pos = getMousePos(mouseLayer, evt);
+    stroke.push(pos);
+    drawStrokeToCanvas(strokeLayer);
+    mouseDown = true;
+}
+
+function updateStroke() {
+    if(mouseDown) {
+        stroke.push(pos);
+        clearCanvas(strokeLayer);
+        drawStrokeToCanvas(strokeLayer);
+    }
+}
+
+function endStroke(evt) {
+    if(mouseDown) {
+        pos = getMousePos(mouseLayer, evt);
+        stroke.push(pos);
+        clearCanvas(strokeLayer);
+        mouseDown = false;
+        drawStrokeToCanvas(layers[currentLayer]);
+        currentChange++;
+
+        if(currentChange != changes.length) {
+            changes.splice(currentChange, changes.length  - currentChange);
+        }
+
+        changes.push({layer: currentLayer, context: layers[currentLayer].toDataURL()});
+        stroke=[];
+        clearCanvas(mouseLayer);
+    }
 }
 
 function drawStrokeToCanvas(canvas) {
