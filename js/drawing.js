@@ -78,7 +78,7 @@ function init() {
     });
 
     toolbox.addItem( 3, 0, "<img src='img/save.png' />", "toolbox-save", function() {
-        saveCanvasToImage(mergeCanvases($("#background").get(0), layers));
+        saveCanvasToImage(merge($("#background").get(0), layers));
         clearCanvas($("#background").get(0));
     });
 

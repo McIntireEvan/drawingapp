@@ -2,7 +2,6 @@
  * A collection of generic methods to aid with canvas manipulation
  */
 
-//TODO: Merge following two methods
 /*
  * Copies a canvas onto another canvas
  *
@@ -11,23 +10,16 @@
  */
 function merge(mergeTo, mergeFrom) {
     mergeContext = mergeTo.getContext('2d');
-  	mergeContext.drawImage(mergeFrom, 0, 0);
-    return mergeTo;
-}
-
-
-/*
- * Copies a list of canvases onto a single canvas
- *
- * @param {canvas} mergeTo - The canvas to mergo onto
- * @param {array} mergeFrom - The list of canvases to merge together 
- */
-function mergeCanvases(mergeTo, mergeFrom) {
-    mergeContext = mergeTo.getContext('2d');
-    for(var i = layers.length - 1;i>=0; i--) {
-	    if($(layers[i]).is(":visible")) {
-	        mergeContext.drawImage(mergeFrom[i], 0, 0);
-	    }
+    if(mergeFrom instanceof HTMLCanvasElement) {
+        mergeContext.drawImage(mergeFrom, 0, 0);
+    } else if (mergeFrom instanceof Array) {
+        for(var i = layers.length - 1;i>=0; i--) {
+	        if($(layers[i]).is(":visible")) {
+	            mergeContext.drawImage(mergeFrom[i], 0, 0);
+	        }
+        }
+    } else {
+        console.log('Error merging layers');
     }
     return mergeTo;
 }
