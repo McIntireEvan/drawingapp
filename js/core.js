@@ -6,7 +6,7 @@ var radius = 3;
 var opacity = 1;
 
 var mouseLayer = $('#mouse').get(0);
-var mouseContext = mouseLayer.getContext("2d");
+var mouseContext = mouseLayer.getContext('2d');
 var mouseDown = false;
 
 var layers = [$('#layer1').get(0), $('#layer0').get(0)];
@@ -45,7 +45,7 @@ function init() {
     currentChange = 0;
     strokeContext.globalCompositeOperation = 'source-over';
 
-    toolbox.addItem( 0, 0, '<img src="img/pencil.png" class="selectedTool" />', 'toolbox-pencil', function() {
+    toolbox.addItem( 0, 0, '<img src="img/toolbox/pencil.png" class="selectedTool" />', 'toolbox-pencil', function() {
         $('.selectedTool').removeClass('selectedTool');
         $('#toolbox-pencil').addClass('selectedTool');
         strokeContext.globalCompositeOperation = 'source-over';
@@ -53,72 +53,72 @@ function init() {
         mouseContext.fillStyle = color;
     });
 
-    toolbox.addItem( 0, 1, "<img src='img/eraser.png' />", "toolbox-eraser", function() {
-        $(".selectedTool").removeClass('selectedTool');
-        $("#toolbox-eraser").addClass('selectedTool');
-        strokeContext.globalCompositeOperation="destination-out";
+    toolbox.addItem( 0, 1, '<img src="img/toolbox/eraser.png" />', 'toolbox-eraser', function() {
+        $('.selectedTool').removeClass('selectedTool');
+        $('#toolbox-eraser').addClass('selectedTool');
+        strokeContext.globalCompositeOperation = 'destination-out';
         tool = 'eraser';
-        mouseContext.fillStyle="rgba(0,0,0,0)";
+        mouseContext.fillStyle = 'rgba(0,0,0,0)';
     });
 
-    toolbox.addItem( 1, 0, "<img src='img/color.png' />", "toolbox-color", function() {
+    toolbox.addItem( 1, 0, '<img src="img/toolbox/color.png" />', 'toolbox-color', function() {
         colorwindow.toggle();
     });
  
-    toolbox.addItem( 1, 1, "<img src='img/brush.png' />", "toolbox-brush", function() {
+    toolbox.addItem( 1, 1, '<img src="img/toolbox/brush.png" />', 'toolbox-brush', function() {
         alert('Coming soon!');
     });
 
-    toolbox.addItem( 2, 0, "<img src='img/undo.png' />", "toolbox-undo", function() {
+    toolbox.addItem( 2, 0, '<img src="img/toolbox/undo.png" />', 'toolbox-undo', function() {
         undo();
     });
 
-    toolbox.addItem( 2, 1, "<img src='img/redo.png' />", "toolbox-redo", function() {
+    toolbox.addItem( 2, 1, '<img src="img/toolbox/redo.png" />', 'toolbox-redo', function() {
         redo();
     });
 
-    toolbox.addItem( 3, 0, "<img src='img/save.png' />", "toolbox-save", function() {
-        saveCanvasToImage(merge($("#background").get(0), layers));
-        clearCanvas($("#background").get(0));
+    toolbox.addItem( 3, 0, '<img src="img/toolbox/save.png" />', 'toolbox-save', function() {
+        saveCanvasToImage(merge($('#background').get(0), layers));
+        clearCanvas($('#background').get(0));
     });
 
-    toolbox.addItem( 3, 1, "<img src='img/clear.png'>", "toolbox-clear", function() {
+    toolbox.addItem( 3, 1, '<img src="img/toolbox/clear.png">', 'toolbox-clear', function() {
         if( confirm( 'Clear all layers?' ) ) {
             for( var i = 0; i < layers.length; i++ ) {
                 clearCanvas( layers[ i ] );
             }
-            clearCanvas( $( "#background" ).get( 0 ) ); 
+            clearCanvas( $( '#background' ).get( 0 ) ); 
          }
     });
 
-    toolbox.addItem( 4, 0, "<img src='img/info.png'>", "toolbox-info", function() {
+    toolbox.addItem( 4, 0, '<img src="img/toolbox/info.png">', 'toolbox-info', function() {
             aboutwindow.toggle();
     });
 
-    toolbox.addItem( 4, 1, "<img src='img/help.png'>", "toolbox-help", function() {
+    toolbox.addItem( 4, 1, '<img src="img/toolbox/help.png">', 'toolbox-help', function() {
             helpwindow.toggle();
     });
 
 
-    layerwindow.addItem( 0, 0, "<img src='img/layerAdd.png' />", "layer-add", function() {
-        console.log("ADD LAYER");
+    layerwindow.addItem( 0, 0, '<img src="img/toolbox/layerAdd.png" />', 'layer-add', function() {
+        console.log('ADD LAYER');
     });
 
-    layerwindow.addItem( 0, 1, "<img src='img/layerRemove.png' />", "layer-remove", function() {
-        console.log("REMOVE LAYER");
+    layerwindow.addItem( 0, 1, '<img src="img/toolbox/layerRemove.png" />', 'layer-remove', function() {
+        console.log('REMOVE LAYER');
     });
 
-    layerwindow.addItem( 0, 2, "<img src='img/clear.png' />", "layer-clear", function() {
+    layerwindow.addItem( 0, 2, '<img src="img/toolbox/clear.png" />', 'layer-clear', function() {
         if( confirm( 'Clear current Layer?' ) ){
             clearCanvas( layers[ currentLayer ] );
         }
     });
 
-    layerwindow.addItem( 0, 3, "<img src='img/save.png' />", "layer-save", function() {
+    layerwindow.addItem( 0, 3, '<img src="img/toolbox/save.png" />', 'layer-save', function() {
         saveCanvasToImage( layers[ currentLayer ] );
     });
  
-    colorwindow.addItem(1, 0, "<input type='color' id='color-select'></input>", "color-main", function() {});
+    colorwindow.addItem(1, 0, '<input type="color" id="color-select"></input>', 'color-main', function() {});
 
     aboutwindow.addItem(0, 0,
         '<div style="max-width: 500px">' +
@@ -184,7 +184,7 @@ function addEventListeners() {
         drawCursor( pos );  
         currentContext.lineWidth = radius * 2;
         strokeContext.lineWidth = radius * 2;
-        $("#opacity").text = opacity;
+        $('#opacity').text = opacity;
     });
 
     $(document).on('mousedown', '#ToolboxWindow .AppWindowItem', function() {
@@ -231,7 +231,7 @@ function addEventListeners() {
             layers[i].getContext('2d').drawImage($('#background').get(0), 0, 0);
             clearCanvas($('#background').get(0));
         }
-        prepareCanvas($("#background").get(0));
+        prepareCanvas($('#background').get(0));
         prepareCanvas(strokeLayer);
     });
 
