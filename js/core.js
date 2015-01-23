@@ -122,7 +122,7 @@ function init() {
 
     aboutwindow.addItem(0, 0,
         '<div style="max-width: 500px">' +
-        '<img style="float:left; width:250px; height:250px;" src="img/doodle.png"/>' +
+        '<img style="float:left; width:250px; height:250px;" src="img/logo.png"/>' +
         '<p>Hello! This project is still in development, but thank you for using it!</p>'+
         '<p>If you have comments or suggestions, feel free to email me at mcintire.evan@gmail.com, Id love to hear from you!</p>' +
         '<p> If you want, you can try out the beta <a href="http://draw.evanmcintire.com/beta/drawingapp/"> here</a>.</p>' +
