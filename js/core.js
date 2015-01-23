@@ -48,17 +48,18 @@ function init() {
     toolbox.addItem( 0, 0, '<img src="img/toolbox/pencil.png" class="selectedTool" />', 'toolbox-pencil', function() {
         $('.selectedTool').removeClass('selectedTool');
         $('#toolbox-pencil').addClass('selectedTool');
-        strokeContext.globalCompositeOperation = 'source-over';
         tool = 'pencil';
+
         mouseContext.fillStyle = color;
     });
 
     toolbox.addItem( 0, 1, '<img src="img/toolbox/eraser.png" />', 'toolbox-eraser', function() {
         $('.selectedTool').removeClass('selectedTool');
         $('#toolbox-eraser').addClass('selectedTool');
-        strokeContext.globalCompositeOperation = 'destination-out';
         tool = 'eraser';
-        mouseContext.fillStyle = 'rgba(0,0,0,0)';
+
+        mouseContext.fillStyle = 'rgba(0, 0, 0, 0)';
+;
     });
 
     toolbox.addItem( 1, 0, '<img src="img/toolbox/color.png" />', 'toolbox-color', function() {
@@ -283,17 +284,23 @@ function doLayerRedraw() {
 }
 
 function beginStroke(evt) {
-    stroke.push(pos);
     pos = getMousePos(mouseLayer, evt);
     stroke.push(pos);
-    drawStrokeToCanvas(strokeLayer);
     mouseDown = true;
+    strokeContext.globalAlpha = 1;
+    strokeContext.drawImage(layers[currentLayer], 0, 0);
+    strokeContext.globalAlpha = opacity;
+    $(layers[currentLayer]).hide();
+    drawStrokeToCanvas(strokeLayer);
 }
 
 function updateStroke() {
     if(mouseDown) {
         stroke.push(pos);
         clearCanvas(strokeLayer);
+        strokeContext.globalAlpha = 1;
+        strokeContext.drawImage(layers[currentLayer], 0, 0);
+        strokeContext.globalAlpha = opacity;
         drawStrokeToCanvas(strokeLayer);
     }
 }
@@ -304,6 +311,7 @@ function endStroke(evt) {
         stroke.push(pos);
         clearCanvas(strokeLayer);
         mouseDown = false;
+        $(layers[currentLayer]).show();
         drawStrokeToCanvas(layers[currentLayer]);
         currentChange++;
 
@@ -322,11 +330,19 @@ function drawStrokeToCanvas(canvas) {
     if(c.globalAlpha != opacity) { c.globalAlpha = opacity; }
     if(c.lineJoin != 'round') { c.lineJoin = 'round'; }
     if(c.lineWidth != (radius * 2)) { c.lineWidth = radius*2; }
-    if(c.strokeStyle != color) { c.strokeStyle = color; }
-    if(c.fillStyle != color) { c.fillStyle = color;}
-    if(c.globalCompositeOperation != strokeContext.globalCompositeOperation) {
-        c.globalCompositeOperation = strokeContext.globalCompositeOperation;
+
+    if(tool == 'pencil') {
+        if(c.strokeStyle != color) { c.strokeStyle = color; }
+        if(c.fillStyle != color) { c.fillStyle = color;}
+        c.globalCompositeOperation = "source-over";
+    } else {
+        //TODO: make more effecient
+        c.strokeStyle = 'rgba(255, 255, 255, 1)';
+        c.fillStyle = 'rgba(255, 255, 255, 1)';
+        c.globalCompositeOperation = "destination-out";
+        strokeContext.globalCompositeOperation = "source-over";
     }
+
     c.beginPath();
 
     c.moveTo(stroke[0].x+0.1, stroke[0].y);
@@ -341,9 +357,11 @@ function drawStrokeToCanvas(canvas) {
     c.lineTo(stroke[stroke.length-1].x, stroke[stroke.length-1].y+0.1);
     c.closePath();
     c.stroke();
+    c.globalcompositeoperation = "source-over";
+
 }
 
-function drawCursor( pos ){
+function drawCursor( pos ) {
     if ( cursorInWindow ) {
         mouseContext.clearRect(0,0, mouseLayer.width, mouseLayer.height);
         mouseContext.beginPath();
