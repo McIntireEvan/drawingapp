@@ -10,4 +10,4 @@ http://draw.evanmcintire.com/beta/drawingapp/ for the version that is currenly b
 
 Eventually, the code will follow the standards at https://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml
 
-Currently, the todo list is split between https://trello.com/b/KzbX8TxT/drawing-thing and the issue tracker here.
+Bugs and TODOs are on the issue tracker on Github
