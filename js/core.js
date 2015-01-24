@@ -126,8 +126,8 @@ function init() {
         '<img style="float:left; width:250px; height:250px;" src="img/logo.png"/>' +
         '<p>Hello! This project is still in development, but thank you for using it!</p>'+
         '<p>If you have comments or suggestions, feel free to email me at mcintire.evan@gmail.com, Id love to hear from you!</p>' +
-        '<p> If you want, you can try out the beta <a href="http://draw.evanmcintire.com/beta/drawingapp/"> here</a>.</p>' +
-        '<p style="clear: both"> You can also look at the source code <a href="https://github.com/McIntireEvan/drawingapp"> here</a>. This program is provided under the GNU GPL v2</p>' +
+        '<p> If you want, you can try out the beta <a href="http://draw.evanmcintire.com/beta/drawingapp/" target="_blank"> here</a>.</p>' +
+        '<p style="clear: both"> You can also look at the source code <a href="https://github.com/McIntireEvan/drawingapp" target="_blank"> here</a>. This program is provided under the GNU GPL v2</p>' +
         '<h3>Credits</h3>' +
         '<ul>' +
         '<li> Programming: Evan McIntire (mcintire.evan@gmail.com)</li>' +
