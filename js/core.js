@@ -3,7 +3,7 @@ var pos = {x: 0, y: 0};
 var tool = 'pencil';
 var color = '#149AB4';
 var color1 = color;
-var color2 = '#FF0000';
+var color2 = '#FFB717';
 var radius = 3;
 var opacity = 1;
 
