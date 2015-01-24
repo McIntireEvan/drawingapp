@@ -26,6 +26,12 @@
 
 }
 
+#color1, #color2 {
+    -webkit-filter: none !important;
+    filter: none !important;
+
+}
+
 body, canvas {
     width: 100%;
 	height: 100%;

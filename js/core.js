@@ -2,6 +2,8 @@ var pos = {x: 0, y: 0};
 
 var tool = 'pencil';
 var color = '#149AB4';
+var color1 = color;
+var color2 = '#FF0000';
 var radius = 3;
 var opacity = 1;
 
@@ -23,7 +25,7 @@ var currentChange;
 
 var cursorInWindow = true;
 
-var toolbox = new AppWindow(5, 2, 'Toolbox');
+var toolbox = new AppWindow(6, 2, 'Toolbox');
 var colorwindow = new AppWindow(2, 1, 'Colors');
 var layerwindow = new AppWindow(1, 4, 'Layers');
 var aboutwindow = new AppWindow(1, 1, 'About');
@@ -62,12 +64,12 @@ function init() {
 ;
     });
 
-    toolbox.addItem( 1, 0, '<img src="img/toolbox/color.png" />', 'toolbox-color', function() {
+    toolbox.addItem( 1, 0, '<img id="color1" src="img/toolbox/color1.png" />', 'toolbox-color1', function() {
         colorwindow.toggle();
     });
  
-    toolbox.addItem( 1, 1, '<img src="img/toolbox/brush.png" />', 'toolbox-brush', function() {
-        alert('Coming soon!');
+    toolbox.addItem( 1, 1, '<img id="color2" src="img/toolbox/color2.png" />', 'toolbox-color2', function() {
+        colorwindow.toggle();
     });
 
     toolbox.addItem( 2, 0, '<img src="img/toolbox/undo.png" />', 'toolbox-undo', function() {
@@ -101,11 +103,11 @@ function init() {
     });
 
 
-    layerwindow.addItem( 0, 0, '<img src="img/toolbox/layerAdd.png" />', 'layer-add', function() {
+    layerwindow.addItem( 0, 0, '<img src="img/layers/layerAdd.png" />', 'layer-add', function() {
         console.log('ADD LAYER');
     });
 
-    layerwindow.addItem( 0, 1, '<img src="img/toolbox/layerRemove.png" />', 'layer-remove', function() {
+    layerwindow.addItem( 0, 1, '<img src="img/layers/layerRemove.png" />', 'layer-remove', function() {
         console.log('REMOVE LAYER');
     });
 
@@ -119,7 +121,7 @@ function init() {
         saveCanvasToImage( layers[ currentLayer ] );
     });
  
-    colorwindow.addItem(1, 0, '<input type="color" id="color-select"></input>', 'color-main', function() {});
+    colorwindow.addItem(1, 0, '<input type="color" id="color1-select"></input><br/><input type="color" id="color2-select"></input>', 'color-main', function() {});
 
     aboutwindow.addItem(0, 0,
         '<div style="max-width: 500px">' +
@@ -195,10 +197,7 @@ function addEventListeners() {
     $( document ).on('mouseup mouseout', function(evt) {
         $('.selectedTool').removeClass('selectedTool');
         $('#toolbox-' + tool).addClass('selectedTool');
-
-        if(evt.which == 1) {
-            endStroke(evt);
-        }
+        endStroke(evt);
     });
 
     $( document ).on( 'mousemove', function(evt) {
@@ -209,9 +208,7 @@ function addEventListeners() {
     });
 
     $( mouseLayer ).on( 'mousedown', function(evt) {
-        if( evt.which == 1 ) {
-            beginStroke(evt);
-        }
+        beginStroke(evt);
     });
     
     $(document).on('mouseenter', function() {
@@ -236,13 +233,23 @@ function addEventListeners() {
         prepareCanvas(strokeLayer);
     });
 
-    $(document).on('change', '#color-select', function() {
-        color = $('#color-select').val();
+    $(document).on('change', '#color1-select', function() {
+        color1 = $('#color1-select').val();
+        $('#color1').css({'background':color1});
+
         if( tool == 'pencil' ) {
-            mouseContext.fillStyle = color;
+            mouseContext.fillStyle = color1;
         }
     });
 
+    $(document).on('change', '#color2-select', function() {
+        color2 = $('#color2-select').val();
+        $('#color2').css({'background':color2});
+
+        if( tool == 'pencil' ) {
+            mouseContext.fillStyle = color2;
+        }
+    });
     $(document).bind('contextmenu', function(event) {       
         event.preventDefault();              
     });
@@ -286,12 +293,22 @@ function doLayerRedraw() {
 function beginStroke(evt) {
     pos = getMousePos(mouseLayer, evt);
     stroke.push(pos);
+    if(!mouseDown) {
+        if(evt.which == 1) {
+            color = color1;
+        } else {
+            color = color2;
+        }
+    }
     mouseDown = true;
+    mouseContext.fillStyle = color;
     strokeContext.globalAlpha = 1;
     strokeContext.drawImage(layers[currentLayer], 0, 0);
     strokeContext.globalAlpha = opacity;
     $(layers[currentLayer]).hide();
-    drawStrokeToCanvas(strokeLayer);
+
+    drawStrokeToCanvas(strokeLayer, color);
+
 }
 
 function updateStroke() {
@@ -301,7 +318,7 @@ function updateStroke() {
         strokeContext.globalAlpha = 1;
         strokeContext.drawImage(layers[currentLayer], 0, 0);
         strokeContext.globalAlpha = opacity;
-        drawStrokeToCanvas(strokeLayer);
+        drawStrokeToCanvas(strokeLayer, color);
     }
 }
 
@@ -312,7 +329,7 @@ function endStroke(evt) {
         clearCanvas(strokeLayer);
         mouseDown = false;
         $(layers[currentLayer]).show();
-        drawStrokeToCanvas(layers[currentLayer]);
+        drawStrokeToCanvas(layers[currentLayer], color);
         currentChange++;
 
         if(currentChange != changes.length) {
@@ -325,22 +342,22 @@ function endStroke(evt) {
     }
 }
 
-function drawStrokeToCanvas(canvas) {
+function drawStrokeToCanvas(canvas, color) {
     var c = canvas.getContext('2d');
     if(c.globalAlpha != opacity) { c.globalAlpha = opacity; }
     if(c.lineJoin != 'round') { c.lineJoin = 'round'; }
     if(c.lineWidth != (radius * 2)) { c.lineWidth = radius*2; }
 
     if(tool == 'pencil') {
-        if(c.strokeStyle != color) { c.strokeStyle = color; }
+        c.strokeStyle = color;
         if(c.fillStyle != color) { c.fillStyle = color;}
-        c.globalCompositeOperation = "source-over";
+        c.globalCompositeOperation = 'source-over';
     } else {
         //TODO: make more effecient
         c.strokeStyle = 'rgba(255, 255, 255, 1)';
         c.fillStyle = 'rgba(255, 255, 255, 1)';
-        c.globalCompositeOperation = "destination-out";
-        strokeContext.globalCompositeOperation = "source-over";
+        c.globalCompositeOperation = 'destination-out';
+        strokeContext.globalCompositeOperation = 'source-over';
     }
 
     c.beginPath();
@@ -357,7 +374,7 @@ function drawStrokeToCanvas(canvas) {
     c.lineTo(stroke[stroke.length-1].x, stroke[stroke.length-1].y+0.1);
     c.closePath();
     c.stroke();
-    c.globalcompositeoperation = "source-over";
+    c.globalcompositeoperation = 'source-over';
 
 }
 
@@ -368,7 +385,7 @@ function drawCursor( pos ) {
         mouseContext.arc(pos.x, pos.y, radius, 0, 2 * Math.PI, false);
         mouseContext.fill();
         mouseContext.stroke();
-    }
+   }
 }
 
 function prepareCanvas(canvas) {
@@ -385,5 +402,8 @@ $(document).ready(function() {
     aboutwindow.appendToBody(true, 100, 100);
     colorwindow.appendToBody(true, 100, 0);
     helpwindow.appendToBody(true, 100, 50);
-    $('#color-select').val(color);
+    $('#color1-select').val(color1);
+    $('#color2-select').val(color2);
+    $('#color1').css({'background':color});
+    $('#color2').css({'background':color2});
 });
