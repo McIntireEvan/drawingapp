@@ -14,8 +14,10 @@ var AppWindow = function(rows, columns, title) {
     this.content = content;
     var _this = this;
 
-    $(document).on('mousedown', "#" + this.title, function() {
+    $(document).on('mousedown', "#" + this.title, function(evt) {
         _this.isDragging = true;
+        _this.offsetX = evt.pageX - $(_this.id).offset().left;
+        _this.offsetY = evt.pageY - $(_this.id).offset().top;;
     });
 
     $(document).on('mouseup', function() {
@@ -25,9 +27,9 @@ var AppWindow = function(rows, columns, title) {
     $(document).on('mousemove', function(evt) {
         evt.preventDefault();
         document.getSelection().removeAllRanges();
-        if(_this.isDragging) { 
-            $(_this.id).css({left: evt.pageX + "px"});
-	        $(_this.id).css({top:  evt.pageY + "px"});
+        if(_this.isDragging) {
+            $(_this.id).css({left: (evt.pageX - _this.offsetX) + "px"});
+	        $(_this.id).css({top:  (evt.pageY - _this.offsetY) + "px"});
         }
     });
 };
