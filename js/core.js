@@ -154,33 +154,35 @@ function init() {
 
 function addEventListeners() {
     $(document).keydown(function(e) {
-        if ( e.shiftKey ) {
-            if ( e.which == 187 ) {
-                if ( opacity < 1.0 ) {
-                   opacity += 0.01;
+        if(!mouseDown) {
+            if ( e.shiftKey ) {
+                if ( e.which == 187 ) {
+                    if ( opacity < 1.0 ) {
+                       opacity += 0.01;
+                    }
+                } else if ( e.which == 189 ) {
+                    if(opacity > 0) {
+                        opacity -= 0.01;
+                    }
                 }
-            } else if ( e.which == 189 ) {
-                if(opacity > 0) {
-                    opacity -= 0.01;
+            } else if ( e.ctrlKey ) {
+                if ( e.which==90 ) {
+                    undo();
+                } else if ( e.which==89 ) {
+                    redo();
+                } else if ( e.which==81 ) {
+                    toolbox.setPos( 0, 0);
+                    aboutwindow.setPos( 100, 100 );
+                    colorwindow.setPos( 100, 0 );
+                    helpwindow.setPos( 100, 50);
                 }
-            }
-        } else if ( e.ctrlKey ) {
-            if ( e.which==90 ) {
-                undo();
-            } else if ( e.which==89 ) {
-                redo();
-            } else if ( e.which==81 ) {
-                toolbox.setPos( 0, 0);
-                aboutwindow.setPos( 100, 100 );
-                colorwindow.setPos( 100, 0 );
-                helpwindow.setPos( 100, 50);
-            }
-        } else {
-            if ( e.which == 187) {
-                radius++;
-            } else if ( e.which == 189 ) {
-                if ( radius > 1 ) {
-                    radius--;
+            } else {
+                if ( e.which == 187) {
+                    radius++;
+                } else if ( e.which == 189 ) {
+                    if ( radius > 1 ) {
+                        radius--;
+                    }
                 }
             }
         }
