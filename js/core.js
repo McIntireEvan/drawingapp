@@ -4,7 +4,7 @@ var tool = 'pencil';
 var color = '#149AB4';
 var color1 = color;
 var color2 = '#FFB717';
-var transparent = 'rgba(255,255,255,0)'
+var transparent = 'rgba(255,255,255,1)';
 var radius = 3;
 var opacity = 1;
 
