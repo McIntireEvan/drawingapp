@@ -37,9 +37,6 @@ body, canvas {
 	height: 100%;
     padding: 0;
 	margin: 0;
-}
-
-body {
     overflow: hidden;
 }
 
@@ -66,6 +63,11 @@ canvas {
 	margin: 0px;
 }
 
+#splash img {
+    width:500px;
+	height:500px
+}
+
 .centered {
     margin: auto;
 	position: absolute;
@@ -74,12 +76,5 @@ canvas {
 	-webkit-transform: translate(-50%,-50%);
 	-ms-transform: translate(-50%,-50%);
 	transform: translate(-50%,-50%);
-	width: 500px;
-	height:500px;
 	text-align:center;
-}
-	
-#splash img {
-    width:500px;
-	height:500px
 }
