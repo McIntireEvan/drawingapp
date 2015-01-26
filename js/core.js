@@ -142,12 +142,23 @@ function init() {
         '<table><tr><th colspan=2>Controls</th></tr>' +
         '<tr><td> + </td><td> Increase brush size</td></tr>' +
         '<tr><td> - </td><td> Decrease brush size</td></tr>' +
+        '<tr><td> X </td><td> Swap primary and secondary color </td></tr>' +
         '<tr><td> Shift & + </td><td> Increase opacity</td></tr>' +
         '<tr><td> Shift & - </td><td> Decrease opacity</td></tr>' +
         '<tr><td> Control & Z </td><td> Undo </td></tr>' +
         '<tr><td> Control & Y </td><td> Redo</td></tr>' +
         '<tr><td> Control & Q </td><td> Reset window positions </td></tr>' +
         '</table>', 'help-main', function() {});
+
+    toolbox.appendToBody(false, 0, 0);
+    aboutwindow.appendToBody(true, 100, 100);
+    colorwindow.appendToBody(true, 100, 0);
+    helpwindow.appendToBody(true, 100, 50);
+
+    $('#color1-select').val(color1);
+    $('#color2-select').val(color2);
+    $('#color1').css({'background':color});
+    $('#color2').css({'background':color2});
 
     addEventListeners();
 }
@@ -183,6 +194,13 @@ function addEventListeners() {
                     if ( radius > 1 ) {
                         radius--;
                     }
+                } else if( e.which == 88) {
+                    var temp = color1;
+                    color1 = color2;
+                    color2 = temp;
+                    color = color1;
+                    $('#color1').css({'background':color});
+                    $('#color2').css({'background':color2});
                 }
             }
         }
@@ -399,21 +417,10 @@ function drawCursor( pos ) {
 function prepareCanvas(canvas) {
    canvas.width = $('#mouse').css('width').replace('px','');
    canvas.height = $('#mouse').css('height').replace('px','');
-   console.log(canvas.width);
-   console.log(canvas.height);
 }
 
 $(document).ready(function() {
     init();
     console.log('Loading complete');
     $('#splash').fadeOut(1500);
-
-    toolbox.appendToBody(false, 0, 0);
-    aboutwindow.appendToBody(true, 100, 100);
-    colorwindow.appendToBody(true, 100, 0);
-    helpwindow.appendToBody(true, 100, 50);
-    $('#color1-select').val(color1);
-    $('#color2-select').val(color2);
-    $('#color1').css({'background':color});
-    $('#color2').css({'background':color2});
 });
