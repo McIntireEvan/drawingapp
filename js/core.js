@@ -4,6 +4,7 @@ var tool = 'pencil';
 var color = '#149AB4';
 var color1 = color;
 var color2 = '#FFB717';
+var transparent = 'rgba(255,255,255,0)'
 var radius = 3;
 var opacity = 1;
 
@@ -349,15 +350,20 @@ function drawStrokeToCanvas(canvas, color) {
     if(c.lineWidth != (radius * 2)) { c.lineWidth = radius*2; }
 
     if(tool == 'pencil') {
-        c.strokeStyle = color;
+        if(c.strokeStyle != color) { c.strokeStyle = color };
         if(c.fillStyle != color) { c.fillStyle = color;}
-        c.globalCompositeOperation = 'source-over';
+        if(c.globalCompositeOperation != 'source-over') {
+            c.globalCompositeOperation = 'source-over';
+        }
     } else {
-        //TODO: make more effecient
-        c.strokeStyle = 'rgba(255, 255, 255, 1)';
-        c.fillStyle = 'rgba(255, 255, 255, 1)';
-        c.globalCompositeOperation = 'destination-out';
-        strokeContext.globalCompositeOperation = 'source-over';
+        if(c.strokeStyle != transparent) { c.strokeStyle = transparent; }
+        if(c.fillStyle != transparent) { c.fillStyle = transparent; }
+        if(c.globalCompositeOperation != 'destination-out') {
+            c.globalCompositeOperation = 'destination-out';
+        }
+        if(strokeContext.globalCompositeOperation = 'source-over') {
+            strokeContext.globalCompositeOperation = 'source-over';
+        }
     }
 
     c.beginPath();
@@ -368,8 +374,8 @@ function drawStrokeToCanvas(canvas, color) {
         if(i < 2) {
             c.closePath();
         }
-    } 
-    
+    }
+
     c.moveTo(stroke[stroke.length-1].x, stroke[stroke.length-1].y);
     c.lineTo(stroke[stroke.length-1].x, stroke[stroke.length-1].y+0.1);
     c.closePath();
@@ -391,6 +397,8 @@ function drawCursor( pos ) {
 function prepareCanvas(canvas) {
    canvas.width = $('#mouse').css('width').replace('px','');
    canvas.height = $('#mouse').css('height').replace('px','');
+   console.log(canvas.width);
+   console.log(canvas.height);
 }
 
 $(document).ready(function() {
