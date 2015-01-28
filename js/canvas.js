@@ -48,7 +48,7 @@ function saveToImage(canvas) {
  * @param {canvas} canvas - The canvas to save
  */
 function saveCanvasToImage(canvas) {
-    window.open(canvas.toDataURL(), '_blank');
+    $('<a href="' + canvas.toDataURL() + '" target="_blank" download></a>')[0].click();
 }
 
 /*

@@ -186,6 +186,10 @@ function addEventListeners() {
                     aboutwindow.setPos( 100, 100 );
                     colorwindow.setPos( 100, 0 );
                     helpwindow.setPos( 100, 50);
+                } else if (e.which == 83) {
+                    e.preventDefault();
+                    saveCanvasToImage(merge($('#background').get(0), layers));
+                    clearCanvas($('#background').get(0));
                 }
             } else {
                 if ( e.which == 187) {
