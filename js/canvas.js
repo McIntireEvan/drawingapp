@@ -54,3 +54,15 @@ function getMousePos(canvas, evt) {
 	    y: (evt.clientY - rect.top)/(rect.bottom-rect.top)*canvas.height
     };
 }
+
+function saveCanvasToStorage(source) {
+   localStorage.setItem('canvas', source.toDataURL());
+}
+
+function loadCanvasFromStorage(destination) {
+    if(localStorage.getItem('canvas')) {
+        var img = new Image;
+        img.src = localStorage.getItem('canvas');
+        destination.getContext('2d').drawImage(img, 0, 0);
+    }
+}

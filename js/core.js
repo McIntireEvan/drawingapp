@@ -159,6 +159,8 @@ function init() {
     $('#color1').css({'background':color});
     $('#color2').css({'background':color2});
 
+    loadCanvasFromStorage(layers[currentLayer]);
+
     addEventListeners();
 }
 
@@ -277,6 +279,10 @@ function addEventListeners() {
 
     $(document).bind('contextmenu', function(event) {       
         event.preventDefault();              
+    });
+
+    $(window).unload(function() {
+        saveCanvasToStorage(merge($('#background').get(0), layers));
     });
 }
 
