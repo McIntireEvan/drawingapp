@@ -2,7 +2,7 @@ var AppWindow = function(rows, columns, title) {
     this.rows = rows;
     this.columns = columns;
     this.title = title;
-    this.id = '#' + title + "Window";
+    this.id = '#' + title + 'Window';
     this.isDragging = false;
     var content = [];
     for(var i = 0; i < rows; i++) {
@@ -14,7 +14,7 @@ var AppWindow = function(rows, columns, title) {
     this.content = content;
     var _this = this;
 
-    $(document).on('mousedown', "#" + this.title, function(evt) {
+    $(document).on('mousedown', '#' + this.title, function(evt) {
         _this.isDragging = true;
         _this.offsetX = evt.pageX - $(_this.id).offset().left;
         _this.offsetY = evt.pageY - $(_this.id).offset().top;;
@@ -28,16 +28,16 @@ var AppWindow = function(rows, columns, title) {
         evt.preventDefault();
         document.getSelection().removeAllRanges();
         if(_this.isDragging) {
-            $(_this.id).css({left: (evt.pageX - _this.offsetX) + "px"});
-	        $(_this.id).css({top:  (evt.pageY - _this.offsetY) + "px"});
+            $(_this.id).css({left: (evt.pageX - _this.offsetX) + 'px'});
+	        $(_this.id).css({top:  (evt.pageY - _this.offsetY) + 'px'});
         }
     });
 };
 
 AppWindow.prototype.toHTML = function() {
-    var html = '<table class="AppWindow" id=' + this.title + 'Window>' + 
+    var html = '<table class="AppWindow" id="' + this.title + 'Window">' +
         '<tr><th class="windowTitle" id="' + this.title  + '" colspan=' + this.columns + '>' + this.title + '</th></tr>';
-    
+
     for(var i = 0; i < this.rows; i++) {
         html += '<tr>';
         for(var j = 0; j < this.columns; j++) {
@@ -45,7 +45,7 @@ AppWindow.prototype.toHTML = function() {
         }
         html += '</tr>';
     }
-    html+= "</table>";
+    html+= '</table>';
 
     return html;
 }
@@ -75,10 +75,10 @@ AppWindow.prototype.setPos = function(x, y) {
     $('#' + this.title + 'Window').css({left: x,top: y});
 }
 
-AppWindow.prototype.appendToBody = function(hide, x, y) {
-    $("body").append(this.toHTML());
+AppWindow.prototype.appendToBody = function(show, x, y) {
+    $('body').append(this.toHTML());
     this.setPos(x, y);
-    if(hide) {
+    if(!show) {
         this.toggle();
     }
 }

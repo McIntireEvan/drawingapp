@@ -3,15 +3,15 @@
 }
 
 .AppWindow {
-    z-index:1001;
+    z-index: 1001;
     position: absolute;
-    border:1px solid black;
+    border: 1px solid black;
     background: white;
 }
 
 .windowTitle {
     cursor: -webkit-grab;
-    cursor:-moz-grab;
+    cursor: -moz-grab;
     cursor: grab;
 }
 
@@ -23,13 +23,11 @@
 #ToolboxWindow img {
     -webkit-filter: invert(100%);
     filter: invert(100%);
-
 }
 
 #color1, #color2 {
     -webkit-filter: none !important;
     filter: none !important;
-
 }
 
 body, canvas {
@@ -63,9 +61,9 @@ canvas {
 	margin: 0px;
 }
 
-#splash img {
+#splash img, .centered {
     width:500px;
-	height:500px
+	height:500px;
 }
 
 .centered {

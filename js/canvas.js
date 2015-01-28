@@ -14,7 +14,7 @@ function merge(mergeTo, mergeFrom) {
         mergeContext.drawImage(mergeFrom, 0, 0);
     } else if (mergeFrom instanceof Array) {
         for(var i = layers.length - 1;i>=0; i--) {
-	        if($(layers[i]).is(":visible")) {
+	        if($(layers[i]).is(':visible')) {
 	            mergeContext.drawImage(mergeFrom[i], 0, 0);
 	        }
         }
@@ -30,16 +30,6 @@ function merge(mergeTo, mergeFrom) {
  */
 function clearCanvas(canvas) { 
     canvas.getContext('2d').clearRect(0,0, canvas.width, canvas.height);
-}
-
-/*
- * Saves a canvas to an image and opens it in the browser
- * @deprecated Use saveCanvasToImage() instead
- *
- * @param {canvas} canvas - The canvas to save
- */
-function saveToImage(canvas) { 
-    saveCanvasToImage(canvas); 
 }
 
 /*
@@ -64,4 +54,3 @@ function getMousePos(canvas, evt) {
 	    y: (evt.clientY - rect.top)/(rect.bottom-rect.top)*canvas.height
     };
 }
-

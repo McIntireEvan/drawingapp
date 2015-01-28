@@ -62,7 +62,6 @@ function init() {
         tool = 'eraser';
 
         mouseContext.fillStyle = 'rgba(0, 0, 0, 0)';
-;
     });
 
     toolbox.addItem( 1, 0, '<img id="color1" src="img/toolbox/color1.png" />', 'toolbox-color1', function() {
@@ -102,7 +101,6 @@ function init() {
     toolbox.addItem( 4, 1, '<img src="img/toolbox/help.png">', 'toolbox-help', function() {
             helpwindow.toggle();
     });
-
 
     layerwindow.addItem( 0, 0, '<img src="img/layers/layerAdd.png" />', 'layer-add', function() {
         console.log('ADD LAYER');
@@ -147,13 +145,14 @@ function init() {
         '<tr><td> Shift & - </td><td> Decrease opacity</td></tr>' +
         '<tr><td> Control & Z </td><td> Undo </td></tr>' +
         '<tr><td> Control & Y </td><td> Redo</td></tr>' +
+        '<tr><td> Control & S </td><td> Save </td></tr>' +
         '<tr><td> Control & Q </td><td> Reset window positions </td></tr>' +
         '</table>', 'help-main', function() {});
 
-    toolbox.appendToBody(false, 0, 0);
-    aboutwindow.appendToBody(true, 100, 100);
-    colorwindow.appendToBody(true, 100, 0);
-    helpwindow.appendToBody(true, 100, 50);
+    toolbox.appendToBody(true, 0, 0);
+    aboutwindow.appendToBody(false, 100, 100);
+    colorwindow.appendToBody(false, 100, 0);
+    helpwindow.appendToBody(false, 100, 50);
 
     $('#color1-select').val(color1);
     $('#color2-select').val(color2);
@@ -275,6 +274,7 @@ function addEventListeners() {
             mouseContext.fillStyle = color2;
         }
     });
+
     $(document).bind('contextmenu', function(event) {       
         event.preventDefault();              
     });
@@ -326,14 +326,15 @@ function beginStroke(evt) {
         }
     }
     mouseDown = true;
-    mouseContext.fillStyle = color;
+    if(tool == 'pencil') {
+        mouseContext.fillStyle = color;
+    }
     strokeContext.globalAlpha = 1;
     strokeContext.drawImage(layers[currentLayer], 0, 0);
     strokeContext.globalAlpha = opacity;
     $(layers[currentLayer]).hide();
 
     drawStrokeToCanvas(strokeLayer, color);
-
 }
 
 function updateStroke() {
