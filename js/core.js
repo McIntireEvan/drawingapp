@@ -1,10 +1,11 @@
 var pos = {x: 0, y: 0};
 
-var tool = 'pencil';
 var color = '#149AB4';
 var color1 = color;
 var color2 = '#FFB717';
 var transparent = 'rgba(255,255,255,1)';
+
+var tool = 'pencil';
 var radius = 3;
 var opacity = 1;
 
@@ -90,7 +91,7 @@ function init() {
             for( var i = 0; i < layers.length; i++ ) {
                 clearCanvas( layers[ i ] );
             }
-            clearCanvas( $( '#background' ).get( 0 ) ); 
+            clearCanvas( $( '#background' ).get( 0 ) );
          }
     });
 
@@ -120,7 +121,8 @@ function init() {
         saveCanvasToImage( layers[ currentLayer ] );
     });
  
-    colorwindow.addItem(1, 0, '<input type="color" id="color1-select"></input><br/><input type="color" id="color2-select"></input>', 'color-main', function() {});
+    colorwindow.addItem(1, 0, '<input type="color" id="color1-select"></input><br/>'+
+            '<input type="color" id="color2-select"></input>', 'color-main', function() {});
 
     aboutwindow.addItem(0, 0,
         '<div style="max-width: 500px">' +
@@ -210,10 +212,9 @@ function addEventListeners() {
             }
         }
 
-        drawCursor( pos );  
+        drawCursor(pos);
         currentContext.lineWidth = radius * 2;
         strokeContext.lineWidth = radius * 2;
-        $('#opacity').text = opacity;
     });
 
     $(document).on('mousedown', '#ToolboxWindow .AppWindowItem', function() {
@@ -227,7 +228,6 @@ function addEventListeners() {
     });
 
     $( document ).on( 'mousemove', function(evt) {
-        previousPos = pos;
         pos = getMousePos(mouseLayer, evt);
         drawCursor( pos );
         updateStroke();
@@ -251,7 +251,7 @@ function addEventListeners() {
         prepareCanvas( mouseLayer );
         for(var i = 0; i < layers.length; i++) {
             merge($('#background').get(0), layers[i] );
-            prepareCanvas( layers[i]); 
+            prepareCanvas( layers[i]);
             layers[i].getContext('2d').drawImage($('#background').get(0), 0, 0);
             clearCanvas($('#background').get(0));
         }
@@ -278,7 +278,7 @@ function addEventListeners() {
     });
 
     $(document).bind('contextmenu', function(event) {       
-        event.preventDefault();              
+        event.preventDefault();
     });
 
     $(window).unload(function() {
@@ -289,12 +289,12 @@ function addEventListeners() {
 function undo() { 
     if(currentChange > 0) {
         currentChange--;
-        doLayerRedraw();
+        updateCanvas();
     } else { //Hack to allow undoing to blankness
         for(var i=0; i<layers.length; i++) {
             clearCanvas(layers[i]);
         }
-        clearCanvas($('#background').get(0)); 
+        clearCanvas($('#background').get(0));
     }
 }
 
@@ -305,12 +305,11 @@ function redo() {
     }
 }
 
-//TODO: Give this a better name
-function doLayerRedraw() {
+function updateCanvas() {
     var newElement = changes[currentChange];
     var newLayer =  layers[newElement.layer];
     clearCanvas(newLayer);
-    //TODO: Find a way around this?
+
     var img = new Image();
     img.src = newElement.context;
 
