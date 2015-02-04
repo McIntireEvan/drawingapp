@@ -27,170 +27,6 @@ var currentChange;
 
 var cursorInWindow = true;
 
-function init() {
-    prepareCanvas(mouseLayer);
-    for(var i = 0; i < layers.length; i++) {
-        prepareCanvas( layers[i]);
-    }
-    prepareCanvas( $('#background').get(0) );
-    prepareCanvas(strokeLayer);
-
-    mouseContext.lineWidth = 1;
-    mouseContext.strokeStyle = 'black';
-    mouseContext.fillStyle = color;
-
-    changes.push({layer: currentLayer, context: layers[currentLayer].toDataURL()});
-    currentChange = 0;
-    strokeContext.globalCompositeOperation = 'source-over';
-
-    $('#color1-select').val(color1);
-    $('#color2-select').val(color2);
-    $('#color1').css({'background':color});
-    $('#color2').css({'background':color2});
-
-    loadCanvasFromStorage(layers[currentLayer]);
-
-    addEventListeners();
-}
-
-function addEventListeners() {
-    $(document).keydown(function(e) {
-        if(!mouseDown) {
-            if ( e.shiftKey ) {
-                if ( e.which == 187 ) {
-                    if ( opacity < 1.0 ) {
-                       opacity += 0.01;
-                    }
-                } else if ( e.which == 189 ) {
-                    if(opacity > 0) {
-                        opacity -= 0.01;
-                    }
-                }
-            } else if ( e.ctrlKey ) {
-                if ( e.which==90 ) {
-                    undo();
-                } else if ( e.which==89 ) {
-                    redo();
-                } else if ( e.which==81 ) {
-                    toolbox.setPos( 0, 0);
-                    aboutwindow.setPos( 100, 100 );
-                    colorwindow.setPos( 100, 0 );
-                    helpwindow.setPos( 100, 50);
-                } else if (e.which == 83) {
-                    e.preventDefault();
-                    saveCanvasToImage(merge($('#background').get(0), layers));
-                    clearCanvas($('#background').get(0));
-                }
-            } else {
-                if ( e.which == 187) {
-                    radius++;
-                } else if ( e.which == 189 ) {
-                    if ( radius > 1 ) {
-                        radius--;
-                    }
-                } else if( e.which == 88) {
-                    var temp = color1;
-                    color1 = color2;
-                    color2 = temp;
-                    color = color1;
-                    $('#color1').css({'background':color});
-                    $('#color2').css({'background':color2});
-                }
-            }
-        }
-
-        drawCursor(pos);
-        currentContext.lineWidth = radius * 2;
-        strokeContext.lineWidth = radius * 2;
-    });
-
-    $(document).on('mousedown', '#ToolboxWindow .AppWindowItem', function() {
-        $(this).addClass('selectedTool');
-    });
-
-    $( document ).on('touchend', function(evt) {
-        pos = getMousePos(mouseLayer, evt.originalEvent.changedTouches[0]);
-        endStroke(evt.originalEvent.changedTouches[0]);
-    });
-
-    $( document ).on('mouseup mouseout', function(evt) {
-        $('.selectedTool').removeClass('selectedTool');
-        $('#toolbox-' + tool).addClass('selectedTool');
-        pos = getMousePos(mouseLayer, evt);
-        endStroke(evt);
-    }); 
-
-    $( document ).on( 'mousemove', function(evt) {
-        pos = getMousePos(mouseLayer, evt);
-        drawCursor( pos );
-        updateStroke();
-    });
-    
-    $( document ).on( 'touchmove', function(evt) {
-        if(evt.originalEvent.touches.length === 2) {
-            return;
-        }
-        pos = getMousePos(mouseLayer, evt.originalEvent.touches[0]);
-        updateStroke();
-    });
-
-    $( mouseLayer ).on( 'touchstart', function(evt) {
-        beginStroke(evt.originalEvent.changedTouches[0]);
-    });
-
-    $( mouseLayer ).on( 'mousedown', function(evt) {
-        beginStroke(evt);
-    });
-
-    $(document).on('mouseenter', function() {
-        cursorInWindow = true;
-        clearCanvas( mouseLayer );
-    });
-
-    $(document).on('mouseleave', function() {
-        cursorInWindow = false;
-        clearCanvas( mouseLayer );
-    });
-
-    $(window).on('resize',function() {
-        prepareCanvas( mouseLayer );
-        for(var i = 0; i < layers.length; i++) {
-            merge($('#background').get(0), layers[i] );
-            prepareCanvas( layers[i]);
-            layers[i].getContext('2d').drawImage($('#background').get(0), 0, 0);
-            clearCanvas($('#background').get(0));
-        }
-        prepareCanvas($('#background').get(0));
-        prepareCanvas(strokeLayer);
-    });
-
-    $(document).on('change', '#color1-select', function() {
-        color1 = $('#color1-select').val();
-        $('#color1').css({'background':color1});
-
-        if( tool == 'pencil' ) {
-            mouseContext.fillStyle = color1;
-        }
-    });
-
-    $(document).on('change', '#color2-select', function() {
-        color2 = $('#color2-select').val();
-        $('#color2').css({'background':color2});
-
-        if( tool == 'pencil' ) {
-            mouseContext.fillStyle = color2;
-        }
-    });
-
-    $(document).bind('contextmenu', function(event) {       
-        event.preventDefault();
-    });
-
-    $(window).unload(function() {
-        saveCanvasToStorage(merge($('#background').get(0), layers));
-    });
-}
-
 function undo() { 
     if(currentChange > 0) {
         currentChange--;
@@ -334,8 +170,12 @@ function prepareCanvas(canvas) {
 }
 
 $(document).ready(function() {
-    initClient();
-    init();
+    if(isMobile()) {
+        initMobileClient();
+    } else {
+        initDesktopClient();
+    }
+    initShared();
     console.log('Loading complete');
     $('#splash').fadeOut(1500);
 });

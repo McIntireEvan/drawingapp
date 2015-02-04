@@ -4,7 +4,7 @@ var layerwindow = new AppWindow(1, 4, 'Layers');
 var aboutwindow = new AppWindow(1, 1, 'About');
 var helpwindow = new AppWindow(1, 1, 'Help');
 
-function initClient() {
+function initDesktopClient() {
     toolbox.addItem( 0, 0, '<img src="img/toolbox/pencil.png" class="selectedTool" />', 'toolbox-pencil', function() {
         $('.selectedTool').removeClass('selectedTool');
         $('#toolbox-pencil').addClass('selectedTool');
@@ -111,4 +111,165 @@ function initClient() {
     aboutwindow.appendToBody(false, 100, 100);
     colorwindow.appendToBody(false, 100, 0);
     helpwindow.appendToBody(false, 100, 50);
+
+    $(document).keydown(function(e) {
+        if(!mouseDown) {
+            if ( e.shiftKey ) {
+                if ( e.which == 187 ) {
+                    if ( opacity < 1.0 ) {
+                       opacity += 0.01;
+                    }
+                } else if ( e.which == 189 ) {
+                    if(opacity > 0) {
+                        opacity -= 0.01;
+                    }
+                }
+            } else if ( e.ctrlKey ) {
+                if ( e.which==90 ) {
+                    undo();
+                } else if ( e.which==89 ) {
+                    redo();
+                } else if ( e.which==81 ) {
+                    toolbox.setPos( 0, 0);
+                    aboutwindow.setPos( 100, 100 );
+                    colorwindow.setPos( 100, 0 );
+                    helpwindow.setPos( 100, 50);
+                } else if (e.which == 83) {
+                    e.preventDefault();
+                    saveCanvasToImage(merge($('#background').get(0), layers));
+                    clearCanvas($('#background').get(0));
+                }
+            } else {
+                if ( e.which == 187) {
+                    radius++;
+                } else if ( e.which == 189 ) {
+                    if ( radius > 1 ) {
+                        radius--;
+                    }
+                } else if( e.which == 88) {
+                    var temp = color1;
+                    color1 = color2;
+                    color2 = temp;
+                    color = color1;
+                    $('#color1').css({'background':color});
+                    $('#color2').css({'background':color2});
+                }
+            }
+        }
+
+        drawCursor(pos);
+        currentContext.lineWidth = radius * 2;
+        strokeContext.lineWidth = radius * 2;
+    });
+
+    $(document).on('mousedown', '#ToolboxWindow .AppWindowItem', function() {
+        $(this).addClass('selectedTool');
+    });
+
+    $(document).on('mouseup mouseout', function(evt) {
+        $('.selectedTool').removeClass('selectedTool');
+        $('#toolbox-' + tool).addClass('selectedTool');
+        pos = getMousePos(mouseLayer, evt);
+        endStroke(evt);
+    });
+
+    $(document).on( 'mousemove', function(evt) {
+        pos = getMousePos(mouseLayer, evt);
+        drawCursor( pos );
+        updateStroke();
+    });
+
+    $(mouseLayer).on( 'mousedown', function(evt) {
+        beginStroke(evt);
+    });
+
+    $(document).on('mouseenter', function() {
+        cursorInWindow = true;
+        clearCanvas( mouseLayer );
+    });
+
+    $(document).on('mouseleave', function() {
+        cursorInWindow = false;
+        clearCanvas( mouseLayer );
+    });
+
+    $(window).on('resize',function() {
+        prepareCanvas( mouseLayer );
+        for(var i = 0; i < layers.length; i++) {
+            merge($('#background').get(0), layers[i] );
+            prepareCanvas( layers[i]);
+            layers[i].getContext('2d').drawImage($('#background').get(0), 0, 0);
+            clearCanvas($('#background').get(0));
+        }
+        prepareCanvas($('#background').get(0));
+        prepareCanvas(strokeLayer);
+    });
+
+}
+
+function initMobileClient() {
+    $(document).on('touchstart', function(evt) {
+        beginStroke(evt.originalEvent.changedTouches[0]);
+    });
+
+    $(document).on('touchmove', function(evt) {
+        pos = getMousePos(mouseLayer, evt.originalEvent.touches[0]);
+        updateStroke();
+    });
+
+    $(document).on('touchend', function(evt) {
+        pos = getMousePos(mouseLayer, evt.originalEvent.changedTouches[0]);
+        endStroke(evt.originalEvent.changedTouches[0]);
+    });
+}
+
+function initShared() {
+    prepareCanvas(mouseLayer);
+    for(var i = 0; i < layers.length; i++) {
+        prepareCanvas( layers[i]);
+    }
+    prepareCanvas( $('#background').get(0) );
+    prepareCanvas(strokeLayer);
+
+    mouseContext.lineWidth = 1;
+    mouseContext.strokeStyle = 'black';
+    mouseContext.fillStyle = color;
+
+    changes.push({layer: currentLayer, context: layers[currentLayer].toDataURL()});
+    currentChange = 0;
+    strokeContext.globalCompositeOperation = 'source-over';
+
+    $('#color1-select').val(color1);
+    $('#color2-select').val(color2);
+    $('#color1').css({'background':color});
+    $('#color2').css({'background':color2});
+
+    loadCanvasFromStorage(layers[currentLayer]);
+
+
+    $(window).unload(function() {
+        saveCanvasToStorage(merge($('#background').get(0), layers));
+    });
+
+    $(document).on('change', '#color1-select', function() {
+        color1 = $('#color1-select').val();
+        $('#color1').css({'background':color1});
+
+        if( tool == 'pencil' ) {
+            mouseContext.fillStyle = color1;
+        }
+    });
+
+    $(document).on('change', '#color2-select', function() {
+        color2 = $('#color2-select').val();
+        $('#color2').css({'background':color2});
+
+        if( tool == 'pencil' ) {
+            mouseContext.fillStyle = color2;
+        }
+    });
+
+    $(document).bind('contextmenu', function(event) {
+        event.preventDefault();
+    });
 }
