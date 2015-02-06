@@ -2,31 +2,27 @@
 
 <html>
     <head>
-	    <title>Doodle</title>
-	    <link rel="stylesheet" type="text/css" href="css/style.css">
-	    <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon" />
-	    <link rel="icon" type="image/png" href="img/logo.png" />
-	    <link href='http://fonts.googleapis.com/css?family=Roboto:300' rel='stylesheet' type='text/css'>
+        <title>Doodle</title>
+        <link rel='stylesheet' type='text/css' href='css/style.css'>
+        <link rel='shortcut icon' href='img/favicon.png' type='image/x-icon' />
+        <link rel='icon' type='image/png' href='img/logo.png' />
+        <link href='http://fonts.googleapis.com/css?family=Roboto:300' rel='stylesheet' type='text/css'>
     </head>
     <body>
-        <div id="splash">
-	        <div class='fullscreen'>
-	            <div class='centered'>
-		            <img src='img/logo.png' />
-		            Loading
-	            </div>
-	        </div>
-	    </div>
-        <div id="holder">
-            <canvas style="z-index: 999" id="mouse"></canvas>
-	        <canvas style="z-index: 2" id="stroke"></canvas>
-	        <canvas style="z-index: 1" id='layer0'></canvas>
-	        <canvas style="z-index: 2" id='layer1'></canvas>
-	        <canvas style="z-index: 0" id="background"></canvas>
+        <div id='splash' >
+            <div class='centered'>
+                <img src='img/logo.png' />
+                Loading
+            </div>
         </div>
-	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-	    <script src="js/lib.js"></script>
-        <script src="js/client.js"></script>
-	    <script src="js/core.js"></script>
+        <canvas style='z-index: 999' id='mouse'></canvas>
+        <canvas style='z-index: 2' id='stroke'></canvas>
+        <canvas style='z-index: 2' id='layer1'></canvas>
+        <canvas style='z-index: 1' id='layer0'></canvas>
+        <canvas style='z-index: 0' id='background'></canvas>
+        <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js'></script>
+        <script src='js/lib.js'></script>
+        <script src='js/client.js'></script>
+        <script src='js/core.js'></script>
     </body>
 </html>

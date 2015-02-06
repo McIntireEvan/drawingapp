@@ -3,6 +3,7 @@ var colorwindow = new AppWindow(2, 1, 'Colors');
 var layerwindow = new AppWindow(1, 4, 'Layers');
 var aboutwindow = new AppWindow(1, 1, 'About');
 var helpwindow = new AppWindow(1, 1, 'Help');
+var cursorInWindow = true;
 
 function initDesktopClient() {
     toolbox.addItem( 0, 0, '<img src="img/toolbox/pencil.png" class="selectedTool" />', 'toolbox-pencil', function() {
@@ -272,4 +273,14 @@ function initShared() {
     $(document).bind('contextmenu', function(event) {
         event.preventDefault();
     });
+}
+
+function drawCursor(pos) {
+    if (cursorInWindow) {
+        mouseContext.clearRect(0,0, mouseLayer.width, mouseLayer.height);
+        mouseContext.beginPath();
+        mouseContext.arc(pos.x, pos.y, radius, 0, 2 * Math.PI, false);
+        mouseContext.fill();
+        mouseContext.stroke();
+   }
 }

@@ -15,8 +15,6 @@ var mouseDown = false;
 
 var layers = [$('#layer1').get(0), $('#layer0').get(0)];
 var currentLayer = 1;
-var nextLayerId = 2;
-var currentContext = layers[currentLayer].getContext('2d');
 
 var stroke = [];
 var strokeLayer = $('#stroke').get(0);
@@ -24,8 +22,6 @@ var strokeContext = strokeLayer.getContext('2d');
 
 var changes = [];
 var currentChange;
-
-var cursorInWindow = true;
 
 function undo() { 
     if(currentChange > 0) {
@@ -152,16 +148,6 @@ function drawStrokeToCanvas(canvas, color) {
     c.stroke();
     c.globalcompositeoperation = 'source-over';
 
-}
-
-function drawCursor( pos ) {
-    if ( cursorInWindow ) {
-        mouseContext.clearRect(0,0, mouseLayer.width, mouseLayer.height);
-        mouseContext.beginPath();
-        mouseContext.arc(pos.x, pos.y, radius, 0, 2 * Math.PI, false);
-        mouseContext.fill();
-        mouseContext.stroke();
-   }
 }
 
 function prepareCanvas(canvas) {
