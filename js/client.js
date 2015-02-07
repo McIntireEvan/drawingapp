@@ -1,6 +1,6 @@
 var toolbox = new AppWindow(6, 2, 'Toolbox');
 var colorwindow = new AppWindow(2, 1, 'Colors');
-var layerwindow = new AppWindow(1, 4, 'Layers');
+var layerwindow = new AppWindow(3, 4, 'Layers');
 var aboutwindow = new AppWindow(1, 1, 'About');
 var helpwindow = new AppWindow(1, 1, 'Help');
 var cursorInWindow = true;
@@ -61,7 +61,18 @@ function initDesktopClient() {
     });
 
     layerwindow.addItem( 0, 0, '<img src="img/layers/layerAdd.png" />', 'layer-add', function() {
-        console.log('ADD LAYER');
+        $('<canvas id="layer' + nextLayer + '" style="z-index:' + (nextLayer + 1) + '"></canvas>').appendTo('body');
+        layerwindow.addRow();
+        layerwindow.addItem(nextLayer + 1, 0, 'Layer ' + nextLayer, 'layer' + nextLayer + '-control', function() {
+            currentLayer = parseInt(this.id.replace('layer', '').replace('-control', ''));
+            $('.selectedRow').removeClass('selectedRow');
+            $(this).parent().addClass('selectedRow');
+            $(strokeLayer).css({'z-index': currentLayer});
+        });
+        layers.push($('#layer' + nextLayer).get(0));
+        prepareCanvas($('#layer' + nextLayer).get(0));
+        layerwindow.update();
+        nextLayer++;
     });
 
     layerwindow.addItem( 0, 1, '<img src="img/layers/layerRemove.png" />', 'layer-remove', function() {
@@ -77,11 +88,21 @@ function initDesktopClient() {
     layerwindow.addItem( 0, 3, '<img src="img/toolbox/save.png" />', 'layer-save', function() {
         saveCanvasToImage( layers[ currentLayer ] );
     });
- 
-    colorwindow.addItem(1, 0, '<input type="color" id="color1-select"></input><br/>'+
-            '<input type="color" id="color2-select"></input>', 'color-main', function() {});
 
-    aboutwindow.addItem(0, 0,
+    for(var i = 0; i<2; i++) {
+        layerwindow.addItem(i + 1, 0, 'Layer ' + i, 'layer' + i + '-control', function() {
+            var newLayer = parseInt(this.id.replace('layer', '').replace('-control', ''));
+            strokeLayer.css({'z-index': newLayer});
+            currentLayer = newLayer;
+            $('.selectedRow').removeClass('selectedRow');
+            $(this).parent().addClass('selectedRow');
+        });
+    }
+
+    colorwindow.addDisplayItem(1, 0, '<input type="color" id="color1-select"></input><br/>'+
+            '<input type="color" id="color2-select"></input>');
+
+    aboutwindow.addDisplayItem(0, 0,
         '<div style="max-width: 500px">' +
         '<img style="float:left; width:250px; height:250px;" src="img/logo.png"/>' +
         '<p>Hello! This project is still in development, but thank you for using it!</p>'+
@@ -93,9 +114,9 @@ function initDesktopClient() {
         '<li> Programming: Evan McIntire (mcintire.evan@gmail.com)</li>' +
         '<li> Graphics: Andy Hoang (powergrip776@gmail.com)</li>' +
         '</ul>' +
-        '</div', 'about-main', function() {});
+        '</div');
 
-    helpwindow.addItem(0, 0, 
+    helpwindow.addDisplayItem(0, 0, 
         '<table><tr><th colspan=2>Controls</th></tr>' +
         '<tr><td> + </td><td> Increase brush size</td></tr>' +
         '<tr><td> - </td><td> Decrease brush size</td></tr>' +
@@ -106,12 +127,14 @@ function initDesktopClient() {
         '<tr><td> Control & Y </td><td> Redo</td></tr>' +
         '<tr><td> Control & S </td><td> Save </td></tr>' +
         '<tr><td> Control & Q </td><td> Reset window positions </td></tr>' +
-        '</table>', 'help-main', function() {});
+        '</table>');
 
     toolbox.appendToBody(true, 0, 0);
+    layerwindow.appendToBody(true, 100, 200);
     aboutwindow.appendToBody(false, 100, 100);
     colorwindow.appendToBody(false, 100, 0);
     helpwindow.appendToBody(false, 100, 50);
+    $('#layer-0-control').parent().addClass('selectedRow');
 
     $(document).keydown(function(e) {
         if(!mouseDown) {
@@ -159,8 +182,6 @@ function initDesktopClient() {
         }
 
         drawCursor(pos);
-        currentContext.lineWidth = radius * 2;
-        strokeContext.lineWidth = radius * 2;
     });
 
     $(document).on('mousedown', '#ToolboxWindow .AppWindowItem', function() {

@@ -15,9 +15,11 @@
     cursor: grab;
 }
 
-.selectedTool {
+.selectedRow, .selectedTool {
     -webkit-filter: invert(100%);
     filter: invert(100%);
+    color: white;
+    background: black;
 }
 
 #ToolboxWindow img {
@@ -68,5 +70,5 @@ canvas {
     -webkit-transform: translate(-50%,-50%);
     -ms-transform: translate(-50%,-50%);
     transform: translate(-50%,-50%);
-    text-align:center;
+    text-align: center;
 }

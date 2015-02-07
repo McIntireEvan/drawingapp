@@ -59,9 +59,14 @@ AppWindow.prototype.addItem = function(row, column, html, id, onClick) {
     $(document).on('click', '#' + id, onClick);
 }
 
+AppWindow.prototype.addDisplayItem = function(row, column, html) {
+    this.content[row][column] = '<td class="AppWindowItem">' + html + '</td>';
+}
+
 AppWindow.prototype.addRow = function() {
+    this.content[this.rows] = [];
     for(var j = 0; j < this.columns; j++) {
-        this.content[rows][j] = '';
+        this.content[this.rows][j] = '';
     }
     this.rows++;
 }
@@ -81,6 +86,10 @@ AppWindow.prototype.appendToBody = function(show, x, y) {
     if(!show) {
         this.toggle();
     }
+}
+
+AppWindow.prototype.update = function() {
+    $('#' + this.title + 'Window').html(this.toHTML());
 }
 
 /*

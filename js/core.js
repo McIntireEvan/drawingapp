@@ -13,8 +13,9 @@ var mouseLayer = $('#mouse').get(0);
 var mouseContext = mouseLayer.getContext('2d');
 var mouseDown = false;
 
-var layers = [$('#layer1').get(0), $('#layer0').get(0)];
-var currentLayer = 1;
+var layers = [$('#layer0').get(0), $('#layer1').get(0)];
+var currentLayer = 0;
+var nextLayer = 2;
 
 var stroke = [];
 var strokeLayer = $('#stroke').get(0);
