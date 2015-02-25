@@ -72,17 +72,32 @@ function initDesktopClient() {
         layers.push($('#layer' + nextLayer).get(0));
         prepareCanvas($('#layer' + nextLayer).get(0));
         layerwindow.update();
+        $('#layer' + currentLayer + '-control').parent().addClass('selectedRow');
         nextLayer++;
     });
 
     layerwindow.addItem( 0, 1, '<img src="img/layers/layerRemove.png" />', 'layer-remove', function() {
         if(confirm('Remove Layer?')) {
-            layerwindow.removeRow(currentLayer + 1);
-            layers[currentLayer].remove();
-            console.log(currentLayer);
-            currentLayer = 0; //TODO: Set to a better thing
-            $('layer' + currentLayer + '-control').parent().addClass('selectedRow');
-            layerwindow.update();
+            if(layerwindow.content.length == 2) {
+                return;
+            }
+            for(var i = 1; i < layerwindow.getRows(); i++) {
+                if(layerwindow.content[i][0].indexOf('layer' + currentLayer + '-control') != -1) {
+                    layerwindow.removeRow(i);
+                    $('#layer' + currentLayer).remove();
+                    layers[currentLayer] = null;
+                    for(var i =0; i < layers.length; i++) {
+                        if(layers[i] != null) {
+                            currentLayer = i;
+                            break;
+                        }
+                    }
+                    $(strokeLayer).css({'z-index': currentLayer});
+                    layerwindow.update();
+                    $('#layer' + currentLayer + '-control').parent().addClass('selectedRow');
+                    return;
+                }
+            }
         }
     });
 
