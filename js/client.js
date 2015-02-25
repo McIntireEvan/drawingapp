@@ -140,15 +140,17 @@ function initDesktopClient() {
 
     helpwindow.addDisplayItem(0, 0, 
         '<table><tr><th colspan=2>Controls</th></tr>' +
-        '<tr><td> + </td><td> Increase brush size</td></tr>' +
-        '<tr><td> - </td><td> Decrease brush size</td></tr>' +
-        '<tr><td> X </td><td> Swap primary and secondary color </td></tr>' +
-        '<tr><td> Shift & + </td><td> Increase opacity</td></tr>' +
-        '<tr><td> Shift & - </td><td> Decrease opacity</td></tr>' +
-        '<tr><td> Control & Z </td><td> Undo </td></tr>' +
-        '<tr><td> Control & Y </td><td> Redo</td></tr>' +
-        '<tr><td> Control & S </td><td> Save </td></tr>' +
-        '<tr><td> Control & Q </td><td> Reset window positions </td></tr>' +
+        '<tr><td><kbd>+</kbd></td><td> Increase brush size</td></tr>' +
+        '<tr><td><kbd>-</kbd></td><td> Decrease brush size</td></tr>' +
+        '<tr><td><kbd>X</kbd></td><td> Swap primary and secondary color </td></tr>' +
+        '<tr><td><kbd>X</kbd></td><td> Toggle help window </td></tr>' +
+        '<tr><td><kbd>Esc</kbd></td><td> Close all closable windows </td></tr>' +
+        '<tr><td><kbd>Shift</kbd><kbd>+</kbd></td><td> Increase opacity</td></tr>' +
+        '<tr><td><kbd>Shift</kbd><kbd>-</kbd></td><td> Decrease opacity</td></tr>' +
+        '<tr><td><kbd>Ctrl</kbd><kbd>Z</kbd></td><td> Undo </td></tr>' +
+        '<tr><td><kbd>Ctrl</kbd><kbd>Y</kbd></td><td> Redo</td></tr>' +
+        '<tr><td><kbd>Ctrl</kbd><kbd>S</kbd></td><td> Save </td></tr>' +
+        '<tr><td><kbd>Ctrl</kbd><kbd>Q</kbd> </td><td> Reset window positions </td></tr>' +
         '</table>');
 
     toolbox.appendToBody(true, 0, 0);
@@ -199,11 +201,46 @@ function initDesktopClient() {
                     color = color1;
                     $('#color1').css({'background':color});
                     $('#color2').css({'background':color2});
+                } else if(e.which == 112) {
+                    e.preventDefault()
+                    helpwindow.toggle();
+                } else if(e.which == 27) {
+                    $('#AboutWindow').hide();
+                    $('#ColorsWindow').hide();
+                    $('#HelpWindow').hide();
+
                 }
             }
         }
 
         drawCursor(pos);
+    });
+
+    $(document).on('wheel', function(evt) {
+        evt.preventDefault();
+        var e = evt.originalEvent;
+        if(!mouseDown) {
+            if(evt.shiftKey) {
+                if(e.deltaX < 0) {
+                    if ( opacity < 1.0 ) {
+                       opacity += 0.01;
+                    }
+                } else {
+                    if ( opacity > .01 ) {
+                        opacity -= 0.01;
+                    }
+                }
+            } else {
+                if(e.deltaY < 0) {
+                    radius++;
+                } else {
+                    if ( radius > 1 ) {
+                        radius--;
+                    }
+                }
+            }
+            drawCursor(pos);
+        }
     });
 
     $(document).on('mousedown', '#ToolboxWindow .AppWindowItem', function() {
@@ -248,7 +285,6 @@ function initDesktopClient() {
         prepareCanvas($('#background').get(0));
         prepareCanvas(strokeLayer);
     });
-
 }
 
 function initMobileClient() {
