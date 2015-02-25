@@ -88,6 +88,10 @@ AppWindow.prototype.appendToBody = function(show, x, y) {
     }
 }
 
+AppWindow.prototype.getRows = function() {
+    return this.rows;
+}
+
 AppWindow.prototype.update = function() {
     $('#' + this.title + 'Window').html(this.toHTML());
 }

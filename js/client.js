@@ -61,9 +61,9 @@ function initDesktopClient() {
     });
 
     layerwindow.addItem( 0, 0, '<img src="img/layers/layerAdd.png" />', 'layer-add', function() {
-        $('<canvas id="layer' + nextLayer + '" style="z-index:' + (nextLayer + 1) + '"></canvas>').appendTo('body');
+        $('<canvas id="layer' + nextLayer + '" style="z-index:' + nextLayer + '"></canvas>').appendTo('body');
         layerwindow.addRow();
-        layerwindow.addItem(nextLayer + 1, 0, 'Layer ' + nextLayer, 'layer' + nextLayer + '-control', function() {
+        layerwindow.addItem(layerwindow.getRows() - 1, 0, 'Layer ' + nextLayer, 'layer' + nextLayer + '-control', function() {
             currentLayer = parseInt(this.id.replace('layer', '').replace('-control', ''));
             $('.selectedRow').removeClass('selectedRow');
             $(this).parent().addClass('selectedRow');
@@ -76,12 +76,19 @@ function initDesktopClient() {
     });
 
     layerwindow.addItem( 0, 1, '<img src="img/layers/layerRemove.png" />', 'layer-remove', function() {
-        console.log('REMOVE LAYER');
+        if(confirm('Remove Layer?')) {
+            layerwindow.removeRow(currentLayer + 1);
+            layers[currentLayer].remove();
+            console.log(currentLayer);
+            currentLayer = 0; //TODO: Set to a better thing
+            $('layer' + currentLayer + '-control').parent().addClass('selectedRow');
+            layerwindow.update();
+        }
     });
 
     layerwindow.addItem( 0, 2, '<img src="img/toolbox/clear.png" />', 'layer-clear', function() {
-        if( confirm( 'Clear current Layer?' ) ){
-            clearCanvas( layers[ currentLayer ] );
+        if(confirm('Clear current Layer?')) {
+            clearCanvas(layers[currentLayer]);
         }
     });
 
@@ -92,7 +99,7 @@ function initDesktopClient() {
     for(var i = 0; i<2; i++) {
         layerwindow.addItem(i + 1, 0, 'Layer ' + i, 'layer' + i + '-control', function() {
             var newLayer = parseInt(this.id.replace('layer', '').replace('-control', ''));
-            strokeLayer.css({'z-index': newLayer});
+            $(strokeLayer).css({'z-index': newLayer});
             currentLayer = newLayer;
             $('.selectedRow').removeClass('selectedRow');
             $(this).parent().addClass('selectedRow');
@@ -107,7 +114,7 @@ function initDesktopClient() {
         '<img style="float:left; width:250px; height:250px;" src="img/logo.png"/>' +
         '<p>Hello! This project is still in development, but thank you for using it!</p>'+
         '<p>If you have comments or suggestions, feel free to email me at mcintire.evan@gmail.com, Id love to hear from you!</p>' +
-        '<p> If you want, you can try out the beta <a href="http://draw.evanmcintire.com/beta/drawingapp/" target="_blank"> here</a>.</p>' +
+        '<p> If you want, you can try out the beta <a href="http://dev.evanmcintire.com/draw" target="_blank"> here</a>.</p>' +
         '<p style="clear: both"> You can also look at the source code <a href="https://github.com/McIntireEvan/drawingapp" target="_blank"> here</a>. This program is provided under the GNU GPL v2</p>' +
         '<h3>Credits</h3>' +
         '<ul>' +
@@ -134,7 +141,7 @@ function initDesktopClient() {
     aboutwindow.appendToBody(false, 100, 100);
     colorwindow.appendToBody(false, 100, 0);
     helpwindow.appendToBody(false, 100, 50);
-    $('#layer-0-control').parent().addClass('selectedRow');
+    $('#layer0-control').parent().addClass('selectedRow');
 
     $(document).keydown(function(e) {
         if(!mouseDown) {

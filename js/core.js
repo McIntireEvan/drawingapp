@@ -39,7 +39,7 @@ function undo() {
 function redo() {
     if(currentChange < changes.length - 1) {
         currentChange++;
-        doLayerRedraw();
+        updateCanvas();
     }
 }
 
