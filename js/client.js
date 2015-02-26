@@ -143,7 +143,7 @@ function initDesktopClient() {
         '<tr><td><kbd>+</kbd></td><td> Increase brush size</td></tr>' +
         '<tr><td><kbd>-</kbd></td><td> Decrease brush size</td></tr>' +
         '<tr><td><kbd>X</kbd></td><td> Swap primary and secondary color </td></tr>' +
-        '<tr><td><kbd>X</kbd></td><td> Toggle help window </td></tr>' +
+        '<tr><td><kbd>F1</kbd></td><td> Toggle help window </td></tr>' +
         '<tr><td><kbd>Esc</kbd></td><td> Close all closable windows </td></tr>' +
         '<tr><td><kbd>Shift</kbd><kbd>+</kbd></td><td> Increase opacity</td></tr>' +
         '<tr><td><kbd>Shift</kbd><kbd>-</kbd></td><td> Decrease opacity</td></tr>' +
