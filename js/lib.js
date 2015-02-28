@@ -136,7 +136,10 @@ function clearCanvas(canvas) {
  * @param {canvas} canvas - The canvas to save
  */
 function saveCanvasToImage(canvas) {
-    $('<a href="' + canvas.toDataURL() + '" download="' + prompt('File name:') + '"></a>')[0].click();
+    var filename = prompt('File name:');
+    if(!(filename == '') && !(filename == null)) {
+        $('<a href="' + canvas.toDataURL() + '" download="' + filename + '"></a>')[0].click();
+    }
 }
 
 /*
