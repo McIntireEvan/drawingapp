@@ -212,7 +212,6 @@ function initDesktopClient() {
                 }
             }
         }
-
         drawCursor(pos);
     });
 
@@ -272,18 +271,6 @@ function initDesktopClient() {
     $(document).on('mouseleave', function() {
         cursorInWindow = false;
         clearCanvas( mouseLayer );
-    });
-
-    $(window).on('resize',function() {
-        prepareCanvas( mouseLayer );
-        for(var i = 0; i < layers.length; i++) {
-            merge($('#background').get(0), layers[i] );
-            prepareCanvas( layers[i]);
-            layers[i].getContext('2d').drawImage($('#background').get(0), 0, 0);
-            clearCanvas($('#background').get(0));
-        }
-        prepareCanvas($('#background').get(0));
-        prepareCanvas(strokeLayer);
     });
 }
 

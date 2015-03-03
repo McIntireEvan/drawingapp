@@ -152,8 +152,10 @@ function drawStrokeToCanvas(canvas, color) {
 }
 
 function prepareCanvas(canvas) {
-   canvas.width = $('#mouse').css('width').replace('px','');
-   canvas.height = $('#mouse').css('height').replace('px','');
+    //TODO: In node version, set these to value from server
+    $(canvas).css({'width':$('body').css('width'), 'height':$('body').css('height')});
+    canvas.width = $('#mouse').css('width').replace('px','');
+    canvas.height = $('#mouse').css('height').replace('px','');
 }
 
 $(document).ready(function() {
