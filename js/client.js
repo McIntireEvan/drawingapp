@@ -61,7 +61,10 @@ function initDesktopClient() {
     });
 
     layerwindow.addItem( 0, 0, '<img src="img/layers/layerAdd.png" />', 'layer-add', function() {
-        $('<canvas id="layer' + nextLayer + '" style="z-index:' + nextLayer + '"></canvas>').appendTo('body');
+        $('<canvas></canvas>').attr({
+            id: 'layer' + nextLayer,
+            style: 'z-index:' + nextLayer
+        }).appendTo('body');
         layerwindow.addRow();
         layerwindow.addItem(layerwindow.getRows() - 1, 0, 'Layer ' + nextLayer, 'layer' + nextLayer + '-control', function() {
             currentLayer = parseInt(this.id.replace('layer', '').replace('-control', ''));

@@ -24,6 +24,9 @@ var strokeContext = strokeLayer.getContext('2d');
 var changes = [];
 var currentChange;
 
+var width = 0;
+var height = 0;
+
 function undo() { 
     if(currentChange > 0) {
         currentChange--;
@@ -153,12 +156,14 @@ function drawStrokeToCanvas(canvas, color) {
 
 function prepareCanvas(canvas) {
     //TODO: In node version, set these to value from server
-    $(canvas).css({'width':$('body').css('width'), 'height':$('body').css('height')});
+    $(canvas).css({'width':width, 'height':height});
     canvas.width = $('#mouse').css('width').replace('px','');
     canvas.height = $('#mouse').css('height').replace('px','');
 }
 
 $(document).ready(function() {
+    width = $('body').css('width');
+    height = $('body').css('height');
     if(isMobile()) {
         initMobileClient();
     } else {

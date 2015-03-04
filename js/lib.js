@@ -161,10 +161,15 @@ function saveCanvasToStorage(source) {
 }
 
 function loadCanvasFromStorage(destination) {
-    if(localStorage.getItem('canvas')) {
-        var img = new Image;
-        img.src = localStorage.getItem('canvas');
-        destination.getContext('2d').drawImage(img, 0, 0);
+    try {
+        if(localStorage.getItem('canvas')) {
+            var img = new Image;
+            img.src = localStorage.getItem('canvas');
+            destination.getContext('2d').drawImage(img, 0, 0);
+        }
+    }
+    catch (e) {
+
     }
 }
 
