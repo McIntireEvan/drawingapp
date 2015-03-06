@@ -1,0 +1,3 @@
+[submodule "windowfy"]
+	path = windowfy
+	url = git@github.com:McIntireEvan/windowfy.git
