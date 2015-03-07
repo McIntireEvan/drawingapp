@@ -46,6 +46,21 @@ function initDesktopClient() {
         $(strokeLayer).css({ 'z-index': currentLayer });
     };
 
+    var onDoubleClick = function () {
+        if ($('#newName').length != 0) {
+            return;
+        }
+        var input = $('<input/>').attr({
+            type: 'text',
+            id: 'newName',
+            value: $(this).html()
+        }).on('blur', function () {
+           $(this).parent().html($('#newName').val());
+        });
+        $(this).html(input);
+        input.focus();
+    };
+
     $('#LayersWindow').windowfy({
         title: 'Layers',
         close: false,
@@ -55,8 +70,7 @@ function initDesktopClient() {
             id: 'layer' + nextLayer,
             style: 'z-index:' + nextLayer
         }).appendTo('body');
-
-        $('<div/>').attr('id', 'layer' + nextLayer + '-control').html('Layer ' + nextLayer).on('click', onLayerClick).appendTo('#Layers');
+        $('<div/>').attr('id', 'layer' + nextLayer + '-control').html('Layer ' + nextLayer).on('click', onLayerClick).on('dblclick', onDoubleClick).appendTo('#Layers');
         layers.push($('#layer' + nextLayer).get(0));
         prepareCanvas($('#layer' + nextLayer).get(0));
         $('#layer' + currentLayer + '-control').addClass('selectedRow');
@@ -78,16 +92,16 @@ function initDesktopClient() {
             $(strokeLayer).css({ 'z-index': currentLayer });
             $('#layer' + currentLayer + '-control').addClass('selectedRow');
         }
-    }).on('click', 'layer-clear', function () {
+    }).on('click', '#layer-clear', function () {
         if (confirm('Clear current Layer?')) {
             clearCanvas(layers[currentLayer]);
         }
-    }).on('click', 'layer-save', function () {
+    }).on('click', '#layer-save', function () {
         saveCanvasToImage(layers[currentLayer]);
     });
 
     for(var i = 0; i < 2; i++) {
-        $('<div/>').attr('id', 'layer' + i + '-control').on('click', onLayerClick).html('Layer ' + i).appendTo('#Layers');
+        $('<div/>').attr('id', 'layer' + i + '-control').html('Layer ' + i).on('click', onLayerClick).on('dblclick', onDoubleClick).appendTo('#Layers');
     }
 
     $('#ColorWindow').windowfy({

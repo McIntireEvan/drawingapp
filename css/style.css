@@ -2,22 +2,16 @@
     font-family: 'Roboto', sans-serif;
 }
 
-.AppWindow {
-    z-index: 1001;
-    position: absolute;
-    border: 1px solid black;
-    background: white;
-}
-
 #ToolboxHolder {
     min-width: 75px;
 }
 
-.selectedRow, .selectedTool {
+.selectedTool {
     -webkit-filter: invert(100%);
     filter: invert(100%);
-    color: white;
-    background: black;
+}
+.selectedRow{
+    font-weight: bolder;
 }
 
 #ToolboxWindow img {
@@ -61,10 +55,10 @@ canvas {
     z-index: 1008;
 }
 
-    #splash img {
-        width: 500px;
-        height: 500px;
-    }
+#splash img {
+    width: 500px;
+    height: 500px;
+}
 
 .centered, canvas {
     margin: auto;
