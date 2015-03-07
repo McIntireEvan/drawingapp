@@ -56,7 +56,7 @@ function initDesktopClient() {
             style: 'z-index:' + nextLayer
         }).appendTo('body');
 
-        $('<div/>').attr('id', 'layer' + nextLayer + '-control').html('Layer' + nextLayer).on('click', onLayerClick).appendTo('#Layers');
+        $('<div/>').attr('id', 'layer' + nextLayer + '-control').html('Layer ' + nextLayer).on('click', onLayerClick).appendTo('#Layers');
         layers.push($('#layer' + nextLayer).get(0));
         prepareCanvas($('#layer' + nextLayer).get(0));
         $('#layer' + currentLayer + '-control').addClass('selectedRow');
