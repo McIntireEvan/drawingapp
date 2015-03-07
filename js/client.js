@@ -1,167 +1,108 @@
-var toolbox = new AppWindow(6, 2, 'Toolbox');
-var colorwindow = new AppWindow(2, 1, 'Colors');
-var layerwindow = new AppWindow(3, 4, 'Layers');
-var aboutwindow = new AppWindow(1, 1, 'About');
-var helpwindow = new AppWindow(1, 1, 'Help');
 var cursorInWindow = true;
 
 function initDesktopClient() {
-    toolbox.addItem( 0, 0, '<img src="img/toolbox/pencil.png" class="selectedTool" />', 'toolbox-pencil', function() {
+    $('#ToolboxWindow').windowfy({
+        title: 'Toolbox',
+        close: false,
+        id: 'ToolboxHolder'
+    }).on('click', '#toolbox-pencil', function (evt) {
         $('.selectedTool').removeClass('selectedTool');
         $('#toolbox-pencil').addClass('selectedTool');
         tool = 'pencil';
-
         mouseContext.fillStyle = color;
-    });
-
-    toolbox.addItem( 0, 1, '<img src="img/toolbox/eraser.png" />', 'toolbox-eraser', function() {
+    }).on('click', '#toolbox-eraser', function() {
         $('.selectedTool').removeClass('selectedTool');
         $('#toolbox-eraser').addClass('selectedTool');
         tool = 'eraser';
-
         mouseContext.fillStyle = 'rgba(0, 0, 0, 0)';
-    });
-
-    toolbox.addItem( 1, 0, '<img id="color1" src="img/toolbox/color1.png" />', 'toolbox-color1', function() {
-        colorwindow.toggle();
-    });
- 
-    toolbox.addItem( 1, 1, '<img id="color2" src="img/toolbox/color2.png" />', 'toolbox-color2', function() {
-        colorwindow.toggle();
-    });
-
-    toolbox.addItem( 2, 0, '<img src="img/toolbox/undo.png" />', 'toolbox-undo', function() {
+    }).on('click', '#toolbox-color1', function () {
+        $('#ColorWindow').parent().toggle();
+    }).on('click', '#toolbox-color2', function () {
+        $('#ColorWindow').parent().toggle();
+    }).on('click', '#toolbox-undo', function () {
         undo();
-    });
-
-    toolbox.addItem( 2, 1, '<img src="img/toolbox/redo.png" />', 'toolbox-redo', function() {
+    }).on('click', '#toolbox-redo', function () {
         redo();
-    });
-
-    toolbox.addItem( 3, 0, '<img src="img/toolbox/save.png" />', 'toolbox-save', function() {
+    }).on('click', '#toolbox-save', function () {
         saveCanvasToImage(merge($('#background').get(0), layers));
         clearCanvas($('#background').get(0));
-    });
-
-    toolbox.addItem( 3, 1, '<img src="img/toolbox/clear.png">', 'toolbox-clear', function() {
-        if( confirm( 'Clear all layers?' ) ) {
-            for( var i = 0; i < layers.length; i++ ) {
-                clearCanvas( layers[ i ] );
+    }).on('click', '#toolbox-clear', function () {
+        if (confirm('Clear all layers?')) {
+            for (var i = 0; i < layers.length; i++) {
+                clearCanvas(layers[i]);
             }
-            clearCanvas( $( '#background' ).get( 0 ) );
-         }
+            clearCanvas($('#background').get(0));
+        }
+    }).on('click', '#toolbox-info', function () {
+        $('#AboutWindow').parent().toggle();
+    }).on('click', '#toolbox-help', function () {
+        $('#HelpWindow').parent().toggle();
     });
 
-    toolbox.addItem( 4, 0, '<img src="img/toolbox/info.png">', 'toolbox-info', function() {
-            aboutwindow.toggle();
-    });
+    var onLayerClick = function () {
+        currentLayer = parseInt(this.id.replace('layer', '').replace('-control', ''));
+        $('.selectedRow').removeClass('selectedRow');
+        $(this).addClass('selectedRow');
+        $(strokeLayer).css({ 'z-index': currentLayer });
+    };
 
-    toolbox.addItem( 4, 1, '<img src="img/toolbox/help.png">', 'toolbox-help', function() {
-            helpwindow.toggle();
-    });
-
-    layerwindow.addItem( 0, 0, '<img src="img/layers/layerAdd.png" />', 'layer-add', function() {
-        $('<canvas></canvas>').attr({
+    $('#LayersWindow').windowfy({
+        title: 'Layers',
+        close: false,
+        id: 'Layers'
+    }).on('click', '#layer-add', function () {
+        $('<canvas>').attr({
             id: 'layer' + nextLayer,
             style: 'z-index:' + nextLayer
         }).appendTo('body');
-        layerwindow.addRow();
-        layerwindow.addItem(layerwindow.getRows() - 1, 0, 'Layer ' + nextLayer, 'layer' + nextLayer + '-control', function() {
-            currentLayer = parseInt(this.id.replace('layer', '').replace('-control', ''));
-            $('.selectedRow').removeClass('selectedRow');
-            $(this).parent().addClass('selectedRow');
-            $(strokeLayer).css({'z-index': currentLayer});
-        });
+
+        $('<div/>').attr('id', 'layer' + nextLayer + '-control').html('Layer' + nextLayer).on('click', onLayerClick).appendTo('#Layers');
         layers.push($('#layer' + nextLayer).get(0));
         prepareCanvas($('#layer' + nextLayer).get(0));
-        layerwindow.update();
-        $('#layer' + currentLayer + '-control').parent().addClass('selectedRow');
+        $('#layer' + currentLayer + '-control').addClass('selectedRow');
         nextLayer++;
-    });
-
-    layerwindow.addItem( 0, 1, '<img src="img/layers/layerRemove.png" />', 'layer-remove', function() {
-        if(confirm('Remove Layer?')) {
-            if(layerwindow.content.length == 2) {
+    }).on('click', '#layer-remove', function () {
+        if (confirm('Remove Layer?')) {
+            if ($('#Layers div').length == 1) {
                 return;
             }
-            for(var i = 1; i < layerwindow.getRows(); i++) {
-                if(layerwindow.content[i][0].indexOf('layer' + currentLayer + '-control') != -1) {
-                    layerwindow.removeRow(i);
-                    $('#layer' + currentLayer).remove();
-                    layers[currentLayer] = null;
-                    for(var i =0; i < layers.length; i++) {
-                        if(layers[i] != null) {
-                            currentLayer = i;
-                            break;
-                        }
-                    }
-                    $(strokeLayer).css({'z-index': currentLayer});
-                    layerwindow.update();
-                    $('#layer' + currentLayer + '-control').parent().addClass('selectedRow');
-                    return;
+            $('#layer' + currentLayer + '-control').remove();
+            $('#layer' + currentLayer).remove();
+            layers[currentLayer] = null;
+            for (var i = 0; i < layers.length; i++) {
+                if (layers[i] != null) {
+                    currentLayer = i;
+                    break;
                 }
             }
+            $(strokeLayer).css({ 'z-index': currentLayer });
+            $('#layer' + currentLayer + '-control').addClass('selectedRow');
         }
-    });
-
-    layerwindow.addItem( 0, 2, '<img src="img/toolbox/clear.png" />', 'layer-clear', function() {
-        if(confirm('Clear current Layer?')) {
+    }).on('click', 'layer-clear', function () {
+        if (confirm('Clear current Layer?')) {
             clearCanvas(layers[currentLayer]);
         }
+    }).on('click', 'layer-save', function () {
+        saveCanvasToImage(layers[currentLayer]);
     });
 
-    layerwindow.addItem( 0, 3, '<img src="img/toolbox/save.png" />', 'layer-save', function() {
-        saveCanvasToImage( layers[ currentLayer ] );
-    });
-
-    for(var i = 0; i<2; i++) {
-        layerwindow.addItem(i + 1, 0, 'Layer ' + i, 'layer' + i + '-control', function() {
-            var newLayer = parseInt(this.id.replace('layer', '').replace('-control', ''));
-            $(strokeLayer).css({'z-index': newLayer});
-            currentLayer = newLayer;
-            $('.selectedRow').removeClass('selectedRow');
-            $(this).parent().addClass('selectedRow');
-        });
+    for(var i = 0; i < 2; i++) {
+        $('<div/>').attr('id', 'layer' + i + '-control').on('click', onLayerClick).html('Layer ' + i).appendTo('#Layers');
     }
 
-    colorwindow.addDisplayItem(1, 0, '<input type="color" id="color1-select"></input><br/>'+
-            '<input type="color" id="color2-select"></input>');
-
-    aboutwindow.addDisplayItem(0, 0,
-        '<div style="max-width: 500px">' +
-        '<img style="float:left; width:250px; height:250px;" src="img/logo.png"/>' +
-        '<p>Hello! This project is still in development, but thank you for using it!</p>'+
-        '<p>If you have comments or suggestions, feel free to email me at mcintire.evan@gmail.com, Id love to hear from you!</p>' +
-        '<p> If you want, you can try out the beta <a href="http://dev.evanmcintire.com/draw" target="_blank"> here</a>.</p>' +
-        '<p style="clear: both"> You can also look at the source code <a href="https://github.com/McIntireEvan/drawingapp" target="_blank"> here</a>. This program is provided under the GNU GPL v2</p>' +
-        '<h3>Credits</h3>' +
-        '<ul>' +
-        '<li> Programming: Evan McIntire (mcintire.evan@gmail.com)</li>' +
-        '<li> Graphics: Andy Hoang (powergrip776@gmail.com)</li>' +
-        '</ul>' +
-        '</div');
-
-    helpwindow.addDisplayItem(0, 0, 
-        '<table><tr><th colspan=2>Controls</th></tr>' +
-        '<tr><td><kbd>+</kbd></td><td> Increase brush size</td></tr>' +
-        '<tr><td><kbd>-</kbd></td><td> Decrease brush size</td></tr>' +
-        '<tr><td><kbd>X</kbd></td><td> Swap primary and secondary color </td></tr>' +
-        '<tr><td><kbd>F1</kbd></td><td> Toggle help window </td></tr>' +
-        '<tr><td><kbd>Esc</kbd></td><td> Close all closable windows </td></tr>' +
-        '<tr><td><kbd>Shift</kbd><kbd>+</kbd></td><td> Increase opacity</td></tr>' +
-        '<tr><td><kbd>Shift</kbd><kbd>-</kbd></td><td> Decrease opacity</td></tr>' +
-        '<tr><td><kbd>Ctrl</kbd><kbd>Z</kbd></td><td> Undo </td></tr>' +
-        '<tr><td><kbd>Ctrl</kbd><kbd>Y</kbd></td><td> Redo</td></tr>' +
-        '<tr><td><kbd>Ctrl</kbd><kbd>S</kbd></td><td> Save </td></tr>' +
-        '<tr><td><kbd>Ctrl</kbd><kbd>Q</kbd> </td><td> Reset window positions </td></tr>' +
-        '</table>');
-
-    toolbox.appendToBody(true, 0, 0);
-    layerwindow.appendToBody(true, 100, 200);
-    aboutwindow.appendToBody(false, 100, 100);
-    colorwindow.appendToBody(false, 100, 0);
-    helpwindow.appendToBody(false, 100, 50);
-    $('#layer0-control').parent().addClass('selectedRow');
+    $('#ColorWindow').windowfy({
+        title: 'Color',
+        exitmode: 'hide'
+    }).parent().hide();
+    $('#AboutWindow').windowfy({
+        title: 'About',
+        exitmode: 'hide'
+    }).parent().hide();
+    $('#HelpWindow').windowfy({
+        title: 'Help',
+        exitmode: 'hide'
+    }).parent().hide();
+    $('#layer0-control').addClass('selectedRow');
 
     $(document).keydown(function(e) {
         if(!mouseDown) {

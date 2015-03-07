@@ -20,6 +20,65 @@
         <canvas style='z-index: 1' id='layer1'></canvas>
         <canvas style='z-index: 0' id='layer0'></canvas>
         <canvas style='z-index: -1' id='background'></canvas>
+        <table id="ToolboxWindow">
+            <tr>
+                <td id="toolbox-pencil" class="AppWindowItem selectedTool"><img src="img/toolbox/pencil.png" class=""></td>
+                <td id="toolbox-eraser" class="AppWindowItem"><img src="img/toolbox/eraser.png"></td>
+            </tr>
+            <tr>
+                <td id="toolbox-color1" class="AppWindowItem"><img id="color1" src="img/toolbox/color1.png" style="background: rgb(20, 154, 180);"></td>
+                <td id="toolbox-color2" class="AppWindowItem"><img id="color2" src="img/toolbox/color2.png" style="background: rgb(255, 183, 23);"></td>
+            </tr>
+            <tr>
+                <td id="toolbox-undo" class="AppWindowItem"><img src="img/toolbox/undo.png"></td>
+                <td id="toolbox-redo" class="AppWindowItem"><img src="img/toolbox/redo.png"></td>
+            </tr>
+            <tr>
+                <td id="toolbox-save" class="AppWindowItem"><img src="img/toolbox/save.png"></td>
+                <td id="toolbox-clear" class="AppWindowItem"><img src="img/toolbox/clear.png"></td>
+            </tr>
+            <tr>
+                <td id="toolbox-info" class="AppWindowItem"><img src="img/toolbox/info.png"></td>
+                <td id="toolbox-help" class="AppWindowItem"><img src="img/toolbox/help.png"></td>
+            </tr>
+        </table>
+        <table id="LayersWindow">
+            <tr>
+                <td id="layer-add" class="AppWindowItem"><img src="img/layers/layerAdd.png"></td>
+                <td id="layer-remove" class="AppWindowItem"><img src="img/layers/layerRemove.png"></td>
+                <td id="layer-clear" class="AppWindowItem"><img src="img/toolbox/clear.png"></td>
+                <td id="layer-save" class="AppWindowItem"><img src="img/toolbox/save.png"></td>
+            </tr>
+        </table>
+        <table id='HelpWindow'>
+            <tr><td><kbd>+</kbd></td><td> Increase brush size</td></tr>
+            <tr><td><kbd>-</kbd></td><td> Decrease brush size</td></tr>
+            <tr><td><kbd>X</kbd></td><td> Swap primary and secondary color </td></tr>
+            <tr><td><kbd>F1</kbd></td><td> Toggle help window </td></tr>
+            <tr><td><kbd>Esc</kbd></td><td> Close all closable windows </td></tr>
+            <tr><td><kbd>Shift</kbd><kbd>+</kbd></td><td> Increase opacity</td></tr>
+            <tr><td><kbd>Shift</kbd><kbd>-</kbd></td><td> Decrease opacity</td></tr>
+            <tr><td><kbd>Ctrl</kbd><kbd>Z</kbd></td><td> Undo </td></tr>
+            <tr><td><kbd>Ctrl</kbd><kbd>Y</kbd></td><td> Redo</td></tr>
+            <tr><td><kbd>Ctrl</kbd><kbd>S</kbd></td><td> Save </td></tr>
+            <tr><td><kbd>Ctrl</kbd><kbd>Q</kbd> </td><td> Reset window positions </td></tr>
+        </table>
+        <div id='AboutWindow' style="max-width: 500px">
+            <img style="float:left; width:250px; height:250px;" src="img/logo.png" />
+            <p>Hello! This project is still in development, but thank you for using it!</p>
+            <p>If you have comments or suggestions, feel free to email me at mcintire.evan@gmail.com, Id love to hear from you!</p>
+            <p> If you want, you can try out the beta <a href="http://dev.evanmcintire.com/draw" target="_blank"> here</a>.</p>
+            <p style="clear: both"> You can also look at the source code <a href="https://github.com/McIntireEvan/drawingapp" target="_blank"> here</a>. This program is provided under the GNU GPL v2</p>
+            <h3>Credits</h3>
+            <ul>
+                <li> Programming: Evan McIntire (mcintire.evan@gmail.com)</li>
+                <li> Graphics: Andy Hoang (powergrip776@gmail.com)</li>
+            </ul>
+        </div>
+        <div id='ColorWindow'>
+            <input type="color" id="color1-select"/>
+            <input type="color" id="color2-select"/>
+        </div>
         <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js'></script>
         <script src='windowfy/jquery.windowfy.js'></script>
         <script src='js/lib.js'></script>

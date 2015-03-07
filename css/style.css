@@ -9,10 +9,8 @@
     background: white;
 }
 
-.windowTitle {
-    cursor: -webkit-grab;
-    cursor: -moz-grab;
-    cursor: grab;
+#ToolboxHolder {
+    min-width: 75px;
 }
 
 .selectedRow, .selectedTool {
@@ -52,7 +50,7 @@ canvas {
     background-color: transparent;
     padding: 0;
     overflow: hidden;
-} 
+}
 
 #splash {
     color: #0377A5;
@@ -63,10 +61,10 @@ canvas {
     z-index: 1008;
 }
 
-#splash img {
-    width:500px;
-    height:500px;
-}
+    #splash img {
+        width: 500px;
+        height: 500px;
+    }
 
 .centered, canvas {
     margin: auto;
@@ -80,17 +78,22 @@ canvas {
 }
 
 /*Edited from https://meta.superuser.com/questions/4788/css-for-the-new-kbd-style */
-kbd
-{
-    background-color:#f7f7f7;
-    border:1px solid #ccc;
-    border-radius:3px;
-    color:#333;
-    display:inline-block;
-    font-family:Arial,Helvetica,sans-serif;
-    font-size:11px;
-    line-height:1.4;
-    margin:0 .1em;
-    padding:.1em .6em;
-    text-shadow:0 1px 0 #fff;
+kbd {
+    background-color: #f7f7f7;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    color: #333;
+    display: inline-block;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 11px;
+    line-height: 1.4;
+    margin: 0 .1em;
+    padding: .1em .6em;
+    text-shadow: 0 1px 0 #fff;
+}
+
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+    .windowfy, #ToolboxWindow, #ColorWindow, #LayersWindow, #AboutWindow, #HelpWindow {
+        display: none;
+    }
 }
