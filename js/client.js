@@ -76,7 +76,7 @@ function initDesktopClient() {
         $('#layer' + currentLayer + '-control').addClass('selectedRow');
         nextLayer++;
     }).on('click', '#layer-remove', function () {
-        if (confirm('Remove Layer?')) {
+        if (confirm('Remove '+ $('#layer' + currentLayer + '-control').html() + '?')) {
             if ($('#Layers div').length == 1) {
                 return;
             }
@@ -93,7 +93,7 @@ function initDesktopClient() {
             $('#layer' + currentLayer + '-control').addClass('selectedRow');
         }
     }).on('click', '#layer-clear', function () {
-        if (confirm('Clear current Layer?')) {
+        if (confirm('Clear ' + $('#layer' + currentLayer + '-control').html() + ' ?')) {
             clearCanvas(layers[currentLayer]);
         }
     }).on('click', '#layer-save', function () {
@@ -135,11 +135,6 @@ function initDesktopClient() {
                     undo();
                 } else if ( e.which==89 ) {
                     redo();
-                } else if ( e.which==81 ) {
-                    toolbox.setPos( 0, 0);
-                    aboutwindow.setPos( 100, 100 );
-                    colorwindow.setPos( 100, 0 );
-                    helpwindow.setPos( 100, 50);
                 } else if (e.which == 83) {
                     e.preventDefault();
                     saveCanvasToImage(merge($('#background').get(0), layers));
@@ -161,12 +156,13 @@ function initDesktopClient() {
                     $('#color2').css({'background':color2});
                 } else if(e.which == 112) {
                     e.preventDefault()
-                    helpwindow.toggle();
+                    $('#HelpWindow').parent().toggle();
                 } else if(e.which == 27) {
-                    $('#AboutWindow').hide();
-                    $('#ColorsWindow').hide();
-                    $('#HelpWindow').hide();
-
+                    $('#AboutWindow').parent().hide();
+                    $('#ColorsWindow').parent().hide();
+                    $('#HelpWindow').parent().hide();
+                } else if (e.which == 13) {
+                    $('#newName').trigger('blur');
                 }
             }
         }
