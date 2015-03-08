@@ -49,6 +49,10 @@ function initDesktopClient() {
         } else {
             $('#layer-visible').html('<img src="img/layers/hidden.png" />');
         };
+        var opacity = Math.round($(layers[currentLayer]).css('opacity') * 100);
+        $('#layer-opacity').val(opacity);
+        $('#opacity-value').html(opacity);
+        $(strokeLayer).css('opacity', opacity);
     };
 
     var onDoubleClick = function () {
@@ -60,7 +64,9 @@ function initDesktopClient() {
             id: 'newName',
             value: $(this).html()
         }).on('blur', function () {
-           $(this).parent().html($('#newName').val());
+            if ($('#newName').val() != '') {
+                $(this).parent().html($('#newName').val());
+            }
         });
         $(this).html(input);
         input.focus();
@@ -126,6 +132,12 @@ function initDesktopClient() {
     for(var i = 0; i < 2; i++) {
         $('<div/>').attr('id', 'layer' + i + '-control').html('Layer ' + i).on('click', onLayerClick).on('dblclick', onDoubleClick).insertAfter('#LayersWindow');
     }
+
+    $('#layer-opacity').on('input', function () {
+        $('#opacity-value').html($(this).val());
+        $(strokeLayer).css('opacity', $(this).val() / 100);
+        $(layers[currentLayer]).css('opacity', $(this).val() / 100);
+    });
 
     $('#ColorWindow').windowfy({
         title: 'Color',

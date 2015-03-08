@@ -2,6 +2,15 @@
     font-family: 'Roboto', sans-serif;
 }
 
+#opacity {
+    display: table;
+}
+
+label, input[type=range] {
+    display: table-cell;
+    vertical-align:middle;
+}
+
 #ToolboxHolder {
     min-width: 75px;
 }

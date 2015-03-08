@@ -75,6 +75,7 @@ function loadCanvasFromStorage(destination) {
     }
 }
 
+//TODO: Rewrite
 function isMobile() {
     return window.matchMedia("only screen" +
             " and (min-device-width: 320px)" +

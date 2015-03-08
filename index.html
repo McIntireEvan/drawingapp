@@ -43,16 +43,23 @@
                     <td id="toolbox-help"><img src="img/toolbox/help.png"></td>
                 </tr>
             </table>
-            <table id="LayersWindow">
-                <tr>
-                    <td id="layer-add"><img src="img/layers/layerAdd.png"></td>
-                    <td id="layer-remove"><img src="img/layers/layerRemove.png"></td>
-                    <td id="layer-clear"><img src="img/toolbox/clear.png"></td>
-                    <td id="layer-save"><img src="img/toolbox/save.png"></td>
-                    <td id="layer-visible"><img src="img/layers/visible.png"></td>
-                    <td id="layer-mergedown"><img src="img/layers/mergeDown.png"></td>
-                </tr>
-            </table>
+            <div id="LayersWindow">
+                <table>
+                    <tr>
+                        <td id="layer-add"><img src="img/layers/layerAdd.png"></td>
+                        <td id="layer-remove"><img src="img/layers/layerRemove.png"></td>
+                        <td id="layer-clear"><img src="img/toolbox/clear.png"></td>
+                        <td id="layer-save"><img src="img/toolbox/save.png"></td>
+                        <td id="layer-visible"><img src="img/layers/visible.png"></td>
+                        <td id="layer-mergedown"><img src="img/layers/mergeDown.png"></td>
+                    </tr>
+                </table>
+                <div id='opacity'>
+                    <label>Opacity:</label>
+                    <input id='layer-opacity' max="100" min="0" value="100" type="range" />
+                    <span id='opacity-value'>100</span>
+                </div>
+            </div>
             <table id='HelpWindow'>
                 <tr><td><kbd>+</kbd></td><td> Increase brush size</td></tr>
                 <tr><td><kbd>-</kbd></td><td> Decrease brush size</td></tr>

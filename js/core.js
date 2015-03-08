@@ -84,7 +84,8 @@ function beginStroke(evt) {
 }
 
 function updateStroke() {
-    if(mouseDown) {
+    if (mouseDown) {
+        document.getSelection().removeAllRanges();
         stroke.push(pos);
         clearCanvas(strokeLayer);
         strokeContext.globalAlpha = 1;
