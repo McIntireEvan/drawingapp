@@ -44,6 +44,11 @@ function initDesktopClient() {
         $('.selectedRow').removeClass('selectedRow');
         $(this).addClass('selectedRow');
         $(strokeLayer).css({ 'z-index': currentLayer });
+        if ($(layers[currentLayer]).is(':visible')) {
+            $('#layer-visible').html('<img src="img/layers/visible.png" />');
+        } else {
+            $('#layer-visible').html('<img src="img/layers/hidden.png" />');
+        };
     };
 
     var onDoubleClick = function () {
@@ -61,6 +66,20 @@ function initDesktopClient() {
         input.focus();
     };
 
+    var removeCurrentLayer = function() {
+        $('#layer' + currentLayer + '-control').remove();
+        $('#layer' + currentLayer).remove();
+        layers[currentLayer] = null;
+        for (var i = 0; i < layers.length; i++) {
+            if (layers[i] != null) {
+                currentLayer = i;
+                break;
+            }
+        }
+        $(strokeLayer).css({ 'z-index': currentLayer });
+        $('#layer' + currentLayer + '-control').addClass('selectedRow');
+    }
+
     $('#LayersWindow').windowfy({
         title: 'Layers',
         close: false,
@@ -70,7 +89,7 @@ function initDesktopClient() {
             id: 'layer' + nextLayer,
             style: 'z-index:' + nextLayer
         }).appendTo('body');
-        $('<div/>').attr('id', 'layer' + nextLayer + '-control').html('Layer ' + nextLayer).on('click', onLayerClick).on('dblclick', onDoubleClick).appendTo('#Layers');
+        $('<div/>').attr('id', 'layer' + nextLayer + '-control').html('Layer ' + nextLayer).on('click', onLayerClick).on('dblclick', onDoubleClick).insertAfter('#LayersWindow');
         layers.push($('#layer' + nextLayer).get(0));
         prepareCanvas($('#layer' + nextLayer).get(0));
         $('#layer' + currentLayer + '-control').addClass('selectedRow');
@@ -80,17 +99,7 @@ function initDesktopClient() {
             if ($('#Layers div').length == 1) {
                 return;
             }
-            $('#layer' + currentLayer + '-control').remove();
-            $('#layer' + currentLayer).remove();
-            layers[currentLayer] = null;
-            for (var i = 0; i < layers.length; i++) {
-                if (layers[i] != null) {
-                    currentLayer = i;
-                    break;
-                }
-            }
-            $(strokeLayer).css({ 'z-index': currentLayer });
-            $('#layer' + currentLayer + '-control').addClass('selectedRow');
+            removeCurrentLayer();
         }
     }).on('click', '#layer-clear', function () {
         if (confirm('Clear ' + $('#layer' + currentLayer + '-control').html() + ' ?')) {
@@ -98,10 +107,24 @@ function initDesktopClient() {
         }
     }).on('click', '#layer-save', function () {
         saveCanvasToImage(layers[currentLayer]);
+    }).on('click', '#layer-visible', function () {
+        if ($(this).html().indexOf('visible') != -1) {
+            $(this).html('<img src="img/layers/hidden.png" />');
+        } else {
+            $(this).html('<img src="img/layers/visible.png" />');
+        };
+        $(layers[currentLayer]).toggle();
+    }).on('click', '#layer-mergedown', function () {
+        var next = $('#layer' + currentLayer + '-control').next();
+        if (next.length != 0) {
+            var nextId = parseInt(next.get(0).id.replace('layer', '').replace('-control', ''));
+            layers[nextId] = merge($(layers[nextId]).get(0), $(layers[currentLayer]).get(0));
+            removeCurrentLayer();
+        }
     });
 
     for(var i = 0; i < 2; i++) {
-        $('<div/>').attr('id', 'layer' + i + '-control').html('Layer ' + i).on('click', onLayerClick).on('dblclick', onDoubleClick).appendTo('#Layers');
+        $('<div/>').attr('id', 'layer' + i + '-control').html('Layer ' + i).on('click', onLayerClick).on('dblclick', onDoubleClick).insertAfter('#LayersWindow');
     }
 
     $('#ColorWindow').windowfy({
@@ -196,18 +219,14 @@ function initDesktopClient() {
         }
     });
 
-    $(document).on('mousedown', '#ToolboxWindow .AppWindowItem', function() {
+    $(document).on('mousedown', '#ToolboxWindow td', function() {
         $(this).addClass('selectedTool');
-    });
-
-    $(document).on('mouseup mouseout', function(evt) {
+    }).on('mouseup mouseout', function(evt) {
         $('.selectedTool').removeClass('selectedTool');
         $('#toolbox-' + tool).addClass('selectedTool');
         pos = getMousePos(mouseLayer, evt);
         endStroke(evt);
-    });
-
-    $(document).on( 'mousemove', function(evt) {
+    }).on( 'mousemove', function(evt) {
         pos = getMousePos(mouseLayer, evt);
         drawCursor( pos );
         updateStroke();
@@ -220,9 +239,7 @@ function initDesktopClient() {
     $(document).on('mouseenter', function() {
         cursorInWindow = true;
         clearCanvas( mouseLayer );
-    });
-
-    $(document).on('mouseleave', function() {
+    }).on('mouseleave', function() {
         cursorInWindow = false;
         clearCanvas( mouseLayer );
     });
