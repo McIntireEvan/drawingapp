@@ -158,8 +158,8 @@ function drawStrokeToCanvas(canvas, color) {
 function prepareCanvas(canvas) {
     //TODO: In node version, set these to value from server
     $(canvas).css({'width':width, 'height':height});
-    canvas.width = $('#mouse').css('width').replace('px','');
-    canvas.height = $('#mouse').css('height').replace('px','');
+    canvas.width = $('#mouse').width();
+    canvas.height = $('#mouse').height();
 }
 
 $(document).ready(function() {
@@ -171,6 +171,5 @@ $(document).ready(function() {
         initDesktopClient();
     }
     initShared();
-    console.log('Loading complete');
     $('#splash').fadeOut(1500);
 });

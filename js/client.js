@@ -16,9 +16,31 @@ function initDesktopClient() {
         tool = 'eraser';
         mouseContext.fillStyle = 'rgba(0, 0, 0, 0)';
     }).on('click', '#toolbox-color1', function () {
-        $('#ColorWindow').parent().toggle();
+        if($('.cw1').length == 1) {
+            $('#ColorWindow').removeClass('cw1').parent().parent().hide();
+            return;
+        }
+        if($('.cw2').length == 0) {
+            $('#ColorWindow').addClass('cw1').removeClass('cw2').parent().parent().toggle();
+        }
+        $('#ColorWindow').html('').colorwheel({size: 200, ringSize: 20, onInput: function(evt) {
+            var newColor = evt.color;
+            color1 = 'rgb(' + newColor.r + ',' + newColor.g + ',' + newColor.b + ')';
+            $('#toolbox-color1 img').css('background',color1);
+        }});
     }).on('click', '#toolbox-color2', function () {
-        $('#ColorWindow').parent().toggle();
+        if($('.cw2').length == 1) {
+            $('#ColorWindow').removeClass('cw2').parent().parent().hide();
+            return;
+        }
+        if($('.cw1').length == 0) {
+            $('#ColorWindow').addClass('cw2').removeClass('cw1').parent().parent().toggle();
+        }
+        $('#ColorWindow').html('').colorwheel({size: 200, ringSize: 20, onInput: function(evt) {
+           var newColor = evt.color;
+           color2 = 'rgb(' + newColor.r + ',' + newColor.g + ',' + newColor.b + ')';
+           $('#toolbox-color2 img').css('background',color2);
+        }});   
     }).on('click', '#toolbox-undo', function () {
         undo();
     }).on('click', '#toolbox-redo', function () {
@@ -34,9 +56,9 @@ function initDesktopClient() {
             clearCanvas($('#background').get(0));
         }
     }).on('click', '#toolbox-info', function () {
-        $('#AboutWindow').parent().toggle();
+        $('#AboutWindow').parent().parent().toggle();
     }).on('click', '#toolbox-help', function () {
-        $('#HelpWindow').parent().toggle();
+        $('#HelpWindow').parent().parent().toggle();
     });
 
     var onLayerClick = function () {
@@ -141,16 +163,23 @@ function initDesktopClient() {
 
     $('#ColorWindow').windowfy({
         title: 'Color',
-        exitmode: 'hide'
-    }).parent().hide();
+        onClose: function() {
+            $(this).hide();
+            $('#ColorWindow').removeClass('cw1 cw2');
+        }
+    }).parent().parent().hide();
     $('#AboutWindow').windowfy({
         title: 'About',
-        exitmode: 'hide'
-    }).parent().hide();
+        onClose: function() {
+            $(this).hide();
+        }
+    }).parent().parent().hide();
     $('#HelpWindow').windowfy({
         title: 'Help',
-        exitmode: 'hide'
-    }).parent().hide();
+        onClose: function() {
+            $(this).hide();
+        }
+    }).parent().parent().hide();
     $('#layer0-control').addClass('selectedRow');
 
     $(document).keydown(function(e) {

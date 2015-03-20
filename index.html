@@ -4,6 +4,8 @@
     <head>
         <title>Doodle</title>
         <link rel='stylesheet' type='text/css' href='css/style.css'>
+        <link rel='stylesheet' type='text/css' href='windowfy/bin/jquery.windowfy.css'>
+        <link rel='stylesheet' type='text/css' href='colorwheel/jquery.colorwheel.css'>
         <link rel='shortcut icon' href='img/favicon.png' type='image/x-icon' />
         <link rel='icon' type='image/png' href='img/logo.png' />
         <link href='https://fonts.googleapis.com/css?family=Roboto:300' rel='stylesheet' type='text/css'>
@@ -20,10 +22,10 @@
         <canvas style='z-index: 1' id='layer1'></canvas>
         <canvas style='z-index: 0' id='layer0'></canvas>
         <canvas style='z-index: -1' id='background'></canvas>
-        <div style='display:none'>
+        <div>
             <table id="ToolboxWindow">
                 <tr>
-                    <td id="toolbox-pencil"  selectedTool"><img src="img/toolbox/pencil.png" class=""></td>
+                    <td id="toolbox-pencil" class='selectedTool'><img src="img/toolbox/pencil.png" class=""></td>
                     <td id="toolbox-eraser"><img src="img/toolbox/eraser.png"></td>
                 </tr>
                 <tr>
@@ -84,13 +86,11 @@
                     <li> Graphics: Andy Hoang (powergrip776@gmail.com)</li>
                 </ul>
             </div>
-            <div id='ColorWindow'>
-                <input type="color" id="color1-select"/>
-                <input type="color" id="color2-select"/>
-            </div>
+            <div id='ColorWindow'></div>
         </div>
         <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js'></script>
-        <script src='windowfy/jquery.windowfy.js'></script>
+        <script src='windowfy/bin/jquery.windowfy.min.js'></script>
+        <script src='colorwheel/jquery.colorwheel.js'></script>
         <script src='js/lib.js'></script>
         <script src='js/client.js'></script>
         <script src='js/core.js'></script>
