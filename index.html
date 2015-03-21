@@ -15,6 +15,10 @@
             <div class='centered'>
                 <img src='img/logo.png' />
                 <p>Loading</p>
+                <!--[if lte IE 10]>
+                    <p>Your browser is out of date, and might not work properly with this page. Its recommended that you switch to Chrome, Firefox, IE11, or any other modern broswer</p>
+                <![endif]-->
+
             </div>
         </div>
         <canvas style='z-index: 999' id='mouse'></canvas>
@@ -22,7 +26,7 @@
         <canvas style='z-index: 1' id='layer1'></canvas>
         <canvas style='z-index: 0' id='layer0'></canvas>
         <canvas style='z-index: -1' id='background'></canvas>
-        <div>
+        <div style="display:none; position: absoulte" id='window-holder'>
             <table id="ToolboxWindow">
                 <tr>
                     <td id="toolbox-pencil" class='selectedTool'><img src="img/toolbox/pencil.png" class=""></td>

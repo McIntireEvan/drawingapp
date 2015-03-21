@@ -172,4 +172,5 @@ $(document).ready(function() {
     }
     initShared();
     $('#splash').fadeOut(1500);
+    $('#window-holder').fadeIn(1500);
 });
