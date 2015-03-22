@@ -300,6 +300,74 @@ function initMobileClient() {
         pos = getMousePos(mouseLayer, evt.originalEvent.changedTouches[0]);
         endStroke(evt.originalEvent.changedTouches[0]);
     });
+
+    $('<input>').attr({
+        'type': 'color',
+        'class': 'colorpick'
+    }).css({
+        'left': '-9999px',
+        'top': '-9999px',
+        'position': 'absolute',
+        'z-index': '3000'
+    }).appendTo('body');
+
+    $(document).on('change', '.colorpick',function () {
+        color = $('.colorpick').val();
+        color1 = color;
+    });
+
+    $("<div/>").attr({
+        'class': 'mobile-toolbox'
+    }).appendTo('body');
+
+    $("<div/>").attr({
+        'class': 'mobile-toolbox-item'
+    }).html('Pencil').appendTo('.mobile-toolbox').click(function () {
+        $('.mobile-selected').removeClass('mobile-selected');
+        $(this).addClass('mobile-selected');
+
+        tool = 'pencil';
+    });
+
+    $("<div/>").attr({
+        'class': 'mobile-toolbox-item'
+    }).html('Eraser').appendTo('.mobile-toolbox').click(function () {
+        $('.mobile-selected').removeClass('mobile-selected');
+        $(this).addClass('mobile-selected');
+
+        tool = 'eraser';
+    })
+
+    $("<div/>").attr({
+        'class': 'mobile-toolbox-item'
+    }).html('Color').appendTo('.mobile-toolbox').click(function () {
+        $('.mobile-selected').removeClass('mobile-selected');
+        $(this).addClass('mobile-selected');
+        $('.colorpick')[0].click()
+    });
+
+    $("<div/>").attr({
+        'class': 'mobile-toolbox-item'
+    }).html('Clear').appendTo('.mobile-toolbox').click(function () {
+        $('.mobile-selected').removeClass('mobile-selected');
+        $(this).addClass('mobile-selected');
+        if (confirm('Clear?')) {
+            for (var i = 0; i < layers.length; i++) {
+                clearCanvas(layers[i]);
+            }
+            clearCanvas($('#background').get(0));
+        }
+    });
+
+    $("<div/>").attr({
+        'class': 'mobile-toolbox-item'
+    }).html('Save').appendTo('.mobile-toolbox').click(function () {
+        $('.mobile-selected').removeClass('mobile-selected');
+        $(this).addClass('mobile-selected');
+
+        saveCanvasToImage(merge($('#background').get(0), layers));
+        clearCanvas($('#background').get(0));
+    });
 }
 
 function initShared() {
@@ -318,8 +386,6 @@ function initShared() {
     currentChange = 0;
     strokeContext.globalCompositeOperation = 'source-over';
 
-    $('#color1-select').val(color1);
-    $('#color2-select').val(color2);
     $('#color1').css({'background':color});
     $('#color2').css({'background':color2});
 
@@ -328,24 +394,6 @@ function initShared() {
 
     $(window).unload(function() {
         saveCanvasToStorage(merge($('#background').get(0), layers));
-    });
-
-    $(document).on('change', '#color1-select', function() {
-        color1 = $('#color1-select').val();
-        $('#color1').css({'background':color1});
-
-        if( tool == 'pencil' ) {
-            mouseContext.fillStyle = color1;
-        }
-    });
-
-    $(document).on('change', '#color2-select', function() {
-        color2 = $('#color2-select').val();
-        $('#color2').css({'background':color2});
-
-        if( tool == 'pencil' ) {
-            mouseContext.fillStyle = color2;
-        }
     });
 
     $(document).bind('contextmenu', function(event) {
