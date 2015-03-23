@@ -273,7 +273,7 @@ function initDesktopClient() {
         updateStroke();
     });
 
-    $(mouseLayer).on( 'mousedown', function(evt) {
+    $(mouseLayer).on('mousedown', function (evt) {
         beginStroke(evt);
     });
 

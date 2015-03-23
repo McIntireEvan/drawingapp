@@ -64,7 +64,7 @@ function saveCanvasToStorage(source) {
 
 function loadCanvasFromStorage(destination) {
     try {
-        if(localStorage.getItem('canvas')) {
+        if (localStorage.getItem('canvas')) {
             var img = new Image;
             img.src = localStorage.getItem('canvas');
             destination.getContext('2d').drawImage(img, 0, 0);
@@ -72,6 +72,45 @@ function loadCanvasFromStorage(destination) {
     }
     catch (e) {
 
+    }
+}
+
+function textTool(font, pos, ctx) {
+    var string = prompt('Text:');
+    if (string == 'null' || string == '' || string == null) {
+        return;
+    }
+    ctx.font = font;
+    ctx.fillText(string, pos.x, pos.y);
+    changes.push({ layer: currentLayer, context: layers[currentLayer].toDataURL() });
+}
+
+function importImages() {
+    if (window.File && window.FileReader && window.FileList && window.Blob) {
+        $(document).on('dragover dragenter', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }).on('drop', function (evt) {
+            var files = evt.originalEvent.dataTransfer.files;
+            if (files.length == 0) {
+                return;
+            }
+            if(!files[0].type.match('image.*')) {
+                return;
+            }
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var data = reader.result;
+                var img = new Image();
+                img.src = data;
+                img.onload = function () {
+                    layers[currentLayer].getContext('2d').drawImage(img, 0, 0);
+                }
+            }
+            reader.readAsDataURL(files[0]);
+            evt.preventDefault();
+            evt.stopPropagation();
+        });
     }
 }
 
