@@ -21,6 +21,10 @@ var stroke = [];
 var strokeLayer = $('#stroke').get(0);
 var strokeContext = strokeLayer.getContext('2d');
 
+var selection = {x1: 0, y1: 0, x2: 0, y2: 0}
+var selectionLayer = $('#select').get(0);
+var selectionContext = selectionLayer.getContext('2d');
+
 var changes = [];
 var currentChange;
 
@@ -118,6 +122,7 @@ function drawStrokeToCanvas(canvas, color) {
     var c = canvas.getContext('2d');
     if(c.globalAlpha != opacity) { c.globalAlpha = opacity; }
     if(c.lineJoin != 'round') { c.lineJoin = 'round'; }
+    if(c.lineCap != 'round') { c.lineCap = 'round'; }
     if(c.lineWidth != (radius * 2)) { c.lineWidth = radius*2; }
 
     if(tool == 'pencil') {
@@ -142,9 +147,6 @@ function drawStrokeToCanvas(canvas, color) {
     c.moveTo(stroke[0].x+0.1, stroke[0].y);
     for(var i = 0; i < stroke.length; i++) {
         c.lineTo(stroke[i].x, stroke[i].y);
-        if(i < 2) {
-            c.closePath();
-        }
     }
 
     c.moveTo(stroke[stroke.length-1].x, stroke[stroke.length-1].y);
@@ -173,4 +175,5 @@ $(document).ready(function() {
     initShared();
     $('#splash').fadeOut(1500);
     $('#window-holder').fadeIn(1500);
+    importImages();
 });

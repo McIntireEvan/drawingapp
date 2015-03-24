@@ -21,6 +21,7 @@ function merge(mergeTo, mergeFrom) {
     } else {
         console.log('Error merging layers');
     }
+    p
     return mergeTo;
 }
 
@@ -29,7 +30,7 @@ function merge(mergeTo, mergeFrom) {
  * @param {canvas} canvas - The canvas to be cleared
  */
 function clearCanvas(canvas) { 
-    canvas.getContext('2d').clearRect(0,0, canvas.width, canvas.height);
+    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
 }
 
 /*
@@ -87,9 +88,9 @@ function textTool(font, pos, ctx) {
 
 function importImages() {
     if (window.File && window.FileReader && window.FileList && window.Blob) {
-        $(document).on('dragover dragenter', function (e) {
-            e.preventDefault();
-            e.stopPropagation();
+        $(document).on('dragover dragenter', function (evt) {
+            evt.preventDefault();
+            evt.stopPropagation();
         }).on('drop', function (evt) {
             var files = evt.originalEvent.dataTransfer.files;
             if (files.length == 0) {
@@ -100,11 +101,12 @@ function importImages() {
             }
             var reader = new FileReader();
             reader.onload = function (e) {
+                console.log(evt.originalEvent.pageX)
                 var data = reader.result;
                 var img = new Image();
                 img.src = data;
                 img.onload = function () {
-                    layers[currentLayer].getContext('2d').drawImage(img, 0, 0);
+                    layers[currentLayer].getContext('2d').drawImage(img, evt.originalEvent.pageX, evt.originalEvent.pageX);
                 }
             }
             reader.readAsDataURL(files[0]);

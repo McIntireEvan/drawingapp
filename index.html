@@ -22,6 +22,7 @@
 
             </div>
         </div>
+        <canvas style='z-index: 1000' id='select'></canvas>
         <canvas style='z-index: 999' id='mouse'></canvas>
         <canvas style='z-index: 0' id='stroke'></canvas>
         <canvas style='z-index: 1' id='layer1'></canvas>
@@ -30,16 +31,16 @@
         <div style="display:none; position: absolute" id='window-holder'>
             <table id="ToolboxWindow">
                 <tr>
-                    <td id="toolbox-pencil" class='selectedTool'><img src="img/toolbox/pencil.png" class=""></td>
-                    <td id="toolbox-eraser"><img src="img/toolbox/eraser.png"></td>
+                    <td id="pencil" class='selectedTool'><img src="img/toolbox/pencil.png" class=""></td>
+                    <td id="eraser"><img src="img/toolbox/eraser.png"></td>
                 </tr>
                 <tr>
                     <td id="toolbox-color1"><img id="color1" src="img/toolbox/color1.png" style="background: rgb(20, 154, 180);"></td>
                     <td id="toolbox-color2"><img id="color2" src="img/toolbox/color2.png" style="background: rgb(255, 183, 23);"></td>
                 </tr>
                 <tr>
-                    <td id="toolbox-undo"><img src="img/toolbox/undo.png"></td>
-                    <td id="toolbox-redo"><img src="img/toolbox/redo.png"></td>
+                    <td id="undo"><img src="img/toolbox/undo.png"></td>
+                    <td id="redo"><img src="img/toolbox/redo.png"></td>
                 </tr>
                 <tr>
                     <td id="toolbox-save"><img src="img/toolbox/save.png"></td>
