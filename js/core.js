@@ -71,8 +71,10 @@ function beginStroke(evt) {
     if(!mouseDown) {
         if(evt.which == 3) {
             color = color2;
-        } else {
+        } else if (evt.which == 1) {
             color = color1;
+        } else {
+            return;
         }
     }
     mouseDown = true;
@@ -175,5 +177,4 @@ $(document).ready(function() {
     initShared();
     $('#splash').fadeOut(1500);
     $('#window-holder').fadeIn(1500);
-    importImages();
 });

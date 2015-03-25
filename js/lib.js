@@ -21,7 +21,6 @@ function merge(mergeTo, mergeFrom) {
     } else {
         console.log('Error merging layers');
     }
-    p
     return mergeTo;
 }
 
@@ -69,6 +68,7 @@ function loadCanvasFromStorage(destination) {
             var img = new Image;
             img.src = localStorage.getItem('canvas');
             destination.getContext('2d').drawImage(img, 0, 0);
+            localStorage.removeItem('canvas');
         }
     }
     catch (e) {
@@ -76,13 +76,19 @@ function loadCanvasFromStorage(destination) {
     }
 }
 
-function textTool(font, pos, ctx) {
+function textTool(font, evt, ctx) {
     var string = prompt('Text:');
     if (string == 'null' || string == '' || string == null) {
         return;
     }
+    if(evt.which == 3) {
+        color = color2;
+    } else if (evt.which == 1) {
+        color = color1;
+    }
+    ctx.fillStyle = color;
     ctx.font = font;
-    ctx.fillText(string, pos.x, pos.y);
+    ctx.fillText(string, evt.pageX, evt.pageY);
     changes.push({ layer: currentLayer, context: layers[currentLayer].toDataURL() });
 }
 
@@ -101,7 +107,6 @@ function importImages() {
             }
             var reader = new FileReader();
             reader.onload = function (e) {
-                console.log(evt.originalEvent.pageX)
                 var data = reader.result;
                 var img = new Image();
                 img.src = data;

@@ -15,6 +15,12 @@ function initDesktopClient() {
         $('#eraser').addClass('selectedTool');
         tool = 'eraser';
         mouseContext.fillStyle = 'rgba(0, 0, 0, 0)';
+    }).on('click', '#brushToggle', function () {
+        alert('Net yet Implemented');
+    }).on('click', '#text', function () {
+        tool = 'text';
+        $('.selectedTool').removeClass('selectedTool');
+        $('#text').addClass('selectedTool');
     }).on('click', '#toolbox-color1', function () {
         if($('.cw1').length == 1) {
             $('#ColorWindow').removeClass('cw1').parent().parent().hide();
@@ -267,9 +273,9 @@ function initDesktopClient() {
 
     $(document).on('mousedown', '#ToolboxWindow td', function() {
         $(this).addClass('selectedTool');
-    }).on('mouseup mouseout', function(evt) {
+    }).on('mouseup', function(evt) {
         $('.selectedTool').removeClass('selectedTool');
-        $('#toolbox-' + tool).addClass('selectedTool');
+        $('#'+tool).addClass('selectedTool');
         pos = getMousePos(mouseLayer, evt);
         endStroke(evt);
     }).on( 'mousemove', function(evt) {
@@ -279,7 +285,11 @@ function initDesktopClient() {
     });
 
     $(mouseLayer).on('mousedown', function (evt) {
-        beginStroke(evt);
+        if(tool == 'pencil' || tool == 'eraser') {
+            beginStroke(evt);
+        } else if(tool == 'text') {
+            textTool('32px Arial', evt, layers[currentLayer].getContext('2d'));
+        }
     });
 
     $(document).on('mouseenter', function() {
