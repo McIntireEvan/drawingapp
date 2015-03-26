@@ -340,11 +340,12 @@ function initDesktopClient() {
 
 function initMobileClient() {
     $(document).on('touchstart', function (evt) {
-        beginStroke(evt.originalEvent.changedTouches[0]);
+        beginStroke(evt.originalEvent);
     });
 
     $(document).on('touchmove', function (evt) {
         pos = getMousePos(mouseLayer, evt.originalEvent.touches[0]);
+        evt.preventDefault();
         updateStroke();
     });
 

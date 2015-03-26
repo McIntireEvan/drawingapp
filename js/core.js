@@ -21,10 +21,6 @@ var stroke = [];
 var strokeLayer = $('#stroke').get(0);
 var strokeContext = strokeLayer.getContext('2d');
 
-var selection = {x1: 0, y1: 0, x2: 0, y2: 0}
-var selectionLayer = $('#select').get(0);
-var selectionContext = selectionLayer.getContext('2d');
-
 var changes = [];
 var currentChange;
 
@@ -66,18 +62,23 @@ function updateCanvas() {
 }
 
 function beginStroke(evt) {
-    pos = getMousePos(mouseLayer, evt);
-    stroke.push(pos);
     if(!mouseDown) {
         if(evt.which == 3) {
             color = color2;
         } else if (evt.which == 1) {
             color = color1;
         } else {
-            return;
+            if(evt.type == 'touchstart') {
+                evt = evt.changedTouches[0];
+            } else {
+                return;
+            }
         }
     }
     mouseDown = true;
+    pos = getMousePos(mouseLayer, evt);
+    stroke.push(pos);
+
     if(tool == 'pencil') {
         mouseContext.fillStyle = color;
     }
@@ -147,7 +148,9 @@ function drawStrokeToCanvas(canvas, color) {
     c.beginPath();
     if (stroke.length > 2) {
         var i;
-        for (i = 1; i < stroke.length - 2; i++) {
+        //Draw bezier curve to the midpoint of stroke[i] and stroke[i + 1], using stroke[i] as a control point
+        //This is what keeps the lines smooth
+        for (i = 0; i < stroke.length - 2; i++) {
             var C = (stroke[i].x + stroke[i + 1].x) / 2;
             var D = (stroke[i].y + stroke[i + 1].y) / 2;
 
@@ -161,13 +164,12 @@ function drawStrokeToCanvas(canvas, color) {
             stroke[i + 1].y
         );
     } else {
+        //There are too few points to do a bezier curve, so we just draw the point
         c.lineWidth = 1;
         c.arc(stroke[0].x, stroke[0].y, radius, 0, 2 * Math.PI, false);
         c.fill();
     }
     c.stroke();
-    c.globalcompositeoperation = 'source-over';
-
 }
 
 function prepareCanvas(canvas) {
@@ -183,6 +185,12 @@ $(document).ready(function() {
     if(isMobile()) {
         initMobileClient();
     } else {
+        //Only load jQuery plugins if the desktop client is loaded to save memory and loading times
+        $('body').append($('<script>').attr({
+            'src':'windowfy/bin/jquery.windowfy.min.js'
+        })).append($('<script>').attr({
+            'src':'colorwheel/jquery.colorwheel.js'
+        }));
         initDesktopClient();
     }
     initShared();

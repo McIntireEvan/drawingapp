@@ -116,7 +116,7 @@ kbd {
     z-index: 2000;
 
     .selected {
-        color: blue;
+        color: blue !important;
         background: white;
     }
 
