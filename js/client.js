@@ -10,17 +10,19 @@ function initDesktopClient() {
         $('#pencil').addClass('selectedTool');
         tool = 'pencil';
         mouseContext.fillStyle = color;
+        $('canvas').css('cursor','none');
     }).on('click', '#eraser', function() {
         $('.selectedTool').removeClass('selectedTool');
         $('#eraser').addClass('selectedTool');
         tool = 'eraser';
         mouseContext.fillStyle = 'rgba(0, 0, 0, 0)';
     }).on('click', '#brushToggle', function () {
-        alert('Net yet Implemented');
+        $('#BrushWindow').parent().parent().toggle();
     }).on('click', '#text', function () {
         tool = 'text';
         $('.selectedTool').removeClass('selectedTool');
         $('#text').addClass('selectedTool');
+        $('canvas').css('cursor','crosshair');
     }).on('click', '#toolbox-color1', function () {
         if($('.cw1').length == 1) {
             $('#ColorWindow').removeClass('cw1').parent().parent().hide();
@@ -172,6 +174,17 @@ function initDesktopClient() {
         $(layers[currentLayer]).css('opacity', $(this).val() / 100);
     });
 
+    $('#brush-opacity').on('input', function () {
+        $('#brush-opacity-value').html($(this).val());
+        opacity = ($(this).val()/ 100);
+        $(mouseLayer).css('opacity', opacity);
+    });
+
+    $('#brush-size').on('input', function () {
+        $('#brush-size-value').html($(this).val());
+        radius = $(this).val();
+    });
+
     $('#ColorWindow').windowfy({
         title: 'Color',
         onClose: function() {
@@ -191,6 +204,13 @@ function initDesktopClient() {
             $(this).hide();
         }
     }).parent().parent().hide();
+    $('#BrushWindow').windowfy({
+        title: 'Brush Settings',
+        onClose: function() {
+            $(this).hide();
+        }
+    }).parent().parent().hide();
+
     $('#layer0-control').addClass('selectedRow');
 
     $(document).keydown(function(e) {
@@ -205,6 +225,10 @@ function initDesktopClient() {
                         opacity -= 0.01;
                     }
                 }
+                $(mouseLayer).css('opacity', opacity);
+                var o = Math.round(opacity * 100);
+                $('#brush-opacity-value').html(o);
+                $('#brush-opacity').val(o);
             } else if ( e.ctrlKey ) {
                 if ( e.which==90 ) {
                     undo();
@@ -239,6 +263,10 @@ function initDesktopClient() {
                 } else if (e.which == 13) {
                     $('#newName').trigger('blur');
                 }
+
+                $('#brush-size-value').html(radius);
+                $('#brush-size').val(radius);
+
             }
         }
         drawCursor(pos);
@@ -258,6 +286,11 @@ function initDesktopClient() {
                         opacity -= 0.01;
                     }
                 }
+                $(mouseLayer).css('opacity', opacity);
+                var o = Math.round(opacity * 100);
+                $('#brush-opacity-value').html(o);
+                $('#brush-opacity').val(o);
+
             } else {
                 if(e.deltaY < 0) {
                     radius++;
@@ -266,6 +299,8 @@ function initDesktopClient() {
                         radius--;
                     }
                 }
+                $('#brush-size-value').html(radius);
+                $('#brush-size').val(radius);
             }
             drawCursor(pos);
         }
@@ -280,7 +315,9 @@ function initDesktopClient() {
         endStroke(evt);
     }).on( 'mousemove', function(evt) {
         pos = getMousePos(mouseLayer, evt);
-        drawCursor( pos );
+        if(tool == 'pencil' || tool == 'eraser') {
+            drawCursor( pos );
+        }
         updateStroke();
     });
 
@@ -346,7 +383,7 @@ function initMobileClient() {
 
     $("<div/>").attr({
         'class': 'toolbox-item'
-    }).html('Eraser').appendTo('.toolbox').click(function () {
+    }).html('Eraser').appendTo('.mobile-toolbox').click(function () {
         $('.selected').removeClass('selected');
         $(this).addClass('selected');
 

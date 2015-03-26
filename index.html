@@ -58,7 +58,7 @@
             </table>
             <div id="LayersWindow">
                 <table>
-                    <tr>
+                    <tr id='layer-controls'>
                         <td id="layer-add"><img src="img/layers/layerAdd.png"></td>
                         <td id="layer-remove"><img src="img/layers/layerRemove.png"></td>
                         <td id="layer-clear"><img src="img/toolbox/clear.png"></td>
@@ -67,11 +67,47 @@
                         <td id="layer-mergedown"><img src="img/layers/mergeDown.png"></td>
                     </tr>
                 </table>
-                <div id='opacity'>
-                    <label>Opacity:</label>
-                    <input id='layer-opacity' max="100" min="0" value="100" type="range" />
-                    <span id='opacity-value'>100</span>
-                </div>
+                <table>
+                    <tr>
+                        <td>
+                            Opacity:
+                        </td>
+                        <td>
+                            <input id='layer-opacity' max="100" min="0" value="100" type="range" />
+                        </td>
+                        <td>
+                            <span id='opacity-value'>100</span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="BrushWindow">
+                <table>
+                    <tr>
+                        <td>
+                            Opacity:
+                        </td>
+                        <td>
+                            <input id='brush-opacity' max="100" min="0" value="100" type="range" />
+                        </td>
+                        <td>
+                            <span id='brush-opacity-value'>100</span>
+                        </td>
+                    </tr>
+                </table>
+                <table>
+                    <tr>
+                        <td>
+                            Radius:
+                        </td>
+                        <td>
+                            <input id='brush-size' max="100" min="0" value="100" type="range" />
+                        </td>
+                        <td>
+                            <span id='brush-size-value'>100</span>
+                        </td>
+                    </tr>
+                </table>
             </div>
             <table id='HelpWindow'>
                 <tr><td><kbd>+</kbd></td><td> Increase brush size</td></tr>

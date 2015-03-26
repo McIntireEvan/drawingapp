@@ -25,14 +25,13 @@ body {
         width: 500px;
         height: 500px;
     }
-} 
+}
 
 #opacity {
-    display: table;
+    border: none
 }
 
 label, input[type=range] {
-    display: table-cell;
     vertical-align:middle;
 }
 
@@ -132,7 +131,7 @@ kbd {
 }
 
 @media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
-    .windowfy, #ToolboxWindow, #ColorWindow, #LayersWindow, #AboutWindow, #HelpWindow {
+    .windowfy, #ToolboxWindow, #ColorWindow, #LayersWindow, #AboutWindow, #HelpWindow, #BrushWindow {
         display: none;
     }
 }

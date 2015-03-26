@@ -145,15 +145,26 @@ function drawStrokeToCanvas(canvas, color) {
     }
 
     c.beginPath();
+    if (stroke.length > 2) {
+        var i;
+        for (i = 1; i < stroke.length - 2; i++) {
+            var C = (stroke[i].x + stroke[i + 1].x) / 2;
+            var D = (stroke[i].y + stroke[i + 1].y) / 2;
 
-    c.moveTo(stroke[0].x+0.1, stroke[0].y);
-    for(var i = 0; i < stroke.length; i++) {
-        c.lineTo(stroke[i].x, stroke[i].y);
+            c.quadraticCurveTo(stroke[i].x, stroke[i].y, C, D);
+        }
+        
+        c.quadraticCurveTo(
+            stroke[i].x,
+            stroke[i].y,
+            stroke[i + 1].x,
+            stroke[i + 1].y
+        );
+    } else {
+        c.lineWidth = 1;
+        c.arc(stroke[0].x, stroke[0].y, radius, 0, 2 * Math.PI, false);
+        c.fill();
     }
-
-    c.moveTo(stroke[stroke.length-1].x, stroke[stroke.length-1].y);
-    c.lineTo(stroke[stroke.length-1].x, stroke[stroke.length-1].y+0.1);
-    c.closePath();
     c.stroke();
     c.globalcompositeoperation = 'source-over';
 
