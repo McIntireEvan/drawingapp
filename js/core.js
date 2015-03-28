@@ -186,11 +186,6 @@ $(document).ready(function() {
         initMobileClient();
     } else {
         //Only load jQuery plugins if the desktop client is loaded to save memory and loading times
-        $('body').append($('<script>').attr({
-            'src':'windowfy/bin/jquery.windowfy.min.js'
-        })).append($('<script>').attr({
-            'src':'colorwheel/jquery.colorwheel.js'
-        }));
         initDesktopClient();
     }
     initShared();

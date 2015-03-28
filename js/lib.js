@@ -70,10 +70,7 @@ function loadCanvasFromStorage(destination) {
             destination.getContext('2d').drawImage(img, 0, 0);
             localStorage.removeItem('canvas');
         }
-    }
-    catch (e) {
-
-    }
+    } catch (e) {}
 }
 
 function textTool(font, evt, ctx) {
