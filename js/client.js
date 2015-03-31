@@ -322,10 +322,22 @@ function initDesktopClient() {
     });
 
     $(mouseLayer).on('mousedown', function (evt) {
-        if(tool == 'pencil' || tool == 'eraser') {
-            beginStroke(evt);
+        
+        var currentCtx = setContextValues(layers[currentLayer]);
+        if (tool == 'pencil' || tool == 'eraser') {
+            if (evt.shiftKey) {
+                var pos = getMousePos(mouseLayer, evt);
+                currentCtx.beginPath();
+                currentCtx.moveTo(lastPos.x, lastPos.y);
+                currentCtx.lineTo(pos.x, pos.y);
+                currentCtx.stroke();
+                lastPos = { x: pos.x, y: pos.y };
+                return;
+            } else {
+                beginStroke(evt);
+            }
         } else if(tool == 'text') {
-            textTool('32px Arial', evt, layers[currentLayer].getContext('2d'));
+            textTool('32px Arial', evt, currentCtx);
         }
     });
 
