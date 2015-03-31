@@ -1,5 +1,5 @@
 var pos = {x: 0, y: 0};
-
+var lastPos = pos;
 var color = '#149AB4';
 var color1 = color;
 var color2 = '#FFB717';
@@ -116,31 +116,42 @@ function endStroke(evt) {
         }
 
         changes.push({layer: currentLayer, context: layers[currentLayer].toDataURL()});
-        stroke=[];
+        lastPos = stroke[stroke.length - 1];
+        stroke = [];
         clearCanvas(mouseLayer);
     }
 }
 
-function drawStrokeToCanvas(canvas, color) {
+function setContextValues(canvas) {
     var c = canvas.getContext('2d');
-    if(c.globalAlpha != opacity) { c.globalAlpha = opacity; }
-    if(c.lineJoin != 'round') { c.lineJoin = 'round'; }
-    if(c.lineCap != 'round') { c.lineCap = 'round'; }
-    if(c.lineWidth != (radius * 2)) { c.lineWidth = radius*2; }
+    if (c.globalAlpha != opacity) { c.globalAlpha = opacity; }
+    if (c.lineJoin != 'round') { c.lineJoin = 'round'; }
+    if (c.lineCap != 'round') { c.lineCap = 'round'; }
+    if (c.lineWidth != (radius * 2)) { c.lineWidth = radius * 2; }
 
-    if(tool == 'pencil') {
-        if(c.strokeStyle != color) { c.strokeStyle = color };
-        if(c.fillStyle != color) { c.fillStyle = color;}
-        if(c.globalCompositeOperation != 'source-over') {
+    if (tool == 'pencil') {
+        if (c.strokeStyle != color) { c.strokeStyle = color };
+        if (c.fillStyle != color) { c.fillStyle = color; }
+        if (c.globalCompositeOperation != 'source-over') {
             c.globalCompositeOperation = 'source-over';
         }
     } else {
-        if(c.strokeStyle != transparent) { c.strokeStyle = transparent; }
-        if(c.fillStyle != transparent) { c.fillStyle = transparent; }
-        if(c.globalCompositeOperation != 'destination-out') {
+        if (c.strokeStyle != transparent) { c.strokeStyle = transparent; }
+        if (c.fillStyle != transparent) { c.fillStyle = transparent; }
+        if (c.globalCompositeOperation != 'destination-out') {
             c.globalCompositeOperation = 'destination-out';
         }
-        if(strokeContext.globalCompositeOperation = 'source-over') {
+        
+    }
+
+    return c;
+}
+
+function drawStrokeToCanvas(canvas, color) {
+    setContextValues(canvas);
+    var c = canvas.getContext('2d');
+    if(tool == 'eraser') {
+        if (strokeContext.globalCompositeOperation = 'source-over') {
             strokeContext.globalCompositeOperation = 'source-over';
         }
     }
@@ -168,6 +179,7 @@ function drawStrokeToCanvas(canvas, color) {
         c.lineWidth = 1;
         c.arc(stroke[0].x, stroke[0].y, radius, 0, 2 * Math.PI, false);
         c.fill();
+        c.stroke();
     }
     c.stroke();
 }
