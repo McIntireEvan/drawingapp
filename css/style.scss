@@ -14,16 +14,16 @@ body {
 }
 
 #splash {
-    color: #0377A5;
-    background-color: #D0F0F5;
+    color: #81CD29;
+    background-color: white;
     font-family: 'Roboto', sans-serif;
     font-weight: bold;
     font-size: 36px;
-    z-index: 1008;
+    z-index: 2008;
 
     img {
-        width: 500px;
-        height: 500px;
+        width:412px;
+        height:462px;
     }
 }
 
@@ -39,22 +39,18 @@ label, input[type=range] {
     min-width: 75px;
 }
 
-.selectedTool {
-    -webkit-filter: invert(100%);
-    filter: invert(100%);
-}
 .selectedRow {
     font-weight: bolder;
 }
 
-#ToolboxWindow img {
-    -webkit-filter: invert(100%);
-    filter: invert(100%);
+.windowfy img {
+    width: 48px;
+    height: 48px;
 }
 
-#color1, #color2 {
-    -webkit-filter: none !important;
-    filter: none !important;
+.selectedTool {
+    -webkit-filter: brightness(0.75);
+    filter: brightness(0.75)
 }
 
 #background {
@@ -63,7 +59,7 @@ label, input[type=range] {
 
 canvas {
     @extend .centered;
-    cursor: none;
+    cursor: crosshair;
     background-color: transparent;
     padding: 0;
     overflow: hidden;

@@ -1,28 +1,32 @@
 var cursorInWindow = true;
+var roomId;
+var online = false;
 
 function initDesktopClient() {
     $('#ToolboxWindow').windowfy({
         title: 'Toolbox',
         close: false,
         id: 'ToolboxHolder'
-    }).on('click', '#pencil', function (evt) {
+    }).on('click', '#brush', function (evt) {
         $('.selectedTool').removeClass('selectedTool');
-        $('#pencil').addClass('selectedTool');
+        $('#brush, #pencil').addClass('selectedTool');
         tool = 'pencil';
         mouseContext.fillStyle = color;
-        $('canvas').css('cursor','none');
+        $('#brushSettings').toggle();
     }).on('click', '#eraser', function() {
         $('.selectedTool').removeClass('selectedTool');
         $('#eraser').addClass('selectedTool');
         tool = 'eraser';
         mouseContext.fillStyle = 'rgba(0, 0, 0, 0)';
-    }).on('click', '#brushToggle', function () {
-        $('#BrushWindow').parent().parent().toggle();
     }).on('click', '#text', function () {
         tool = 'text';
         $('.selectedTool').removeClass('selectedTool');
         $('#text').addClass('selectedTool');
         $('canvas').css('cursor','crosshair');
+    }).on('click', '#eyedropper', function() {
+        tool = 'eyedropper';
+        $('.selectedTool').removeClass('selectedTool');
+        $('#eyedropper').addClass('selectedTool');
     }).on('click', '#toolbox-color1', function () {
         if($('.cw1').length == 1) {
             $('#ColorWindow').removeClass('cw1').parent().parent().hide();
@@ -75,9 +79,9 @@ function initDesktopClient() {
         $(this).addClass('selectedRow');
         $(strokeLayer).css({ 'z-index': currentLayer });
         if ($(layers[currentLayer]).is(':visible')) {
-            $('#layer-visible').html('<img src="img/layers/visible.png" />');
+            $('#layer-visible').html('<img src="img/icons/layervisible.png" />');
         } else {
-            $('#layer-visible').html('<img src="img/layers/hidden.png" />');
+            $('#layer-visible').html('<img src="img/icons/layerhidden.png" />');
         };
         var opacity = Math.round($(layers[currentLayer]).css('opacity') * 100);
         $('#layer-opacity').val(opacity);
@@ -133,6 +137,7 @@ function initDesktopClient() {
         
         layers.push($('#layer' + nextLayer).get(0));
         prepareCanvas($('#layer' + nextLayer).get(0));
+
         $('#layer' + currentLayer + '-control').addClass('selectedRow');
         nextLayer++;
     }).on('click', '#layer-remove', function () {
@@ -150,9 +155,9 @@ function initDesktopClient() {
         saveCanvasToImage(layers[currentLayer]);
     }).on('click', '#layer-visible', function () {
         if ($(this).html().indexOf('visible') != -1) {
-            $(this).html('<img src="img/layers/hidden.png" />');
+            $(this).html('<img src="img/icons/layerhidden.png" />');
         } else {
-            $(this).html('<img src="img/layers/visible.png" />');
+            $(this).html('<img src="img/icons/layervisible.png" />');
         };
         $(layers[currentLayer]).toggle();
     }).on('click', '#layer-mergedown', function () {
@@ -206,9 +211,10 @@ function initDesktopClient() {
     }).parent().parent().hide();
     $('#BrushWindow').windowfy({
         title: 'Brush Settings',
-        onClose: function() {
+        onClose: function () {
             $(this).hide();
-        }
+        },
+        id: 'brushSettings'
     }).parent().parent().hide();
 
     $('#layer0-control').addClass('selectedRow');
@@ -311,6 +317,9 @@ function initDesktopClient() {
     }).on('mouseup', function(evt) {
         $('.selectedTool').removeClass('selectedTool');
         $('#'+tool).addClass('selectedTool');
+        if(tool == 'pencil') {
+            $('#brush').addClass('selectedTool');
+        }
         pos = getMousePos(mouseLayer, evt);
         endStroke(evt);
     }).on( 'mousemove', function(evt) {
@@ -338,6 +347,15 @@ function initDesktopClient() {
             }
         } else if(tool == 'text') {
             textTool('32px Arial', evt, currentCtx);
+        } else if(tool == 'eyedropper') {
+            var pos = getMousePos(mouseLayer, evt);
+            var c = currentCtx.getImageData(pos.x, pos.y, 1, 1).data;
+            var nC = 'rgb(' + c[0] +', ' + c[1] + ', ' + c[2] + ')';
+            color = color1 = nC;
+            if(color == 'rgb(0, 0, 0)') {
+                color = color1 = '#FFFFFF';
+            }
+            $('#color1').css({'background':color});
         }
     });
 
@@ -467,12 +485,102 @@ function initShared() {
     });
 }
 
-function drawCursor(pos) {
-    if (cursorInWindow) {
-        mouseContext.clearRect(0,0, mouseLayer.width, mouseLayer.height);
-        mouseContext.beginPath();
-        mouseContext.arc(pos.x, pos.y, radius, 0, 2 * Math.PI, false);
-        mouseContext.fill();
-        mouseContext.stroke();
-   }
+function enableImports() {
+    if (window.File && window.FileReader && window.FileList && window.Blob) {
+        $(document).on('dragover dragenter', function (evt) {
+            evt.preventDefault();
+            evt.stopPropagation();
+        }).on('drop', function (evt) {
+            var files = evt.originalEvent.dataTransfer.files;
+            if (files.length == 0) {
+                return;
+            }
+            if(!files[0].type.match('image.*')) {
+                return;
+            }
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var data = reader.result;
+                var img = new Image();
+                img.src = data;
+                img.onload = function () {
+                    layers[currentLayer].getContext('2d').drawImage(img, evt.originalEvent.pageX, evt.originalEvent.pageX);
+                }
+            }
+            reader.readAsDataURL(files[0]);
+            evt.preventDefault();
+            evt.stopPropagation();
+        });
+    }
 }
+
+//var socket = io('168.235.67.12:8080');
+
+function isMobile() {
+    return window.matchMedia('(min-device-width : 320px) and (max-device-width : 480px)').matches;
+}
+
+function prepareCanvas(canvas) {
+    //TODO: In node version, set these to value from server
+    $(canvas).css({'width':width, 'height':height});
+    canvas.width = $('#mouse').width();
+    canvas.height = $('#mouse').height();
+}
+
+//TODO: Remove temp function
+function s(data) {
+    socket.emit('stroke', {'stroke':data});
+}
+
+//Generates a unique 6 digit ID
+function genID() {
+    return ("000000" + (Math.random()*Math.pow(36,6) << 0).toString(36)).slice(-6);
+}
+
+//TODO: Error checking
+function initOnline() {
+    var url = window.location.href.split('#');
+    if(url.length == 2) {
+        roomId = url[1];
+
+        socket.emit('ping', {
+            'id': roomId
+        }).on('pong', function(data) {
+            online = true;
+            if(data.exists) {
+                socket.emit('join', {
+                    'id': roomId
+                });
+            } else {
+                socket.emit('create', {
+                    'id': roomId,
+                    'width': width,
+                    'height': height
+                });
+            }
+        });
+    }
+
+    socket.on('stroke', function(data) {
+        strokeToCanvas(data.stroke, $('#layer0-remote').get(0), 'pencil');
+    });
+
+}
+
+$(document).ready(function() {
+    width = $('body').css('width');
+    height = $('body').css('height');
+    if(isMobile()) {
+        initMobileClient();
+    } else {
+        initDesktopClient();
+    }
+    initShared();
+
+    $('#splash').fadeOut(1500);
+    $('#window-holder').fadeIn(1500);
+    
+    if(window.location.href.split('#').length == 1) {
+        //window.location.href = '#' + genID();
+    }
+});

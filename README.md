@@ -1,4 +1,4 @@
-drawingapp
+NodeDraw
 ==========
 This is provided under the GNU GPL v2
 
