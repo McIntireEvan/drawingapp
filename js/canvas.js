@@ -23,29 +23,11 @@ var stroke = [];
 var strokeLayer = $('#stroke').get(0);
 var strokeContext = strokeLayer.getContext('2d');
 
-var changes = [];
-var currentChange;
-
 var width = 0;
 var height = 0;
 
 /* Stroke functions */
 function beginStroke(evt) {
-    if(!mouseDown) {
-        if(evt.which == 3) {
-            color = color2;
-        } else if (evt.which == 1) {
-            color = color1;
-        } else {
-            if(evt.type == 'touchstart') {
-                evt = evt.changedTouches[0];
-            } else {
-                return;
-            }
-        }
-    }
-    mouseDown = true;
-    pos = getMousePos(mouseLayer, evt);
     stroke.push(pos);
 
     if(tool == 'pencil') {
@@ -56,40 +38,30 @@ function beginStroke(evt) {
     strokeContext.globalAlpha = opacity;
     $(layers[currentLayer]).hide();
 
-    drawStrokeToCanvas(strokeLayer, tool);
+    drawStrokeToCanvas(stroke, strokeLayer, tool);
 }
 
-function updateStroke() {
-    if (mouseDown) {
-        document.getSelection().removeAllRanges();
-        stroke.push(pos);
-        clearCanvas(strokeLayer);
-        strokeContext.globalAlpha = 1;
-        strokeContext.drawImage(layers[currentLayer], 0, 0);
-        strokeContext.globalAlpha = opacity;
-        drawStrokeToCanvas(strokeLayer, tool);
-    }
+function updateStroke(stroke, pos) {
+    document.getSelection().removeAllRanges();
+    stroke.push(pos);
+    clearCanvas(strokeLayer);
+    strokeContext.globalAlpha = 1;
+    strokeContext.drawImage(layers[currentLayer], 0, 0);
+    strokeContext.globalAlpha = opacity;
+    drawStrokeToCanvas(stroke, strokeLayer, tool);
 }
 
 function endStroke(evt) {
-    if(mouseDown) {
-        stroke.push(pos);
-        clearCanvas(strokeLayer);
-        mouseDown = false;
-        $(layers[currentLayer]).show();
-        drawStrokeToCanvas(layers[currentLayer], tool);
-        currentChange++;
+    stroke.push(pos);
+    clearCanvas(strokeLayer);
+    mouseDown = false;
+    $(layers[currentLayer]).show();
+    drawStrokeToCanvas(stroke, layers[currentLayer], tool);
+    addChange();
+    lastPos = stroke[stroke.length - 1];
 
-        if(currentChange != changes.length) {
-            changes.splice(currentChange, changes.length  - currentChange);
-        }
-
-        changes.push({layer: currentLayer, context: layers[currentLayer].toDataURL()});
-        lastPos = stroke[stroke.length - 1];
-
-        stroke = [];
-        clearCanvas(mouseLayer);
-    }
+    stroke = [];
+    clearCanvas(mouseLayer);
 }
 
 function setContextValues(canvas) {
@@ -115,12 +87,7 @@ function setContextValues(canvas) {
     return c;
 }
 
-//DEPRECATED - Still here out of lazyness
-function drawStrokeToCanvas(canvas, tool) {
-    strokeToCanvas(stroke, canvas, tool);
-}
-
-function strokeToCanvas(stroke, canvas, tool) {
+function drawStrokeToCanvas(stroke, canvas, tool) {
     setContextValues(canvas);
     var c = canvas.getContext('2d');
     if(tool == 'eraser') {
@@ -203,18 +170,6 @@ function merge(mergeTo, mergeFrom) {
     return mergeTo;
 }
 
-//DEPRECATED in favor of createText()
-function textTool(font, evt, ctx) {
-    var c;
-    if(evt.which == 3) {
-        c = color2;
-    } else if (evt.which == 1) {
-        c = color1;
-    }
-    
-    createText(font, c, {x:evt.pageX, y:evt.pageY}, layers[currentLayer]);
-}
-
 function createText(font, color, pos, canvas) {
     var ctx = canvas.getContext('2d');
     var string = prompt('Text:');
@@ -224,7 +179,8 @@ function createText(font, color, pos, canvas) {
     ctx.fillStyle = color;
     ctx.font = font;
     ctx.fillText(string, pos.x, pos.y);
-    changes.push({ layer: currentLayer, context: layers[currentLayer].toDataURL() });
+    console.log(ctx);
+    addChange();
 }
 
 function drawCursor(pos) {
@@ -267,6 +223,21 @@ function loadCanvasFromStorage(destination) {
             localStorage.removeItem('canvas');
         }
     } catch (e) {}
+}
+
+/* Canvas history */
+//TODO: This could probably use another rewrite, it really sucks
+var changes = [];
+var currentChange;
+
+function addChange() {
+    currentChange++;
+
+    if (currentChange != changes.length) {
+        changes.splice(currentChange, changes.length - currentChange);
+    }
+
+    changes.push({ layer: currentLayer, context: layers[currentLayer].toDataURL() });
 }
 
 function undo() { 

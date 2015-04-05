@@ -321,34 +321,49 @@ function initDesktopClient() {
             $('#brush').addClass('selectedTool');
         }
         pos = getMousePos(mouseLayer, evt);
-        endStroke(evt);
+        if (mouseDown) {
+            endStroke(evt);
+        }
     }).on( 'mousemove', function(evt) {
         pos = getMousePos(mouseLayer, evt);
         if(tool == 'pencil' || tool == 'eraser') {
             drawCursor( pos );
         }
-        updateStroke();
+        if (mouseDown) {
+            updateStroke(stroke, pos);
+        }
     });
 
     $(mouseLayer).on('mousedown', function (evt) {
-        
         var currentCtx = setContextValues(layers[currentLayer]);
+        pos = getMousePos(mouseLayer, evt);
         if (tool == 'pencil' || tool == 'eraser') {
             if (evt.shiftKey) {
-                var pos = getMousePos(mouseLayer, evt);
                 currentCtx.beginPath();
                 currentCtx.moveTo(lastPos.x, lastPos.y);
                 currentCtx.lineTo(pos.x, pos.y);
                 currentCtx.stroke();
                 lastPos = { x: pos.x, y: pos.y };
+                addChange();
                 return;
             } else {
+                mouseDown = true;
+                if (evt.which == 3) {
+                    color = color2;
+                } else if (evt.which == 1) {
+                    color = color1;
+                } else {
+                    if (evt.type == 'touchstart') {
+                        evt = evt.changedTouches[0];
+                    } else {
+                        return;
+                    }
+                }
                 beginStroke(evt);
             }
-        } else if(tool == 'text') {
-            textTool('32px Arial', evt, currentCtx);
+        } else if (tool == 'text') {
+            createText('32px serif', color, { x: pos.x, y: pos.y }, layers[currentLayer]);
         } else if(tool == 'eyedropper') {
-            var pos = getMousePos(mouseLayer, evt);
             var c = currentCtx.getImageData(pos.x, pos.y, 1, 1).data;
             var nC = 'rgb(' + c[0] +', ' + c[1] + ', ' + c[2] + ')';
             color = color1 = nC;
@@ -357,9 +372,7 @@ function initDesktopClient() {
             }
             $('#color1').css({'background':color});
         }
-    });
-
-    $(document).on('mouseenter', function() {
+    }).on('mouseenter', function() {
         cursorInWindow = true;
         clearCanvas( mouseLayer );
     }).on('mouseleave', function() {
@@ -376,12 +389,16 @@ function initMobileClient() {
     $(document).on('touchmove', function (evt) {
         pos = getMousePos(mouseLayer, evt.originalEvent.touches[0]);
         evt.preventDefault();
-        updateStroke();
+        if (mouseDown) {
+            updateStroke(stroke, pos);
+        }
     });
 
     $(document).on('touchend', function (evt) {
         pos = getMousePos(mouseLayer, evt.originalEvent.changedTouches[0]);
-        endStroke(evt.originalEvent.changedTouches[0]);
+        if (mouseDown) {
+            endStroke(evt.originalEvent.changedTouches[0]);
+        }
     });
 
     $('<input>').attr({
@@ -514,7 +531,7 @@ function enableImports() {
     }
 }
 
-//var socket = io('168.235.67.12:8080');
+var socket;
 
 function isMobile() {
     return window.matchMedia('(min-device-width : 320px) and (max-device-width : 480px)').matches;
@@ -539,6 +556,7 @@ function genID() {
 
 //TODO: Error checking
 function initOnline() {
+    socket = io('168.235.67.12:8080');
     var url = window.location.href.split('#');
     if(url.length == 2) {
         roomId = url[1];
@@ -562,7 +580,7 @@ function initOnline() {
     }
 
     socket.on('stroke', function(data) {
-        strokeToCanvas(data.stroke, $('#layer0-remote').get(0), 'pencil');
+        drawStrokeToCanvas(data.stroke, $('#layer0-remote').get(0), 'pencil');
     });
 
 }
