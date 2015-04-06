@@ -322,7 +322,8 @@ function initDesktopClient() {
         }
         pos = getMousePos(mouseLayer, evt);
         if (mouseDown) {
-            endStroke(evt);
+            mouseDown = false;
+            stroke.end(pos);
         }
     }).on( 'mousemove', function(evt) {
         pos = getMousePos(mouseLayer, evt);
@@ -330,7 +331,7 @@ function initDesktopClient() {
             drawCursor( pos );
         }
         if (mouseDown) {
-            updateStroke(stroke, pos);
+            stroke.update(pos);
         }
     });
 
@@ -359,7 +360,11 @@ function initDesktopClient() {
                         return;
                     }
                 }
-                beginStroke(evt);
+                if (tool == 'pencil') {
+                    mouseContext.fillStyle = color;
+                }
+                stroke = new Stroke(tool, layers[currentLayer], strokeLayer);
+                stroke.begin(pos);
             }
         } else if (tool == 'text') {
             createText('32px serif', color, { x: pos.x, y: pos.y }, layers[currentLayer]);
@@ -383,21 +388,22 @@ function initDesktopClient() {
 
 function initMobileClient() {
     $(document).on('touchstart', function (evt) {
-        beginStroke(evt.originalEvent);
+        stroke = new Stroke(tool, layers[currentLayer], strokeLayer);
+        stroke.begin({ 'x': evt.originalEvent.pageX, 'y': evt.originalEvent.pageY })
     });
 
     $(document).on('touchmove', function (evt) {
         pos = getMousePos(mouseLayer, evt.originalEvent.touches[0]);
         evt.preventDefault();
         if (mouseDown) {
-            updateStroke(stroke, pos);
+            stroke.update(pos);
         }
     });
 
     $(document).on('touchend', function (evt) {
         pos = getMousePos(mouseLayer, evt.originalEvent.changedTouches[0]);
         if (mouseDown) {
-            endStroke(evt.originalEvent.changedTouches[0]);
+            stroke.end(pos);
         }
     });
 
@@ -578,11 +584,6 @@ function initOnline() {
             }
         });
     }
-
-    socket.on('stroke', function(data) {
-        drawStrokeToCanvas(data.stroke, $('#layer0-remote').get(0), 'pencil');
-    });
-
 }
 
 $(document).ready(function() {

@@ -19,49 +19,89 @@ var layers = [$('#layer0').get(0), $('#layer1').get(0)];
 var currentLayer = 0;
 var nextLayer = 2;
 
-var stroke = [];
+var stroke;
 var strokeLayer = $('#stroke').get(0);
 var strokeContext = strokeLayer.getContext('2d');
 
 var width = 0;
 var height = 0;
 
-/* Stroke functions */
-function beginStroke(evt) {
-    stroke.push(pos);
+/* Stroke Class */
 
-    if(tool == 'pencil') {
-        mouseContext.fillStyle = color;
+var Stroke = function (tool, canvas, strokeCanvas) {
+    this.tool = tool;
+    this.path = [];
+    this.canvas = canvas;
+    this.strokeCanvas = strokeCanvas;
+    this.strokeContext = strokeCanvas.getContext('2d');
+}
+
+Stroke.prototype.draw = function (canvas) {
+    setContextValues(canvas);
+    var ctx = canvas.getContext('2d');
+    if (this.tool == 'eraser') {
+        if (this.strokeContext.globalCompositeOperation = 'source-over') {
+            this.strokeContext.globalCompositeOperation = 'source-over';
+        }
     }
-    strokeContext.globalAlpha = 1;
-    strokeContext.drawImage(layers[currentLayer], 0, 0);
-    strokeContext.globalAlpha = opacity;
-    $(layers[currentLayer]).hide();
 
-    drawStrokeToCanvas(stroke, strokeLayer, tool);
+    ctx.beginPath();
+    if (this.path.length > 2) {
+        var i;
+        //Draw bezier curve to the midpoint of stroke[i] and stroke[i + 1], using stroke[i] as a control point
+        //This is what keeps the lines smooth
+        for (i = 0; i < this.path.length - 2; i++) {
+            var C = (this.path[i].x + this.path[i + 1].x) / 2;
+            var D = (this.path[i].y + this.path[i + 1].y) / 2;
+
+            ctx.quadraticCurveTo(this.path[i].x, this.path[i].y, C, D);
+        }
+
+        ctx.quadraticCurveTo(
+            this.path[i].x,
+            this.path[i].y,
+            this.path[i + 1].x,
+            this.path[i + 1].y
+        );
+    } else {
+        //There are too few points to do a bezier curve, so we just draw the point
+        ctx.lineWidth = 1;
+        ctx.arc(this.path[0].x, this.path[0].y, radius, 0, 2 * Math.PI, false);
+        ctx.fill();
+        ctx.stroke();
+    }
+    ctx.stroke();
 }
 
-function updateStroke(stroke, pos) {
+Stroke.prototype.begin = function (pos) {
+    this.path.push(pos);
+
+    this.strokeContext.globalAlpha = 1;
+    this.strokeContext.drawImage(this.canvas, 0, 0);
+    this.strokeContext.globalAlpha = opacity;
+    $(this.canvas).hide();
+
+    this.draw(this.strokeCanvas);
+}
+
+Stroke.prototype.update = function (pos) {
     document.getSelection().removeAllRanges();
-    stroke.push(pos);
+    this.path.push(pos);
     clearCanvas(strokeLayer);
     strokeContext.globalAlpha = 1;
     strokeContext.drawImage(layers[currentLayer], 0, 0);
     strokeContext.globalAlpha = opacity;
-    drawStrokeToCanvas(stroke, strokeLayer, tool);
+    this.draw(this.strokeCanvas);
 }
 
-function endStroke(evt) {
-    stroke.push(pos);
-    clearCanvas(strokeLayer);
-    mouseDown = false;
-    $(layers[currentLayer]).show();
-    drawStrokeToCanvas(stroke, layers[currentLayer], tool);
-    addChange();
-    lastPos = stroke[stroke.length - 1];
+Stroke.prototype.end = function (po) {
+    this.path.push(pos);
+    clearCanvas(this.strokeCanvas);
 
-    stroke = [];
-    clearCanvas(mouseLayer);
+    $(this.canvas).show();
+    this.draw(this.canvas);
+
+    this.path = [];
 }
 
 function setContextValues(canvas) {
@@ -85,43 +125,6 @@ function setContextValues(canvas) {
         }
     }
     return c;
-}
-
-function drawStrokeToCanvas(stroke, canvas, tool) {
-    setContextValues(canvas);
-    var c = canvas.getContext('2d');
-    if(tool == 'eraser') {
-        if (strokeContext.globalCompositeOperation = 'source-over') {
-            strokeContext.globalCompositeOperation = 'source-over';
-        }
-    }
-
-    c.beginPath();
-    if (stroke.length > 2) {
-        var i;
-        //Draw bezier curve to the midpoint of stroke[i] and stroke[i + 1], using stroke[i] as a control point
-        //This is what keeps the lines smooth
-        for (i = 0; i < stroke.length - 2; i++) {
-            var C = (stroke[i].x + stroke[i + 1].x) / 2;
-            var D = (stroke[i].y + stroke[i + 1].y) / 2;
-
-            c.quadraticCurveTo(stroke[i].x, stroke[i].y, C, D);
-        }
-        
-        c.quadraticCurveTo(
-            stroke[i].x,
-            stroke[i].y,
-            stroke[i + 1].x,
-            stroke[i + 1].y
-        );
-    } else {
-        //There are too few points to do a bezier curve, so we just draw the point
-        c.lineWidth = 1;
-        c.arc(stroke[0].x, stroke[0].y, radius, 0, 2 * Math.PI, false);
-        c.fill();
-        c.stroke();
-    }
-    c.stroke();
 }
 
 /* Baisc Canvas Operations */
