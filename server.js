@@ -24,20 +24,15 @@ io.on('connection', function(socket) {
         socket.broadcast.to(room).emit('msg', {'msg': 'NEW CLIENT'});
     });
 
-    socket.on('stroke', function(data) {
-        io.to(room).emit('stroke', {'stroke': data.stroke});
-    });
-
     socket.on('beginStroke', function(data) {
-        io.to(room).emit('stroke', {'stroke': data.stroke});
+        socket.broadcast.to(room).emit('beginStroke', { 'pos': data.pos, 'socket':socket.id });
     });
 
     socket.on('updateStroke', function(data) {
-        io.to(room).emit('stroke', {'stroke': data.stroke});
+        socket.broadcast.to(room).emit('updateStroke', { 'pos': data.pos, 'socket': socket.id });
     });
 
     socket.on('endStroke', function(data) {
-        io.to(room).emit('stroke', {'stroke': data.stroke});
+        socket.broadcast.to(room).emit('endStroke', { 'pos': data.pos, 'socket': socket.id });
     });
-
 });

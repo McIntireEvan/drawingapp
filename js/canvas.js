@@ -94,7 +94,7 @@ Stroke.prototype.update = function (pos) {
     this.draw(this.strokeCanvas);
 }
 
-Stroke.prototype.end = function (po) {
+Stroke.prototype.end = function (pos) {
     this.path.push(pos);
     clearCanvas(this.strokeCanvas);
 
@@ -179,10 +179,9 @@ function createText(font, color, pos, canvas) {
     if (string == 'null' || string == '' || string == null) {
         return;
     }
-    ctx.fillStyle = color;
+    ctx.fillStyle = 'red';
     ctx.font = font;
-    ctx.fillText(string, pos.x, pos.y);
-    console.log(ctx);
+    ctx.fillText(string, pos.x, pos.y + 32);
     addChange();
 }
 

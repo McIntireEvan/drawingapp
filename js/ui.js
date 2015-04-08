@@ -1,6 +1,7 @@
 var cursorInWindow = true;
 var roomId;
 var online = false;
+var rStrokes = {};
 
 function initDesktopClient() {
     $('#ToolboxWindow').windowfy({
@@ -324,6 +325,9 @@ function initDesktopClient() {
         if (mouseDown) {
             mouseDown = false;
             stroke.end(pos);
+            if (online) {
+                socket.emit('endStroke', { pos: pos });
+            }
         }
     }).on( 'mousemove', function(evt) {
         pos = getMousePos(mouseLayer, evt);
@@ -332,6 +336,9 @@ function initDesktopClient() {
         }
         if (mouseDown) {
             stroke.update(pos);
+            if (online) {
+                socket.emit('updateStroke', { pos: pos });
+            }
         }
     });
 
@@ -365,6 +372,9 @@ function initDesktopClient() {
                 }
                 stroke = new Stroke(tool, layers[currentLayer], strokeLayer);
                 stroke.begin(pos);
+                if (online) {
+                    socket.emit('beginStroke', { pos: pos });
+                }
             }
         } else if (tool == 'text') {
             createText('32px serif', color, { x: pos.x, y: pos.y }, layers[currentLayer]);
@@ -482,7 +492,9 @@ function initShared() {
     for(var i = 0; i < layers.length; i++) {
         prepareCanvas( layers[i]);
     }
-    prepareCanvas( $('#background').get(0) );
+    prepareCanvas($('#background').get(0));
+    prepareCanvas($('#layer0-remote').get(0));
+    prepareCanvas($('#layer0-remote-stroke').get(0));
     prepareCanvas(strokeLayer);
 
     mouseContext.lineWidth = 1;
@@ -563,6 +575,11 @@ function genID() {
 //TODO: Error checking
 function initOnline() {
     socket = io('168.235.67.12:8080');
+
+    if (window.location.href.split('#').length == 1) {
+        window.location.href = '#' + genID();
+    }
+
     var url = window.location.href.split('#');
     if(url.length == 2) {
         roomId = url[1];
@@ -583,6 +600,19 @@ function initOnline() {
                 });
             }
         });
+
+        socket.on('beginStroke', function (data) {
+            rStrokes[data.socket] = new Stroke('pencil', $('#layer0-remote').get(0), $('#layer0-remote-stroke').get(0));
+            rStrokes[data.socket].begin(data.pos);
+        });
+
+        socket.on('updateStroke', function (data) {
+            rStrokes[data.socket].update(data.pos);
+        });
+
+        socket.on('endStroke', function (data) {
+            rStrokes[data.socket].end(data.pos);
+        });
     }
 }
 
@@ -598,8 +628,9 @@ $(document).ready(function() {
 
     $('#splash').fadeOut(1500);
     $('#window-holder').fadeIn(1500);
-    
-    if(window.location.href.split('#').length == 1) {
-        //window.location.href = '#' + genID();
+    if (window.location.href.split('#').length == 1) {
+        window.location.href = '#' + genID();
+    } else {
+        initOnline();
     }
 });
