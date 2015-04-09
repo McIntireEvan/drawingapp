@@ -111,7 +111,7 @@ function setContextValues(canvas) {
     if (c.lineCap != 'round') { c.lineCap = 'round'; }
     if (c.lineWidth != (radius * 2)) { c.lineWidth = radius * 2; }
 
-    if (tool == 'pencil') {
+    if (tool == 'pencil' || tool=='text') {
         if (c.strokeStyle != color) { c.strokeStyle = color };
         if (c.fillStyle != color) { c.fillStyle = color; }
         if (c.globalCompositeOperation != 'source-over') {
@@ -173,15 +173,16 @@ function merge(mergeTo, mergeFrom) {
     return mergeTo;
 }
 
-function createText(font, color, pos, canvas) {
-    var ctx = canvas.getContext('2d');
+function createText(font, pos, canvas) {
     var string = prompt('Text:');
     if (string == 'null' || string == '' || string == null) {
         return;
     }
-    ctx.fillStyle = 'red';
+
+    var ctx = layers[currentLayer].getContext('2d');
     ctx.font = font;
-    ctx.fillText(string, pos.x, pos.y + 32);
+
+    ctx.fillText(string, pos.x, pos.y);
     addChange();
 }
 

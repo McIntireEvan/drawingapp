@@ -377,7 +377,7 @@ function initDesktopClient() {
                 }
             }
         } else if (tool == 'text') {
-            createText('32px serif', color, { x: pos.x, y: pos.y }, layers[currentLayer]);
+            createText('32px serif', { x: pos.x, y: pos.y }, layers[currentLayer]);
         } else if(tool == 'eyedropper') {
             var c = currentCtx.getImageData(pos.x, pos.y, 1, 1).data;
             var nC = 'rgb(' + c[0] +', ' + c[1] + ', ' + c[2] + ')';
