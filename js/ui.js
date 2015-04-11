@@ -72,6 +72,9 @@ function initDesktopClient() {
         $('#AboutWindow').parent().parent().toggle();
     }).on('click', '#toolbox-help', function () {
         $('#HelpWindow').parent().parent().toggle();
+    }).on('click', '#invite', function() {
+        initOnline();
+        alert('Online activated: Invite people with the URL ' + window.location.href);
     });
 
     var onLayerClick = function () {
@@ -628,9 +631,7 @@ $(document).ready(function() {
 
     $('#splash').fadeOut(1500);
     $('#window-holder').fadeIn(1500);
-    if (window.location.href.split('#').length == 1) {
-        window.location.href = '#' + genID();
-    } else {
+    if (!window.location.href.split('#').length == 1) {
         initOnline();
     }
 });
