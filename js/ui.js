@@ -28,7 +28,7 @@ function initDesktopClient() {
         tool = 'eyedropper';
         $('.selectedTool').removeClass('selectedTool');
         $('#eyedropper').addClass('selectedTool');
-    }).on('click', '#toolbox-color1', function () {
+    }).on('click', '#color1', function () {
         if($('.cw1').length == 1) {
             $('#ColorWindow').removeClass('cw1').parent().parent().hide();
             return;
@@ -39,9 +39,9 @@ function initDesktopClient() {
         $('#ColorWindow').html('').colorwheel({size: 200, ringSize: 20, onInput: function(evt) {
             var newColor = evt.color;
             color1 = 'rgb(' + newColor.r + ',' + newColor.g + ',' + newColor.b + ')';
-            $('#toolbox-color1 img').css('background',color1);
+            $('#color1 img').css('background',color1);
         }});
-    }).on('click', '#toolbox-color2', function () {
+    }).on('click', '#color2', function () {
         if($('.cw2').length == 1) {
             $('#ColorWindow').removeClass('cw2').parent().parent().hide();
             return;
@@ -52,25 +52,25 @@ function initDesktopClient() {
         $('#ColorWindow').html('').colorwheel({size: 200, ringSize: 20, onInput: function(evt) {
            var newColor = evt.color;
            color2 = 'rgb(' + newColor.r + ',' + newColor.g + ',' + newColor.b + ')';
-           $('#toolbox-color2 img').css('background',color2);
+           $('#color2 img').css('background',color2);
         }});   
     }).on('click', '#undo', function () {
         undo();
     }).on('click', '#redo', function () {
         redo();
-    }).on('click', '#toolbox-save', function () {
+    }).on('click', '#saveall', function () {
         saveCanvasToImage(merge($('#background').get(0), layers));
         clearCanvas($('#background').get(0));
-    }).on('click', '#toolbox-clear', function () {
+    }).on('click', '#clearall', function () {
         if (confirm('Clear all layers?')) {
             for (var i = 0; i < layers.length; i++) {
                 clearCanvas(layers[i]);
             }
             clearCanvas($('#background').get(0));
         }
-    }).on('click', '#toolbox-info', function () {
+    }).on('click', '#infotoggle', function () {
         $('#AboutWindow').parent().parent().toggle();
-    }).on('click', '#toolbox-help', function () {
+    }).on('click', '#helptoggle', function () {
         $('#HelpWindow').parent().parent().toggle();
     }).on('click', '#invite', function() {
         initOnline();
