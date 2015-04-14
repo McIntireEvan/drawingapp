@@ -491,15 +491,7 @@ function initMobileClient() {
 }
 
 function initShared() {
-    prepareCanvas(mouseLayer);
-    for(var i = 0; i < layers.length; i++) {
-        prepareCanvas( layers[i]);
-    }
-    prepareCanvas($('#background').get(0));
-    prepareCanvas($('#layer0-remote').get(0));
-    prepareCanvas($('#layer0-remote-stroke').get(0));
-    prepareCanvas(strokeLayer);
-
+    initCanvases();
     mouseContext.lineWidth = 1;
     mouseContext.strokeStyle = 'black';
     mouseContext.fillStyle = color;
@@ -513,7 +505,6 @@ function initShared() {
 
     loadCanvasFromStorage(layers[currentLayer]);
 
-
     $(window).unload(function() {
         saveCanvasToStorage(merge($('#background').get(0), layers));
     });
@@ -521,6 +512,17 @@ function initShared() {
     $(document).bind('contextmenu', function(event) {
         event.preventDefault();
     });
+}
+
+function initCanvases() {
+    prepareCanvas(mouseLayer);
+    for(var i = 0; i < layers.length; i++) {
+        prepareCanvas( layers[i]);
+    }
+    prepareCanvas($('#background').get(0));
+    prepareCanvas($('#layer0-remote').get(0));
+    prepareCanvas($('#layer0-remote-stroke').get(0));
+    prepareCanvas(strokeLayer);
 }
 
 function enableImports() {
@@ -577,6 +579,7 @@ function genID() {
 
 //TODO: Error checking
 function initOnline() {
+    //Todo: Replace hardcoded address
     socket = io('168.235.67.12:8080');
 
     if (window.location.href.split('#').length == 1) {
@@ -587,14 +590,17 @@ function initOnline() {
     if(url.length == 2) {
         roomId = url[1];
 
-        socket.emit('ping', {
+        socket.emit('handshake', {
             'id': roomId
-        }).on('pong', function(data) {
+        }).on('handshake', function(data) {
             online = true;
             if(data.exists) {
                 socket.emit('join', {
                     'id': roomId
                 });
+                width = data.width;
+                height = data.height;
+                initCanvases();
             } else {
                 socket.emit('create', {
                     'id': roomId,
@@ -631,7 +637,8 @@ $(document).ready(function() {
 
     $('#splash').fadeOut(1500);
     $('#window-holder').fadeIn(1500);
-    if (!window.location.href.split('#').length == 1) {
+    if (window.location.href.split('#').length != 1) {
+        console.log('asfsa')
         initOnline();
     }
 });
