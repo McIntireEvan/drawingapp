@@ -26,6 +26,39 @@ var strokeContext = strokeLayer.getContext('2d');
 var width = 0;
 var height = 0;
 
+var pencil = {
+    'radius': 3,
+    'opacity': 1,
+    'color': color,
+    'globalCompositeOperation': 'source-over'
+};
+ 
+var eraser = {
+    'radius': 3,
+    'opacity': 1,
+    'color': 'rgba(255,255,255,1)',
+    'globalCompositeOperation': 'destination-out'
+};
+
+var text = {
+    'font': '32px serif',
+    'color': color
+}
+ 
+function ssetContextValues(canvas, tool) {
+    var c = canvas.getContext('2d');
+    if (c.globalAlpha != tool.opacity) { c.globalAlpha = tool.opacity; }
+    if (c.lineJoin != 'round') { c.lineJoin = 'round'; }
+    if (c.lineCap != 'round') { c.lineCap = 'round'; }
+    if (c.lineWidth != (tool.radius * 2)) { c.lineWidth = tool.radius * 2; }
+    if (c.strokeStyle != tool.color) { c.strokeStyle = tool.color };
+    if (c.fillStyle != tool.color) { c.fillStyle = tool.color; }
+    if (c.globalCompositeOperation != tool.globalCompositeOperation) {
+        c.globalCompositeOperation = tool.globalCompositeOperation;
+    }
+    return c;
+}
+
 /* Stroke Class */
 
 var Stroke = function (tool, canvas, strokeCanvas) {
