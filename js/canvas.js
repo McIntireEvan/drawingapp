@@ -1,15 +1,11 @@
 /* Variables */
+//TODO: Remove unused variables
 var pos = {x: 0, y: 0};
 var lastPos = pos;
 
 var color = '#81CD29';
 var color1 = color;
 var color2 = '#FFFFFF';
-var transparent = 'rgba(255,255,255,1)';
-
-var tool = 'pencil';
-var radius = 3;
-var opacity = 1;
 
 var mouseLayer = $('#mouse').get(0);
 var mouseContext = mouseLayer.getContext('2d');
@@ -27,6 +23,7 @@ var width = 0;
 var height = 0;
 
 var pencil = {
+    'type': 'pencil',
     'radius': 3,
     'opacity': 1,
     'color': color,
@@ -34,6 +31,7 @@ var pencil = {
 };
  
 var eraser = {
+    'type': 'eraser',
     'radius': 3,
     'opacity': 1,
     'color': 'rgba(255,255,255,1)',
@@ -41,11 +39,15 @@ var eraser = {
 };
 
 var text = {
+    'type': 'text',
     'font': '32px serif',
     'color': color
 }
- 
-function ssetContextValues(canvas, tool) {
+
+//TODO: rename to tool
+var currTool = pencil;
+
+function setContextValues(canvas, tool) {
     var c = canvas.getContext('2d');
     if (c.globalAlpha != tool.opacity) { c.globalAlpha = tool.opacity; }
     if (c.lineJoin != 'round') { c.lineJoin = 'round'; }
@@ -69,10 +71,10 @@ var Stroke = function (tool, canvas, strokeCanvas) {
     this.strokeContext = strokeCanvas.getContext('2d');
 }
 
-Stroke.prototype.draw = function (canvas) {
-    setContextValues(canvas);
+Stroke.prototype.draw = function (canvas) { 
+    setContextValues(canvas, this.tool);
     var ctx = canvas.getContext('2d');
-    if (this.tool == 'eraser') {
+    if (this.tool.type == 'eraser') {
         if (this.strokeContext.globalCompositeOperation = 'source-over') {
             this.strokeContext.globalCompositeOperation = 'source-over';
         }
@@ -99,7 +101,7 @@ Stroke.prototype.draw = function (canvas) {
     } else {
         //There are too few points to do a bezier curve, so we just draw the point
         ctx.lineWidth = 1;
-        ctx.arc(this.path[0].x, this.path[0].y, radius, 0, 2 * Math.PI, false);
+        ctx.arc(this.path[0].x, this.path[0].y, currTool.radius, 0, 2 * Math.PI, false);
         ctx.fill();
         ctx.stroke();
     }
@@ -111,7 +113,7 @@ Stroke.prototype.begin = function (pos) {
 
     this.strokeContext.globalAlpha = 1;
     this.strokeContext.drawImage(this.canvas, 0, 0);
-    this.strokeContext.globalAlpha = opacity;
+    this.strokeContext.globalAlpha = currTool.opacity;
     $(this.canvas).hide();
 
     this.draw(this.strokeCanvas);
@@ -123,7 +125,7 @@ Stroke.prototype.update = function (pos) {
     clearCanvas(strokeLayer);
     strokeContext.globalAlpha = 1;
     strokeContext.drawImage(layers[currentLayer], 0, 0);
-    strokeContext.globalAlpha = opacity;
+    strokeContext.globalAlpha = currTool.opacity;
     this.draw(this.strokeCanvas);
 }
 
@@ -135,29 +137,6 @@ Stroke.prototype.end = function (pos) {
     this.draw(this.canvas);
 
     this.path = [];
-}
-
-function setContextValues(canvas) {
-    var c = canvas.getContext('2d');
-    if (c.globalAlpha != opacity) { c.globalAlpha = opacity; }
-    if (c.lineJoin != 'round') { c.lineJoin = 'round'; }
-    if (c.lineCap != 'round') { c.lineCap = 'round'; }
-    if (c.lineWidth != (radius * 2)) { c.lineWidth = radius * 2; }
-
-    if (tool == 'pencil' || tool=='text') {
-        if (c.strokeStyle != color) { c.strokeStyle = color };
-        if (c.fillStyle != color) { c.fillStyle = color; }
-        if (c.globalCompositeOperation != 'source-over') {
-            c.globalCompositeOperation = 'source-over';
-        }
-    } else {
-        if (c.strokeStyle != transparent) { c.strokeStyle = transparent; }
-        if (c.fillStyle != transparent) { c.fillStyle = transparent; }
-        if (c.globalCompositeOperation != 'destination-out') {
-            c.globalCompositeOperation = 'destination-out';
-        }
-    }
-    return c;
 }
 
 /* Baisc Canvas Operations */
@@ -223,7 +202,7 @@ function drawCursor(pos) {
     if (cursorInWindow) {
         mouseContext.clearRect(0,0, mouseLayer.width, mouseLayer.height);
         mouseContext.beginPath();
-        mouseContext.arc(pos.x, pos.y, radius, 0, 2 * Math.PI, false);
+        mouseContext.arc(pos.x, pos.y, currTool.radius, 0, 2 * Math.PI, false);
         mouseContext.fill();
         mouseContext.stroke();
    }
@@ -305,7 +284,7 @@ function updateCanvas() {
 
     newLayer.getContext('2d').globalAlpha = 1;
     newLayer.getContext('2d').drawImage(img, 0, 0);
-    newLayer.getContext('2d').globalAlpha = opacity;
+    newLayer.getContext('2d').globalAlpha = currTool.opacity;
 
     layers[newElement.layer] = newLayer;
 }

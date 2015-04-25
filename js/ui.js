@@ -11,16 +11,16 @@ function initDesktopClient() {
     }).on('click', '#brush', function (evt) {
         $('.selectedTool').removeClass('selectedTool');
         $('#brush, #pencil').addClass('selectedTool');
-        tool = 'pencil';
+        currTool = pencil;
         mouseContext.fillStyle = color;
         $('#brushSettings').toggle();
     }).on('click', '#eraser', function() {
         $('.selectedTool').removeClass('selectedTool');
         $('#eraser').addClass('selectedTool');
-        tool = 'eraser';
+        currTool = eraser;
         mouseContext.fillStyle = 'rgba(0, 0, 0, 0)';
     }).on('click', '#text', function () {
-        tool = 'text';
+        currTool = text;
         $('.selectedTool').removeClass('selectedTool');
         $('#text').addClass('selectedTool');
         $('canvas').css('cursor','crosshair');
@@ -185,13 +185,13 @@ function initDesktopClient() {
 
     $('#brush-opacity').on('input', function () {
         $('#brush-opacity-value').html($(this).val());
-        opacity = ($(this).val()/ 100);
-        $(mouseLayer).css('opacity', opacity);
+        currTool.opacity = ($(this).val()/ 100);
+        $(mouseLayer).css('opacity', currTool.opacity);
     });
 
     $('#brush-size').on('input', function () {
         $('#brush-size-value').html($(this).val());
-        radius = $(this).val();
+        currTool.radius = $(this).val();
     });
 
     $('#ColorWindow').windowfy({
@@ -227,16 +227,16 @@ function initDesktopClient() {
         if(!mouseDown) {
             if ( e.shiftKey ) {
                 if ( e.which == 187 ) {
-                    if ( opacity < 1.0 ) {
-                       opacity += 0.01;
+                    if ( currTool.opacity < 1.0 ) {
+                       curTool.opacity += 0.01;
                     }
                 } else if ( e.which == 189 ) {
-                    if(opacity > 0) {
-                        opacity -= 0.01;
+                    if(currTool.opacity > 0) {
+                        currTool.opacity -= 0.01;
                     }
                 }
-                $(mouseLayer).css('opacity', opacity);
-                var o = Math.round(opacity * 100);
+                $(mouseLayer).css('opacity', currTool.opacity);
+                var o = Math.round(currTool.opacity * 100);
                 $('#brush-opacity-value').html(o);
                 $('#brush-opacity').val(o);
             } else if ( e.ctrlKey ) {
@@ -251,10 +251,10 @@ function initDesktopClient() {
                 }
             } else {
                 if ( e.which == 187) {
-                    radius++;
+                    currTool.radius++;
                 } else if ( e.which == 189 ) {
-                    if ( radius > 1 ) {
-                        radius--;
+                    if ( currTool.radius > 1 ) {
+                        currTool.radius--;
                     }
                 } else if( e.which == 88) {
                     var temp = color1;
@@ -274,8 +274,8 @@ function initDesktopClient() {
                     $('#newName').trigger('blur');
                 }
 
-                $('#brush-size-value').html(radius);
-                $('#brush-size').val(radius);
+                $('#brush-size-value').html(currTool.radius);
+                $('#brush-size').val(currTool.radius);
 
             }
         }
@@ -288,29 +288,29 @@ function initDesktopClient() {
         if(!mouseDown) {
             if(evt.shiftKey) {
                 if(e.deltaX < 0) {
-                    if ( opacity < 1.0 ) {
-                       opacity += 0.01;
+                    if (currTool.opacity < 1.0) {
+                        currTool.opacity += 0.01;
                     }
                 } else {
-                    if ( opacity > .01 ) {
-                        opacity -= 0.01;
+                    if (currTool.opacity > .01) {
+                        currTool.opacity -= 0.01;
                     }
                 }
-                $(mouseLayer).css('opacity', opacity);
-                var o = Math.round(opacity * 100);
+                $(mouseLayer).css('opacity', currTool.opacity);
+                var o = Math.round(currTool.opacity * 100);
                 $('#brush-opacity-value').html(o);
                 $('#brush-opacity').val(o);
 
             } else {
                 if(e.deltaY < 0) {
-                    radius++;
+                    currTool.radius++;
                 } else {
-                    if ( radius > 1 ) {
-                        radius--;
+                    if ( currTool.radius > 1 ) {
+                        currTool.radius--;
                     }
                 }
-                $('#brush-size-value').html(radius);
-                $('#brush-size').val(radius);
+                $('#brush-size-value').html(currTool.radius);
+                $('#brush-size').val(currTool.radius);
             }
             drawCursor(pos);
         }
@@ -320,8 +320,8 @@ function initDesktopClient() {
         $(this).addClass('selectedTool');
     }).on('mouseup', function(evt) {
         $('.selectedTool').removeClass('selectedTool');
-        $('#'+tool).addClass('selectedTool');
-        if(tool == 'pencil') {
+        $('#'+currTool.type).addClass('selectedTool');
+        if(currTool.type == 'pencil') {
             $('#brush').addClass('selectedTool');
         }
         pos = getMousePos(mouseLayer, evt);
@@ -334,7 +334,7 @@ function initDesktopClient() {
         }
     }).on( 'mousemove', function(evt) {
         pos = getMousePos(mouseLayer, evt);
-        if(tool == 'pencil' || tool == 'eraser') {
+        if(currTool.type == 'pencil' || currTool.type == 'eraser') {
             drawCursor( pos );
         }
         if (mouseDown) {
@@ -346,9 +346,9 @@ function initDesktopClient() {
     });
 
     $(mouseLayer).on('mousedown', function (evt) {
-        var currentCtx = setContextValues(layers[currentLayer]);
+        var currentCtx = layers[currentLayer];//setContextValues(layers[currentLayer]);
         pos = getMousePos(mouseLayer, evt);
-        if (tool == 'pencil' || tool == 'eraser') {
+        if (currTool.type == 'pencil' || currTool.type == 'eraser') {
             if (evt.shiftKey) {
                 currentCtx.beginPath();
                 currentCtx.moveTo(lastPos.x, lastPos.y);
@@ -370,10 +370,10 @@ function initDesktopClient() {
                         return;
                     }
                 }
-                if (tool == 'pencil') {
+                if (currTool.type == 'pencil') {
                     mouseContext.fillStyle = color;
                 }
-                stroke = new Stroke(tool, layers[currentLayer], strokeLayer);
+                stroke = new Stroke(currTool, layers[currentLayer], strokeLayer);
                 stroke.begin(pos);
                 if (online) {
                     socket.emit('beginStroke', { pos: pos });
@@ -401,7 +401,7 @@ function initDesktopClient() {
 
 function initMobileClient() {
     $(document).on('touchstart', function (evt) {
-        stroke = new Stroke(tool, layers[currentLayer], strokeLayer);
+        stroke = new Stroke(currTool, layers[currentLayer], strokeLayer);
         stroke.begin({ 'x': evt.originalEvent.pageX, 'y': evt.originalEvent.pageY })
     });
 
@@ -611,7 +611,7 @@ function initOnline() {
         });
 
         socket.on('beginStroke', function (data) {
-            rStrokes[data.socket] = new Stroke('pencil', $('#layer0-remote').get(0), $('#layer0-remote-stroke').get(0));
+            rStrokes[data.socket] = new Stroke(currTool, $('#layer0-remote').get(0), $('#layer0-remote-stroke').get(0));
             rStrokes[data.socket].begin(data.pos);
         });
 
@@ -638,7 +638,6 @@ $(document).ready(function() {
     $('#splash').fadeOut(1500);
     $('#window-holder').fadeIn(1500);
     if (window.location.href.split('#').length != 1) {
-        console.log('asfsa')
         initOnline();
     }
 });
