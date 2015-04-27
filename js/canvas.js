@@ -1,5 +1,3 @@
-/* Variables */
-//TODO: Remove unused variables
 var pos = {x: 0, y: 0};
 var lastPos = pos;
 
@@ -42,7 +40,11 @@ var text = {
     'type': 'text',
     'font': '32px serif',
     'color': color
-}
+};
+
+var eyedropper = {
+    'type': 'eyedropper'
+};
 
 //TODO: rename to tool
 var currTool = pencil;

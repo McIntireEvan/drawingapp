@@ -25,7 +25,7 @@ function initDesktopClient() {
         $('#text').addClass('selectedTool');
         $('canvas').css('cursor','crosshair');
     }).on('click', '#eyedropper', function() {
-        tool = 'eyedropper';
+        currTool = eyedropper;
         $('.selectedTool').removeClass('selectedTool');
         $('#eyedropper').addClass('selectedTool');
     }).on('click', '#color1', function () {
@@ -346,7 +346,7 @@ function initDesktopClient() {
     });
 
     $(mouseLayer).on('mousedown', function (evt) {
-        var currentCtx = layers[currentLayer];//setContextValues(layers[currentLayer]);
+        var currentCtx = layers[currentLayer].getContext('2d');
         pos = getMousePos(mouseLayer, evt);
         if (currTool.type == 'pencil' || currTool.type == 'eraser') {
             if (evt.shiftKey) {
@@ -372,6 +372,7 @@ function initDesktopClient() {
                 }
                 if (currTool.type == 'pencil') {
                     mouseContext.fillStyle = color;
+                    currTool.color = color;
                 }
                 stroke = new Stroke(currTool, layers[currentLayer], strokeLayer);
                 stroke.begin(pos);
@@ -379,9 +380,9 @@ function initDesktopClient() {
                     socket.emit('beginStroke', { pos: pos });
                 }
             }
-        } else if (tool == 'text') {
-            createText('32px serif', { x: pos.x, y: pos.y }, layers[currentLayer]);
-        } else if(tool == 'eyedropper') {
+        } else if (currTool.type == 'text') {
+            createText(currTool.font, { x: pos.x, y: pos.y }, layers[currentLayer]);
+        } else if(currTool.type == 'eyedropper') {
             var c = currentCtx.getImageData(pos.x, pos.y, 1, 1).data;
             var nC = 'rgb(' + c[0] +', ' + c[1] + ', ' + c[2] + ')';
             color = color1 = nC;
