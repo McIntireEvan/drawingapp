@@ -272,6 +272,11 @@ function initDesktopClient() {
             break;
     }
 
+    $('#imgImport').on('click', function() {
+        enableImports();
+        alert('Image drag and drop enabled')
+    });
+
     $('#layer0-control').addClass('selectedRow');
 
     $(document).keydown(function(e) {
