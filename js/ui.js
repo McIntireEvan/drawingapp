@@ -231,6 +231,47 @@ function initDesktopClient() {
         id: 'settingsW'
     }).parent().parent().hide();
 
+    $('#32x32').on('click', function() {
+        $('.windowfy img').css({
+            width: '32px',
+            height: '32px'
+        });
+        localStorage.setItem('iconSize','32x32');
+    });
+
+    $('#48x48').on('click', function() {
+        $('.windowfy img').css({
+            width: '48px',
+            height: '48px'
+        });
+        localStorage.setItem('iconSize','48x48');
+    });
+
+    $('#64x64').on('click', function() {
+        $('.windowfy img').css({
+            width: '64px',
+            height: '64px'
+        });
+        localStorage.setItem('iconSize','64x64');
+    });
+
+    var iconSize = localStorage.getItem('iconSize');
+    if(iconSize == null) {
+        iconSize = '48x48';
+    }
+
+    switch(iconSize) {
+        case '32x32':
+            $('#32x32').trigger('click');
+            break;
+        case '48x48':
+            $('#48x48').trigger('click');
+            break;
+        case '64x64':
+            $('#64x64').trigger('click');
+            break;
+    }
+
     $('#layer0-control').addClass('selectedRow');
 
     $(document).keydown(function(e) {
