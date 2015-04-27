@@ -75,6 +75,8 @@ function initDesktopClient() {
     }).on('click', '#invite', function() {
         initOnline();
         alert('Online activated: Invite people with the URL ' + window.location.href);
+    }).on('click', '#settings', function() {
+        $('#SettingsWindow').parent().parent().toggle();
     });
 
     var onLayerClick = function () {
@@ -219,6 +221,14 @@ function initDesktopClient() {
             $(this).hide();
         },
         id: 'brushSettings'
+    }).parent().parent().hide();
+
+    $('#SettingsWindow').windowfy({
+        title: 'Settings',
+        onClose: function () {
+            $(this).hide();
+        },
+        id: 'settingsW'
     }).parent().parent().hide();
 
     $('#layer0-control').addClass('selectedRow');
