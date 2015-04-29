@@ -460,17 +460,13 @@ function initMobileClient() {
     $(document).on('touchstart', function (evt) {
         stroke = new Stroke(currTool, layers[currentLayer], strokeLayer);
         stroke.begin({ 'x': evt.originalEvent.pageX, 'y': evt.originalEvent.pageY })
-    });
-
-    $(document).on('touchmove', function (evt) {
+    }).on('touchmove', function (evt) {
         pos = getMousePos(mouseLayer, evt.originalEvent.touches[0]);
         evt.preventDefault();
         if (mouseDown) {
             stroke.update(pos);
         }
-    });
-
-    $(document).on('touchend', function (evt) {
+    }).on('touchend', function (evt) {
         pos = getMousePos(mouseLayer, evt.originalEvent.changedTouches[0]);
         if (mouseDown) {
             stroke.end(pos);
@@ -544,7 +540,9 @@ function initMobileClient() {
         saveCanvasToImage(merge($('#background').get(0), layers));
         clearCanvas($('#background').get(0));
     });
+
     $('#layer1').remove();
+    $('#window-holder').remove();
 }
 
 function initShared() {
@@ -611,8 +609,6 @@ function enableImports() {
     }
 }
 
-var socket;
-
 function isMobile() {
     return window.matchMedia('(min-device-width : 320px) and (max-device-width : 480px)').matches;
 }
@@ -622,64 +618,6 @@ function prepareCanvas(canvas) {
     $(canvas).css({'width':width, 'height':height});
     canvas.width = $('#mouse').width();
     canvas.height = $('#mouse').height();
-}
-
-//TODO: Remove temp function
-function s(data) {
-    socket.emit('stroke', {'stroke':data});
-}
-
-//Generates a unique 6 digit ID
-function genID() {
-    return ("000000" + (Math.random()*Math.pow(36,6) << 0).toString(36)).slice(-6);
-}
-
-//TODO: Error checking
-function initOnline() {
-    //Todo: Replace hardcoded address
-    socket = io('168.235.67.12:8080');
-
-    if (window.location.href.split('#').length == 1) {
-        window.location.href = '#' + genID();
-    }
-
-    var url = window.location.href.split('#');
-    if(url.length == 2) {
-        roomId = url[1];
-
-        socket.emit('handshake', {
-            'id': roomId
-        }).on('handshake', function(data) {
-            online = true;
-            if(data.exists) {
-                socket.emit('join', {
-                    'id': roomId
-                });
-                width = data.width;
-                height = data.height;
-                initCanvases();
-            } else {
-                socket.emit('create', {
-                    'id': roomId,
-                    'width': width,
-                    'height': height
-                });
-            }
-        });
-
-        socket.on('beginStroke', function (data) {
-            rStrokes[data.socket] = new Stroke(currTool, $('#layer0-remote').get(0), $('#layer0-remote-stroke').get(0));
-            rStrokes[data.socket].begin(data.pos);
-        });
-
-        socket.on('updateStroke', function (data) {
-            rStrokes[data.socket].update(data.pos);
-        });
-
-        socket.on('endStroke', function (data) {
-            rStrokes[data.socket].end(data.pos);
-        });
-    }
 }
 
 $(document).ready(function() {
