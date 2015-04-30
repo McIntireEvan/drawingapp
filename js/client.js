@@ -1,6 +1,9 @@
 /* Handles all clientside networking */
 
 var socket;
+var roomId;
+var online = false;
+var rStrokes = {};
 
 //Generates a unique 6 digit ID
 function genID() {

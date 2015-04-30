@@ -1,7 +1,6 @@
 var cursorInWindow = true;
-var roomId;
-var online = false;
-var rStrokes = {};
+var width = 0;
+var height = 0;
 
 function initDesktopClient() {
     $('#ToolboxWindow').windowfy({
@@ -321,11 +320,11 @@ function initDesktopClient() {
                     $('#color2').css({'background':color2});
                 } else if(e.which == 112) {
                     e.preventDefault()
-                    $('#HelpWindow').parent().toggle();
+                    $('#HelpWindow').parent().parent().toggle();
                 } else if(e.which == 27) {
-                    $('#AboutWindow').parent().hide();
-                    $('#ColorsWindow').parent().hide();
-                    $('#HelpWindow').parent().hide();
+                    $('#AboutWindow').parent().parent().hide();
+                    $('#ColorsWindow').parent().parent().hide();
+                    $('#HelpWindow').parent().parent().hide();
                 } else if (e.which == 13) {
                     $('#newName').trigger('blur');
                 }
@@ -370,9 +369,7 @@ function initDesktopClient() {
             }
             drawCursor(pos);
         }
-    });
-
-    $(document).on('mousedown', '#ToolboxWindow td', function() {
+    }).on('mousedown', '#ToolboxWindow td', function() {
         $(this).addClass('selectedTool');
     }).on('mouseup', function(evt) {
         $('.selectedTool').removeClass('selectedTool');
@@ -614,7 +611,6 @@ function isMobile() {
 }
 
 function prepareCanvas(canvas) {
-    //TODO: In node version, set these to value from server
     $(canvas).css({'width':width, 'height':height});
     canvas.width = $('#mouse').width();
     canvas.height = $('#mouse').height();

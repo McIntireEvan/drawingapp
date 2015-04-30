@@ -17,9 +17,6 @@ var stroke;
 var strokeLayer = $('#stroke').get(0);
 var strokeContext = strokeLayer.getContext('2d');
 
-var width = 0;
-var height = 0;
-
 var pencil = {
     'type': 'pencil',
     'radius': 3,
