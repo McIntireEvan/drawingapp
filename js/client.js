@@ -44,7 +44,7 @@ function initOnline() {
         });
 
         socket.on('beginStroke', function (data) {
-            rStrokes[data.socket] = new Stroke(currTool, $('#layer0-remote').get(0), $('#layer0-remote-stroke').get(0));
+            rStrokes[data.socket] = new Stroke(data.tool, $('#layer0-remote').get(0), $('#layer0-remote-stroke').get(0));
             rStrokes[data.socket].begin(data.pos);
         });
 

@@ -430,7 +430,7 @@ function initDesktopClient() {
                 stroke = new Stroke(currTool, layers[currentLayer], strokeLayer);
                 stroke.begin(pos);
                 if (online) {
-                    socket.emit('beginStroke', { pos: pos });
+                    socket.emit('beginStroke', { pos: pos, tool: currTool });
                 }
             }
         } else if (currTool.type == 'text') {

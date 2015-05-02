@@ -37,7 +37,7 @@ io.on('connection', function(socket) {
     });
 
     socket.on('beginStroke', function(data) {
-        socket.broadcast.to(room).emit('beginStroke', { 'pos': data.pos, 'socket':socket.id });
+        socket.broadcast.to(room).emit('beginStroke', { 'pos': data.pos, 'socket':socket.id, 'tool': data.tool });
     });
 
     socket.on('updateStroke', function(data) {
