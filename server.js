@@ -47,6 +47,11 @@ io.on('connection', function(socket) {
     socket.on('endStroke', function(data) {
         socket.broadcast.to(room).emit('endStroke', { 'pos': data.pos, 'socket': socket.id });
     });
+
+    socket.on('text', function(data) {
+        socket.broadcast.to(room).emit('text', { 'pos': data.pos, 'socket':socket.id, 'tool': data.tool, text: data.text });
+    });
+
 });
 
 function deleteRoom(id) {

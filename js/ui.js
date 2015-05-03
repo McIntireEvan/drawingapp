@@ -434,7 +434,15 @@ function initDesktopClient() {
                 }
             }
         } else if (currTool.type == 'text') {
-            createText(currTool.font, { x: pos.x, y: pos.y }, layers[currentLayer]);
+            var string = prompt('Text:');
+            if (string == 'null' || string == '' || string == null) {
+                return;
+            }
+            createText(string, currTool.font, { x: pos.x, y: pos.y }, layers[currentLayer]);
+            if (online) {
+                    socket.emit('text', { pos: pos, tool: currTool, text: string });
+                }
+
         } else if(currTool.type == 'eyedropper') {
             var c = currentCtx.getImageData(pos.x, pos.y, 1, 1).data;
             var nC = 'rgb(' + c[0] +', ' + c[1] + ', ' + c[2] + ')';

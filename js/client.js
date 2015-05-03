@@ -55,5 +55,9 @@ function initOnline() {
         socket.on('endStroke', function (data) {
             rStrokes[data.socket].end(data.pos);
         });
+
+        socket.on('text', function(data) {
+            createText(data.text, data.tool.font, { x: data.pos.x, y: data.pos.y }, $('#layer0-remote').get(0));
+        });
     }
 }

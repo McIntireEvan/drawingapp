@@ -184,16 +184,11 @@ function merge(mergeTo, mergeFrom) {
     return mergeTo;
 }
 
-function createText(font, pos, canvas) {
-    var string = prompt('Text:');
-    if (string == 'null' || string == '' || string == null) {
-        return;
-    }
-
+function createText(text, font, pos, canvas) {
     var ctx = layers[currentLayer].getContext('2d');
     ctx.font = font;
 
-    ctx.fillText(string, pos.x, pos.y);
+    ctx.fillText(text, pos.x, pos.y);
     addChange();
 }
 
