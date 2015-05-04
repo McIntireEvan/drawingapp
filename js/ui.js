@@ -38,7 +38,7 @@ function initDesktopClient() {
         $('#ColorWindow').html('').colorwheel({size: 200, ringSize: 20, onInput: function(evt) {
             var newColor = evt.color;
             color1 = 'rgb(' + newColor.r + ',' + newColor.g + ',' + newColor.b + ')';
-            $('#color1 img').css('background',color1);
+            $('#color1').css('background',color1);
         }});
     }).on('click', '#color2', function () {
         if($('.cw2').length == 1) {
@@ -51,7 +51,7 @@ function initDesktopClient() {
         $('#ColorWindow').html('').colorwheel({size: 200, ringSize: 20, onInput: function(evt) {
            var newColor = evt.color;
            color2 = 'rgb(' + newColor.r + ',' + newColor.g + ',' + newColor.b + ')';
-           $('#color2 img').css('background',color2);
+           $('#color2').css('background',color2);
         }});   
     }).on('click', '#undo', function () {
         undo();
@@ -381,6 +381,7 @@ function initDesktopClient() {
         if (mouseDown) {
             mouseDown = false;
             stroke.end(pos);
+            lastPos = pos;
             if (online) {
                 socket.emit('endStroke', { pos: pos });
             }
@@ -399,7 +400,7 @@ function initDesktopClient() {
     });
 
     $(mouseLayer).on('mousedown', function (evt) {
-        var currentCtx = layers[currentLayer].getContext('2d');
+        var currentCtx = setContextValues(layers[currentLayer], currTool);
         pos = getMousePos(mouseLayer, evt);
         if (currTool.type == 'pencil' || currTool.type == 'eraser') {
             if (evt.shiftKey) {
