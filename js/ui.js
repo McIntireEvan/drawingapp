@@ -586,7 +586,20 @@ function initCanvases() {
     prepareCanvas(strokeLayer);
 }
 
+//TODO: Cleanup and enable by default
 function enableImports() {
+    function drawBlob(blob, pos) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            var img = new Image();
+            img.src = reader.result;
+            img.onload = function () {
+                layers[currentLayer].getContext('2d').drawImage(img, pos.x, pos.y);
+            }
+        }
+        reader.readAsDataURL(blob);
+    }
+
     if (window.File && window.FileReader && window.FileList && window.Blob) {
         $(document).on('dragover dragenter', function (evt) {
             evt.preventDefault();
@@ -599,18 +612,29 @@ function enableImports() {
             if(!files[0].type.match('image.*')) {
                 return;
             }
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                var data = reader.result;
-                var img = new Image();
-                img.src = data;
-                img.onload = function () {
-                    layers[currentLayer].getContext('2d').drawImage(img, evt.originalEvent.pageX, evt.originalEvent.pageX);
-                }
-            }
-            reader.readAsDataURL(files[0]);
+            drawBlob(files[0], {x: evt.originalEvent.pageX, y: evt.originalEvent.pageY});
             evt.preventDefault();
             evt.stopPropagation();
+        }).on('paste', function(evt) {
+            var data = evt.originalEvent.clipboardData;
+            if(data) {
+                var items = data.items;
+                for (var i = 0; i < items.length; i++) {
+                    if (items[i].type.indexOf("image") !== -1) {
+                        var blob = items[i].getAsFile();
+                        drawBlob(blob,{x: pos.x, y: pos.y});
+                        return;
+                    }
+                }
+                var files = data.files;
+                for (var i = 0; i < files.length; i++) {
+                    if (files[i].type.indexOf("image") !== -1) {
+                        var blob = files[i];
+                        drawBlob(blob, {x: pos.x, y: pos.y});
+                        return;
+                    }
+                }
+            }
         });
     }
 }
