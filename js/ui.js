@@ -128,7 +128,8 @@ function initDesktopClient() {
     $('#LayersWindow').windowfy({
         title: 'Layers',
         close: false,
-        id: 'Layers'
+        id: 'Layers',
+        x: 100
     }).on('click', '#layer-add', function () {
         $('<canvas>').attr({
             id: 'layer' + nextLayer,
@@ -270,11 +271,6 @@ function initDesktopClient() {
             $('#64x64').trigger('click');
             break;
     }
-
-    $('#imgImport').on('click', function() {
-        enableImports();
-        alert('Image drag and drop enabled')
-    });
 
     $('#layer0-control').addClass('selectedRow');
 
@@ -504,7 +500,7 @@ function initMobileClient() {
         $('.selected').removeClass('selected');
         $(this).addClass('selected');
 
-        tool = 'pencil';
+        currTool = pencil;
     });
 
     $("<div/>").attr({
@@ -513,7 +509,7 @@ function initMobileClient() {
         $('.selected').removeClass('selected');
         $(this).addClass('selected');
 
-        tool = 'eraser';
+        currTool = eraser;
     })
 
     $("<div/>").attr({
@@ -586,20 +582,8 @@ function initCanvases() {
     prepareCanvas(strokeLayer);
 }
 
-//TODO: Cleanup and enable by default
-function enableImports() {
-    function drawBlob(blob, pos) {
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            var img = new Image();
-            img.src = reader.result;
-            img.onload = function () {
-                layers[currentLayer].getContext('2d').drawImage(img, pos.x, pos.y);
-            }
-        }
-        reader.readAsDataURL(blob);
-    }
-
+//TODO: Cleanup
+function bindImports() {
     if (window.File && window.FileReader && window.FileList && window.Blob) {
         $(document).on('dragover dragenter', function (evt) {
             evt.preventDefault();
@@ -636,6 +620,8 @@ function enableImports() {
                 }
             }
         });
+    } else {
+        Console.log('Error attaching drop and paste events');
     }
 }
 
@@ -658,7 +644,7 @@ $(document).ready(function() {
         initDesktopClient();
     }
     initShared();
-
+    bindImports();
     $('#splash').fadeOut(1500);
     $('#window-holder').fadeIn(1500);
     if (window.location.href.split('#').length != 1) {

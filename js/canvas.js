@@ -234,6 +234,19 @@ function loadCanvasFromStorage(destination) {
     } catch (e) {}
 }
 
+function drawBlob(blob, pos, canvas) {
+    var reader = new FileReader();
+    reader.onload = function () {
+        var img = new Image();
+        img.src = reader.result;
+        img.onload = function () {
+            layers[currentLayer].getContext('2d').drawImage(img, pos.x, pos.y);
+        }
+    }
+    reader.readAsDataURL(blob);
+
+}
+
 /* Canvas history */
 //TODO: This could probably use another rewrite, it really sucks
 var changes = [];

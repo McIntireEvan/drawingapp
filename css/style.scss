@@ -76,6 +76,14 @@ canvas {
     text-align: center;
 }
 
+#SettingsWindow {
+    width: 300px;
+}
+
+#AboutWindow, #HelpWindow {
+    width: 375px;
+}
+
 #ColorWindow {
     width: 225px;
     height: 225px;
