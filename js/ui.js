@@ -461,7 +461,8 @@ function initDesktopClient() {
 function initMobileClient() {
     $(document).on('touchstart', function (evt) {
         stroke = new Stroke(currTool, layers[currentLayer], strokeLayer);
-        stroke.begin({ 'x': evt.originalEvent.pageX, 'y': evt.originalEvent.pageY })
+        stroke.begin({ 'x': evt.originalEvent.changedTouches[0].pageX, 'y': evt.originalEvent.changedTouches[0].pageY });
+        mouseDown = true;
     }).on('touchmove', function (evt) {
         pos = getMousePos(mouseLayer, evt.originalEvent.touches[0]);
         evt.preventDefault();
@@ -473,6 +474,9 @@ function initMobileClient() {
         if (mouseDown) {
             stroke.end(pos);
         }
+    }).on('change', '.colorpick', function () {
+        color = $('.colorpick').val();
+        color1 = color;
     });
 
     $('<input>').attr({
@@ -484,11 +488,6 @@ function initMobileClient() {
         'position': 'absolute',
         'z-index': '3000'
     }).appendTo('body');
-
-    $(document).on('change', '.colorpick', function () {
-        color = $('.colorpick').val();
-        color1 = color;
-    });
 
     $("<div/>").attr({
         'class': 'mobile-toolbox'
@@ -566,8 +565,8 @@ function initShared() {
         saveCanvasToStorage(merge($('#background').get(0), layers));
     });
 
-    $(document).bind('contextmenu', function(event) {
-        event.preventDefault();
+    $(document).bind('contextmenu', function(evt) {
+        evt.preventDefault();
     });
 }
 
