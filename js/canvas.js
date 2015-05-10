@@ -74,8 +74,8 @@ Stroke.prototype.draw = function (canvas) {
     setContextValues(canvas, this.tool);
     var ctx = canvas.getContext('2d');
     if (this.tool.type == 'eraser') {
-        if (this.strokeContext.globalCompositeOperation = 'source-over') {
-            this.strokeContext.globalCompositeOperation = 'source-over';
+        if (this.strokeContext.globalCompositeOperation != 'xor') {
+            this.strokeContext.globalCompositeOperation = 'xor';
         }
     }
 
