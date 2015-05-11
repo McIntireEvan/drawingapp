@@ -88,6 +88,7 @@ function initDesktopClient() {
         } else {
             $('#layer-visible').html('<img src="img/icons/layerhidden.png" />');
         };
+        setIconSize();
         var opacity = Math.round($(layers[currentLayer]).css('opacity') * 100);
         $('#layer-opacity').val(opacity);
         $('#opacity-value').html(opacity);
@@ -165,6 +166,7 @@ function initDesktopClient() {
         } else {
             $(this).html('<img src="img/icons/layervisible.png" />');
         };
+        setIconSize();
         $(layers[currentLayer]).toggle();
     }).on('click', '#layer-mergedown', function () {
         var next = $('#layer' + currentLayer + '-control').next();
@@ -231,47 +233,26 @@ function initDesktopClient() {
         id: 'settingsW'
     }).parent().parent().hide();
 
-    $('#32x32').on('click', function() {
-        $('.windowfy img').css({
-            width: '32px',
-            height: '32px'
-        });
-        localStorage.setItem('iconSize','32x32');
+    $('#32px').on('click', function() {
+        localStorage.setItem('iconSize','32px');
+        setIconSize();
     });
 
-    $('#48x48').on('click', function() {
-        $('.windowfy img').css({
-            width: '48px',
-            height: '48px'
-        });
-        localStorage.setItem('iconSize','48x48');
+    $('#48px').on('click', function() {
+        localStorage.setItem('iconSize','48px');
+        setIconSize();
     });
 
-    $('#64x64').on('click', function() {
-        $('.windowfy img').css({
-            width: '64px',
-            height: '64px'
-        });
-        localStorage.setItem('iconSize','64x64');
+    $('#64px').on('click', function() {
+        localStorage.setItem('iconSize','64px');
+        setIconSize();
     });
 
     var iconSize = localStorage.getItem('iconSize');
     if(iconSize == null) {
         iconSize = '48x48';
     }
-
-    switch(iconSize) {
-        case '32x32':
-            $('#32x32').trigger('click');
-            break;
-        case '48x48':
-            $('#48x48').trigger('click');
-            break;
-        case '64x64':
-            $('#64x64').trigger('click');
-            break;
-    }
-
+    setIconSize();
     $('#layer0-control').addClass('selectedRow');
 
     $(document).keydown(function(e) {
@@ -455,6 +436,14 @@ function initDesktopClient() {
     }).on('mouseleave', function() {
         cursorInWindow = false;
         clearCanvas( mouseLayer );
+    });
+}
+
+function setIconSize() {
+    var size = localStorage.getItem('iconSize');
+    $('.windowfy img').css({
+        'width': size,
+        'height': size
     });
 }
 
