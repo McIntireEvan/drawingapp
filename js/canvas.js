@@ -275,6 +275,7 @@ function undo() {
 }
 
 function redo() {
+    console.log(currentChange);
     if(currentChange < changes.length - 1) {
         currentChange++;
         updateCanvas();

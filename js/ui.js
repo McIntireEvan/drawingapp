@@ -301,6 +301,7 @@ function initDesktopClient() {
         if (mouseDown) {
             mouseDown = false;
             stroke.end(pos);
+            addChange();
             lastPos = pos;
             if (online) {
                 socket.emit('endStroke', { pos: pos });
@@ -453,7 +454,7 @@ function bindKeys() {
         new KeyBinding('undo', 90, false, false, true, function() {
             undo();
         }),
-        new KeyBinding('redo', 187, false, false, true, function() {
+        new KeyBinding('redo', 89, false, false, true, function() {
             redo();
         })
     ];
