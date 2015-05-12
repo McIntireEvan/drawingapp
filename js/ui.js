@@ -255,64 +255,7 @@ function initDesktopClient() {
     setIconSize();
     $('#layer0-control').addClass('selectedRow');
 
-    $(document).keydown(function(e) {
-        if(!mouseDown) {
-            if ( e.shiftKey ) {
-                if ( e.which == 187 ) {
-                    if ( currTool.opacity < 1.0 ) {
-                       curTool.opacity += 0.01;
-                    }
-                } else if ( e.which == 189 ) {
-                    if(currTool.opacity > 0) {
-                        currTool.opacity -= 0.01;
-                    }
-                }
-                $(mouseLayer).css('opacity', currTool.opacity);
-                var o = Math.round(currTool.opacity * 100);
-                $('#brush-opacity-value').html(o);
-                $('#brush-opacity').val(o);
-            } else if ( e.ctrlKey ) {
-                if ( e.which==90 ) {
-                    undo();
-                } else if ( e.which==89 ) {
-                    redo();
-                } else if (e.which == 83) {
-                    e.preventDefault();
-                    saveCanvasToImage(merge($('#background').get(0), layers));
-                    clearCanvas($('#background').get(0));
-                }
-            } else {
-                if ( e.which == 187) {
-                    currTool.radius++;
-                } else if ( e.which == 189 ) {
-                    if ( currTool.radius > 1 ) {
-                        currTool.radius--;
-                    }
-                } else if( e.which == 88) {
-                    var temp = color1;
-                    color1 = color2;
-                    color2 = temp;
-                    color = color1;
-                    $('#color1').css({'background':color});
-                    $('#color2').css({'background':color2});
-                } else if(e.which == 112) {
-                    e.preventDefault()
-                    $('#HelpWindow').parent().parent().toggle();
-                } else if(e.which == 27) {
-                    $('#AboutWindow').parent().parent().hide();
-                    $('#ColorsWindow').parent().parent().hide();
-                    $('#HelpWindow').parent().parent().hide();
-                } else if (e.which == 13) {
-                    $('#newName').trigger('blur');
-                }
-
-                $('#brush-size-value').html(currTool.radius);
-                $('#brush-size').val(currTool.radius);
-
-            }
-        }
-        drawCursor(pos);
-    });
+    bindKeys();
 
     $(document).on('wheel', function(evt) {
         evt.preventDefault();
@@ -436,6 +379,100 @@ function initDesktopClient() {
     }).on('mouseleave', function() {
         cursorInWindow = false;
         clearCanvas( mouseLayer );
+    });
+}
+
+function bindKeys() {
+    var KeyBinding = function(name, key, shift, alt, ctrl, onPress) {
+        this.name = name;
+        this.onPress = onPress;
+
+        if(localStorage.getItem(name) == null) {
+            this.key = key;
+            this.shift = shift;
+            this.alt = alt;
+            this.ctrl = ctrl;
+            localStorage.setItem(name, JSON.stringify(this));
+        } else {
+            var obj = JSON.parse(localStorage.getItem(name));
+            this.key = obj.key;
+            this.shift = obj.shift;
+            this.alt = obj.alt;
+            this.ctrl = obj.ctrl;
+        }
+    }
+
+    KeyBinding.prototype.call = function(evt) {
+        this.onPress(evt);
+    }
+
+    var bindings = [
+        new KeyBinding('switchColor', 88, false, false, false, function() {
+            var temp = color1;
+            color1 = color2;
+            color2 = temp;
+            color = color1;
+            $('#color1').css({'background':color});
+            $('#color2').css({'background':color2});
+        }),
+        new KeyBinding('finishLayerRename', 13, false, false, false, function() {
+            $('#newName').trigger('blur');
+        }),
+        new KeyBinding('sizeUp', 187, false, false, false, function() {
+            currTool.radius++;
+        }),
+        new KeyBinding('sizeDown', 189, false, false, false, function() {
+            if ( currTool.radius > 1 ) {
+                currTool.radius--;
+            }
+        }),
+        new KeyBinding('opacityUp', 187, true, false, false, function() {
+            if ( currTool.opacity < 1.0 ) {
+                currTool.opacity += 0.01;
+            }
+            $(mouseLayer).css('opacity', currTool.opacity);
+            var o = Math.round(currTool.opacity * 100);
+            $('#brush-opacity-value').html(o);
+            $('#brush-opacity').val(o);
+        }),
+        new KeyBinding('opacityDown', 189, true, false, false, function() {
+            if(currTool.opacity > 0) {
+                currTool.opacity -= 0.01;
+            }
+            $(mouseLayer).css('opacity', currTool.opacity);
+            var o = Math.round(currTool.opacity * 100);
+            $('#brush-opacity-value').html(o);
+            $('#brush-opacity').val(o);
+
+        }),
+        new KeyBinding('clear', 83, false, false, true, function(evt) {
+            evt.preventDefault();
+            saveCanvasToImage(merge($('#background').get(0), layers));
+            clearCanvas($('#background').get(0));
+        }),
+        new KeyBinding('undo', 90, false, false, true, function() {
+            undo();
+        }),
+        new KeyBinding('redo', 187, false, false, true, function() {
+            redo();
+        })
+    ];
+
+    $(document).keydown(function(evt) {
+        if(mouseDown) return;
+
+        for(var i = 0; i < bindings.length; i++) {
+            var keybind = bindings[i];
+            if((evt.which == keybind.key)
+             &&(evt.shiftKey == keybind.shift)
+             &&(evt.ctrlKey == keybind.ctrl)
+             &&(evt.altKey == keybind.alt)) {
+                keybind.call(evt);
+            }
+        }
+        $('#brush-size-value').html(currTool.radius);
+        $('#brush-size').val(currTool.radius);
+        drawCursor(pos);
     });
 }
 
