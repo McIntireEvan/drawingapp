@@ -130,8 +130,6 @@
                 <tr><td><kbd>+</kbd></td><td> Increase brush size</td></tr>
                 <tr><td><kbd>-</kbd></td><td> Decrease brush size</td></tr>
                 <tr><td><kbd>X</kbd></td><td> Swap primary and secondary color </td></tr>
-                <tr><td><kbd>F1</kbd></td><td> Toggle help window </td></tr>
-                <tr><td><kbd>Esc</kbd></td><td> Close all closable windows </td></tr>
                 <tr><td><kbd>Shift</kbd><kbd>+</kbd></td><td> Increase opacity</td></tr>
                 <tr><td><kbd>Shift</kbd><kbd>-</kbd></td><td> Decrease opacity</td></tr>
                 <tr><td><kbd>Ctrl</kbd><kbd>Z</kbd></td><td> Undo </td></tr>
@@ -158,6 +156,19 @@
                     <label> 48x48<input type='radio' id='48px' name='imgsize'/></label>
                     <label> 64x64<input type='radio' id='64px' name='imgsize'/></label>
                 </fieldset>
+                <fieldset>
+                    <legend> Keybinds </legend>
+                    <p> The input fields will record a keypress (including the status of Shift, Alt, and Control) and bind the appropriate key</p>
+                    <table id='Keybinds'>
+                        <tr><td>Save</td><td><input id='keybind-save' type='text'/></td></tr>
+                        <tr><td>Undo</td><td> <input id='keybind-undo' type='text'/></td></tr>
+                        <tr><td>Redo</td><td> <input id='keybind-redo' type='text'/></td></tr>
+                        <tr><td>Increase opacity</td><td> <input id='keybind-opacityUp' type='text'/></td></tr>
+                        <tr><td>Reduce opacity</td><td> <input id='keybind-opacityDown' type='text'/></td></tr>
+                        <tr><td>Switch colors</td><td> <input id='keybind-switchColor' type='text'/></td></tr>
+                        <tr><td>Increase brush size</td><td> <input id='keybind-sizeUp' type='text'/></td></tr>
+                        <tr><td>Decrease brush size</td><td> <input id='keybind-sizeDown' type='text'/></td></tr>
+                    </table>
             </div>
         </div>
 

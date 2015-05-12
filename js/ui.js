@@ -445,7 +445,7 @@ function bindKeys() {
             $('#brush-opacity').val(o);
 
         }),
-        new KeyBinding('clear', 83, false, false, true, function(evt) {
+        new KeyBinding('save', 83, false, false, true, function(evt) {
             evt.preventDefault();
             saveCanvasToImage(merge($('#background').get(0), layers));
             clearCanvas($('#background').get(0));
@@ -473,6 +473,20 @@ function bindKeys() {
         $('#brush-size-value').html(currTool.radius);
         $('#brush-size').val(currTool.radius);
         drawCursor(pos);
+    });
+
+    $('#Keybinds input').on('keyup', function(evt) {
+        if(!(evt.which == 16 || evt.which == 17 || evt.which == 18)) {
+            var name = this.id.replace('keybind-', '');
+            for(var i = 0; i < bindings.length; i++) {
+                if(name == bindings[i].name) {
+                    bindings[i].key = evt.which;
+                    bindings[i].ctrl = evt.ctrlKey;
+                    bindings[i].shift = evt.shiftKey;
+                    bindings[i].alt = evt.altKey;
+                }
+            }
+        }
     });
 }
 
