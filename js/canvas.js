@@ -100,7 +100,7 @@ Stroke.prototype.draw = function (canvas) {
     } else {
         //There are too few points to do a bezier curve, so we just draw the point
         ctx.lineWidth = 1;
-        ctx.arc(this.path[0].x, this.path[0].y, currTool.radius, 0, 2 * Math.PI, false);
+        ctx.arc(this.path[0].x, this.path[0].y, this.tool.radius, 0, 2 * Math.PI, false);
         ctx.fill();
         ctx.stroke();
     }
@@ -275,7 +275,6 @@ function undo() {
 }
 
 function redo() {
-    console.log(currentChange);
     if(currentChange < changes.length - 1) {
         currentChange++;
         updateCanvas();

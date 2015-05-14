@@ -595,7 +595,6 @@ function initShared() {
 
     changes.push({layer: currentLayer, context: layers[currentLayer].toDataURL()});
     currentChange = 0;
-    strokeContext.globalCompositeOperation = 'source-over';
 
     $('#color1').css({'background':color});
     $('#color2').css({'background':color2});
@@ -661,7 +660,7 @@ function bindImports() {
             }
         });
     } else {
-        Console.log('Error attaching drop and paste events');
+        console.log('Error attaching drop and paste events');
     }
 }
 
