@@ -26,7 +26,8 @@ io.on('connection', function(socket) {
         room = data.id;
         meta[data.id] = {
             'width': data.width,
-            'height': data.height
+            'height': data.height,
+            'users': 1
         };
     });
 
@@ -34,6 +35,7 @@ io.on('connection', function(socket) {
         console.log('Client joined room ' + data.id)
         socket.join(data.id);
         room = data.id;
+        meta[data.id] += 1;
     });
 
     socket.on('beginStroke', function(data) {
@@ -52,6 +54,12 @@ io.on('connection', function(socket) {
         socket.broadcast.to(room).emit('text', { 'pos': data.pos, 'socket':socket.id, 'tool': data.tool, text: data.text });
     });
 
+    socket.on('disconnect', function(data) {
+        meta[room]['users'] -= 1;
+        if(meta[room]['users'] == 0) {
+           setTimeout(deleteRoom, 1000 * 3 * 60, room);
+        }
+    });
 });
 
 function deleteRoom(id) {
