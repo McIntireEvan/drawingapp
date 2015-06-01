@@ -1,6 +1,6 @@
-[submodule "windowfy"]
-	path = windowfy
-	url = git@github.com:McIntireEvan/windowfy.git
 [submodule "colorwheel"]
 	path = colorwheel
 	url = git@github.com:McIntireEvan/colorwheel.git
+[submodule "ext/window.js"]
+	path = ext/window.js
+	url = git@github.com:McIntireEvan/window.js.git

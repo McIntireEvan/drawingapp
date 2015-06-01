@@ -3,16 +3,14 @@ var width = 0;
 var height = 0;
 
 function initDesktopClient() {
-    $('#ToolboxWindow').windowfy({
-        title: 'Toolbox',
-        close: false,
-        id: 'ToolboxHolder'
-    }).on('click', '#brush', function (evt) {
+    $('#toolbox .body').append(
+        $('#ToolboxWindow').html()
+    ).on('click', '#toolbox-brush', function (evt) {
         $('.selectedTool').removeClass('selectedTool');
-        $('#brush, #pencil').addClass('selectedTool');
+        $('#toolbox-brush, #pencil').addClass('selectedTool');
         currTool = pencil;
         mouseContext.fillStyle = color;
-        $('#brushSettings').toggle();
+        $('#brush').toggle();
     }).on('click', '#eraser', function() {
         $('.selectedTool').removeClass('selectedTool');
         $('#eraser').addClass('selectedTool');
@@ -29,26 +27,24 @@ function initDesktopClient() {
         $('#eyedropper').addClass('selectedTool');
     }).on('click', '#color1', function () {
         if($('.cw1').length == 1) {
-            $('#ColorWindow').removeClass('cw1').parent().parent().hide();
+            $('#color').removeClass('cw1').hide();
             return;
+        } else {
+            $('#color').addClass('cw1').removeClass('cw2').show();
         }
-        if($('.cw2').length == 0) {
-            $('#ColorWindow').addClass('cw1').removeClass('cw2').parent().parent().toggle();
-        }
-        $('#ColorWindow').html('').colorwheel({size: 200, ringSize: 20, onInput: function(evt) {
+        $('#color .body').html('').colorwheel({size: 200, ringSize: 20, onInput: function(evt) {
             var newColor = evt.color;
             color1 = 'rgb(' + newColor.r + ',' + newColor.g + ',' + newColor.b + ')';
             $('#color1').css('background',color1);
         }});
     }).on('click', '#color2', function () {
         if($('.cw2').length == 1) {
-            $('#ColorWindow').removeClass('cw2').parent().parent().hide();
+            $('#color').removeClass('cw2').hide();
             return;
+        } else {
+            $('#color').addClass('cw2').removeClass('cw1').show();
         }
-        if($('.cw1').length == 0) {
-            $('#ColorWindow').addClass('cw2').removeClass('cw1').parent().parent().toggle();
-        }
-        $('#ColorWindow').html('').colorwheel({size: 200, ringSize: 20, onInput: function(evt) {
+        $('#color .body').html('').colorwheel({size: 200, ringSize: 20, onInput: function(evt) {
            var newColor = evt.color;
            color2 = 'rgb(' + newColor.r + ',' + newColor.g + ',' + newColor.b + ')';
            $('#color2').css('background',color2);
@@ -68,16 +64,17 @@ function initDesktopClient() {
             clearCanvas($('#background').get(0));
         }
     }).on('click', '#infotoggle', function () {
-        $('#AboutWindow').parent().parent().toggle();
+        $('#about').toggle();
     }).on('click', '#helptoggle', function () {
-        $('#HelpWindow').parent().parent().toggle();
+        $('#help').toggle();
     }).on('click', '#invite', function() {
         initOnline();
         alert('Online activated: Invite people with the URL ' + window.location.href);
-    }).on('click', '#settings', function() {
-        $('#SettingsWindow').parent().parent().toggle();
+    }).on('click', '#settingstoggle', function() {
+        $('#settings').toggle();
     });
-
+    $('#ToolboxWindow').remove()
+    
     var onLayerClick = function () {
         currentLayer = parseInt(this.id.replace('layer', '').replace('-control', ''));
         $('.selectedRow').removeClass('selectedRow');
@@ -126,12 +123,7 @@ function initDesktopClient() {
         $('#layer' + currentLayer + '-control').addClass('selectedRow');
     }
 
-    $('#LayersWindow').windowfy({
-        title: 'Layers',
-        close: false,
-        id: 'Layers',
-        x: 100
-    }).on('click', '#layer-add', function () {
+    $('#layers .body').append($('#LayersWindow').html()).on('click', '#layer-add', function () {
         $('<canvas>').attr({
             id: 'layer' + nextLayer,
             style: 'z-index:' + nextLayer
@@ -176,7 +168,7 @@ function initDesktopClient() {
             removeCurrentLayer();
         }
     });
-
+    $('#LayersWindow').remove();
     for(var i = 0; i < 2; i++) {
         $('<div/>').attr('id', 'layer' + i + '-control').html('Layer ' + i).on('click', onLayerClick).on('dblclick', onDoubleClick).insertAfter('#LayersWindow');
     }
@@ -198,40 +190,16 @@ function initDesktopClient() {
         currTool.radius = $(this).val();
     });
 
-    $('#ColorWindow').windowfy({
-        title: 'Color',
-        onClose: function() {
-            $(this).hide();
-            $('#ColorWindow').removeClass('cw1 cw2');
-        }
-    }).parent().parent().hide();
-    $('#AboutWindow').windowfy({
-        title: 'About',
-        onClose: function() {
-            $(this).hide();
-        }
-    }).parent().parent().hide();
-    $('#HelpWindow').windowfy({
-        title: 'Help',
-        onClose: function() {
-            $(this).hide();
-        }
-    }).parent().parent().hide();
-    $('#BrushWindow').windowfy({
-        title: 'Brush Settings',
-        onClose: function () {
-            $(this).hide();
-        },
-        id: 'brushSettings'
-    }).parent().parent().hide();
-
-    $('#SettingsWindow').windowfy({
-        title: 'Settings',
-        onClose: function () {
-            $(this).hide();
-        },
-        id: 'settingsW'
-    }).parent().parent().hide();
+    $('#color .body').append($('#ColorWindow'));
+    $('#color .head .close').on('click', function() {
+        $('#color').removeClass('cw1 cw2');
+    });
+    $('#about .body').append($('#AboutWindow'));
+    $('#help .body').append($('#HelpWindow'));
+    $('#brush .body').append($('#BrushWindow'));
+    $('#settings .body').append($('#SettingsWindow'));
+    $('#help, #about, #brush, #settings, #color').hide();
+    $('#toolbox .head .close, #layers .head .close').html('');
 
     $('#32px').on('click', function() {
         localStorage.setItem('iconSize','32px');
@@ -295,7 +263,7 @@ function initDesktopClient() {
         $('.selectedTool').removeClass('selectedTool');
         $('#'+currTool.type).addClass('selectedTool');
         if(currTool.type == 'pencil') {
-            $('#brush').addClass('selectedTool');
+            $('#toolbox-brush').addClass('selectedTool');
         }
         pos = getMousePos(mouseLayer, evt);
         if (mouseDown) {
@@ -677,11 +645,14 @@ function prepareCanvas(canvas) {
 $(document).ready(function() {
     width = $('body').css('width');
     height = $('body').css('height');
-    if(isMobile()) {
-        initMobileClient();
-    } else {
-        initDesktopClient();
-    }
+    createWindows('ext/config.json', function(){
+        if(isMobile()) {
+            initMobileClient();
+        } else {
+            initDesktopClient();
+        }
+    });
+
     initShared();
     bindImports();
     $('#splash').fadeOut(1500);

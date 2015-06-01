@@ -1,0 +1,46 @@
+{
+    "windows": [
+        {
+            "title": "Toolbox",
+            "id": "toolbox",
+            "x": "0px",
+            "y": "0px"
+        },
+        {
+            "title": "Layers",
+            "id": "layers",
+            "x": "100px",
+            "y": "0px"
+        },
+        {
+            "title": "About",
+            "id": "about",
+            "x": "0px",
+            "y": "0px"
+        },
+        {
+            "title": "Help",
+            "id": "help",
+            "x": "0px",
+            "y": "0px"
+        },
+        {
+            "title": "Brush Settings",
+            "id": "brush",
+            "x": "0px",
+            "y": "0px"
+        },
+        {
+            "title": "Settings",
+            "id": "settings",
+            "x": "0px",
+            "y": "0px"
+        },
+        {
+            "title": "Color",
+            "id": "color",
+            "x": "0px",
+            "y": "0px"
+        }
+    ]
+}

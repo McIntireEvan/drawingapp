@@ -5,10 +5,10 @@
         <title>NodeDraw</title>
 
         <link rel='stylesheet' type='text/css' href='css/style.css'>
-        <link rel='stylesheet' type='text/css' href='windowfy/jquery.windowfy.css'>
+        <link rel='stylesheet' type='text/css' href='ext/window.js/window.css'>
         <link rel='stylesheet' type='text/css' href='colorwheel/jquery.colorwheel.css'>
-        <link rel='shortcut icon' href='img/logo.png' type='image/x-icon' />
 
+        <link rel='shortcut icon' href='img/logo.png' type='image/x-icon' />
         <link rel='icon' type='image/png' href='img/logo.png' />
 
         <link href='https://fonts.googleapis.com/css?family=Roboto:300' rel='stylesheet' type='text/css'>
@@ -37,7 +37,7 @@
         <div style='display:none; position: absolute' id='window-holder'>
             <table id='ToolboxWindow'>
                 <tr>
-                    <td id='brush' class='selectedTool'><img src='img/icons/brush.png' alt='Pencil Tool'></td>
+                    <td id='toolbox-brush' class='selectedTool'><img src='img/icons/brush.png' alt='Pencil Tool'></td>
                     <td id='eraser'><img src='img/icons/eraser.png' alt='Eraser Tool'></td>
                 </tr>
                 <tr>
@@ -63,7 +63,7 @@
                 </tr>
                 <tr>
                     <td id='invite'><img src='img/icons/invite.png'></td>
-                    <td id='settings'><img src='img/icons/settings.png'></td>
+                    <td id='settingstoggle'><img src='img/icons/settings.png'></td>
                 </tr>
             </table>
             <div id='LayersWindow'>
@@ -176,8 +176,9 @@
         <script src='js/jquery.js'></script>
         <script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js'></script>
 
+        <script src='ext/window.js/window.js'></script>
+
         <!-- jquery plugins -->
-        <script src='windowfy/jquery.windowfy.js'></script>
         <script src='colorwheel/jquery.colorwheel.js'></script>
 
         <!-- Project code -->

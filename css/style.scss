@@ -35,7 +35,7 @@ label, input[type=range] {
     vertical-align:middle;
 }
 
-#ToolboxHolder {
+.toolbox {
     min-width: 75px;
 }
 
@@ -43,7 +43,7 @@ label, input[type=range] {
     font-weight: bolder;
 }
 
-.windowfy img {
+.windowfy img, .window img {
     width: 48px;
     height: 48px;
 }
@@ -76,6 +76,10 @@ canvas {
     text-align: center;
 }
 
+.window {
+    z-index: 1020;
+}
+
 #SettingsWindow {
     width: 300px;
 }
@@ -84,9 +88,9 @@ canvas {
     width: 375px;
 }
 
-#ColorWindow {
-    width: 225px;
-    height: 225px;
+#color {
+    width: 250px;
+    height: 250px;
     padding:0px;
     margin:0px;
 
