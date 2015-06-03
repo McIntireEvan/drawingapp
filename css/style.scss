@@ -35,17 +35,8 @@ label, input[type=range] {
     vertical-align:middle;
 }
 
-.toolbox {
-    min-width: 75px;
-}
-
 .selectedRow {
     font-weight: bolder;
-}
-
-.windowfy img, .window img {
-    width: 48px;
-    height: 48px;
 }
 
 .selectedTool {
@@ -78,6 +69,10 @@ canvas {
 
 .window {
     z-index: 1020;
+    img {
+        width: 48px;
+        height: 48px;
+    }
 }
 
 #SettingsWindow {
@@ -98,7 +93,6 @@ canvas {
         cursor: default
     }
 }
-
 
 /*Edited from https://meta.superuser.com/questions/4788/css-for-the-new-kbd-style */
 kbd {
@@ -139,7 +133,7 @@ kbd {
 }
 
 @media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
-    .windowfy, #ToolboxWindow, #ColorWindow, #LayersWindow, #AboutWindow, #HelpWindow, #BrushWindow {
+    .window, #ToolboxWindow, #ColorWindow, #LayersWindow, #AboutWindow, #HelpWindow, #BrushWindow {
         display: none;
     }
 }

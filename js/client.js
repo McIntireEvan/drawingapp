@@ -13,7 +13,7 @@ function genID() {
 //TODO: Error checking
 function initOnline() {
     //Todo: Replace hardcoded address
-    socket = io('168.235.67.12:8080');
+    socket = io('skynet.evanmcintire.com:8080');
 
     if (window.location.href.split('#').length == 1) {
         window.location.href = '#' + genID();

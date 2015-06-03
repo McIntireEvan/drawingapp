@@ -1,5 +1,5 @@
 {
-  "name": "NodeDanvas",
+  "name": "NodeDraw",
   "version": "1.0.0",
   "description": "Node.js based collaborative drawing",
   "main": "server.js",
