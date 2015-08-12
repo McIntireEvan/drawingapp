@@ -10,6 +10,7 @@ function initDesktopClient() {
         $('#toolbox-brush, #pencil').addClass('selectedTool');
         currTool = pencil;
         mouseContext.fillStyle = color;
+    }).on('dblclick', '#toolbox-brush', function() {
         $('#brush').toggle();
     }).on('click', '#eraser', function() {
         $('.selectedTool').removeClass('selectedTool');
@@ -109,6 +110,25 @@ function initDesktopClient() {
         input.focus();
     };
 
+    var createLayer = function () {
+        $('<canvas>').attr({
+            id: 'layer' + nextLayer,
+            style: 'z-index:' + nextLayer
+        }).appendTo('body');
+
+        $('<div/>')
+            .attr('id', 'layer' + nextLayer + '-control')
+            .html('Layer ' + nextLayer)
+            .on('click', onLayerClick).on('dblclick', onDoubleClick)
+            .appendTo("#layer-list");
+
+        layers.push($('#layer' + nextLayer).get(0));
+        prepareCanvas($('#layer' + nextLayer).get(0));
+
+        $('#layer' + currentLayer + '-control').addClass('selectedRow');
+        nextLayer++;
+    };
+
     var removeCurrentLayer = function() {
         $('#layer' + currentLayer + '-control').remove();
         $('#layer' + currentLayer).remove();
@@ -123,22 +143,14 @@ function initDesktopClient() {
         $('#layer' + currentLayer + '-control').addClass('selectedRow');
     }
 
+    $('<div/>')
+        .attr('id', 'layer0-control')
+        .html('Layer 0')
+        .on('click', onLayerClick).on('dblclick', onDoubleClick)
+        .appendTo("#layer-list");
+
     $('#layers .body').append($('#LayersWindow').html()).on('click', '#layer-add', function () {
-        $('<canvas>').attr({
-            id: 'layer' + nextLayer,
-            style: 'z-index:' + nextLayer
-        }).appendTo('body');
-
-        $('<div/>').attr('id', 'layer' + nextLayer + '-control')
-        .html('Layer ' + nextLayer).on('click', onLayerClick)
-        .on('dblclick', onDoubleClick)
-        .insertAfter('#LayersWindow');
-        
-        layers.push($('#layer' + nextLayer).get(0));
-        prepareCanvas($('#layer' + nextLayer).get(0));
-
-        $('#layer' + currentLayer + '-control').addClass('selectedRow');
-        nextLayer++;
+        createLayer();
     }).on('click', '#layer-remove', function () {
         if (confirm('Remove '+ $('#layer' + currentLayer + '-control').html() + '?')) {
             if ($('#Layers div').length == 1) {
@@ -155,8 +167,10 @@ function initDesktopClient() {
     }).on('click', '#layer-visible', function () {
         if ($(this).html().indexOf('visible') != -1) {
             $(this).html('<img src="img/icons/layerhidden.png" />');
+            $('#layer' + currentLater + '-control').css('font-stlye','italic');
         } else {
             $(this).html('<img src="img/icons/layervisible.png" />');
+            $('#layer' + currentLater + '-control').css('font-stlye', 'normal');
         };
         setIconSize();
         $(layers[currentLayer]).toggle();
@@ -168,11 +182,8 @@ function initDesktopClient() {
             removeCurrentLayer();
         }
     });
-    $('#LayersWindow').remove();
-    for(var i = 0; i < 2; i++) {
-        $('<div/>').attr('id', 'layer' + i + '-control').html('Layer ' + i).on('click', onLayerClick).on('dblclick', onDoubleClick).insertAfter('#LayersWindow');
-    }
 
+    $('#LayersWindow').remove();
     $('#layer-opacity').on('input', function () {
         $('#opacity-value').html($(this).val());
         $(strokeLayer).css('opacity', $(this).val() / 100);
@@ -486,6 +497,7 @@ function initMobileClient() {
     }).on('change', '.colorpick', function () {
         color = $('.colorpick').val();
         color1 = color;
+        currTool.color = color;
     });
 
     $('<input>').attr({

@@ -9,9 +9,9 @@ var mouseLayer = $('#mouse').get(0);
 var mouseContext = mouseLayer.getContext('2d');
 var mouseDown = false;
 
-var layers = [$('#layer0').get(0), $('#layer1').get(0)];
+var layers = [$('#layer0').get(0)];
 var currentLayer = 0;
-var nextLayer = 2;
+var nextLayer = 1;
 
 var stroke;
 var strokeLayer = $('#stroke').get(0);
@@ -247,51 +247,6 @@ function drawBlob(blob, pos, canvas) {
 
 }
 
-/* Canvas history */
-//TODO: This could probably use another rewrite, it really sucks
 var changes = [];
 var currentChange;
-
-function addChange() {
-    currentChange++;
-
-    if (currentChange != changes.length) {
-        changes.splice(currentChange, changes.length - currentChange);
-    }
-
-    changes.push({ layer: currentLayer, context: layers[currentLayer].toDataURL() });
-}
-
-function undo() { 
-    if(currentChange > 0) {
-        currentChange--;
-        updateCanvas();
-    } else { //Hack to allow undoing to blankness
-        for(var i=0; i<layers.length; i++) {
-            clearCanvas(layers[i]);
-        }
-        clearCanvas($('#background').get(0));
-    }
-}
-
-function redo() {
-    if(currentChange < changes.length - 1) {
-        currentChange++;
-        updateCanvas();
-    }
-}
-
-function updateCanvas() {
-    var newElement = changes[currentChange];
-    var newLayer =  layers[newElement.layer];
-    clearCanvas(newLayer);
-
-    var img = new Image();
-    img.src = newElement.context;
-
-    newLayer.getContext('2d').globalAlpha = 1;
-    newLayer.getContext('2d').drawImage(img, 0, 0);
-    newLayer.getContext('2d').globalAlpha = currTool.opacity;
-
-    layers[newElement.layer] = newLayer;
-}
+$.getScript('js/modules/revision.js');
