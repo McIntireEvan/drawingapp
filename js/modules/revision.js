@@ -41,6 +41,7 @@ function updateCanvas() {
     var img = new Image();
     img.src = newElement.context;
 
+    newLayer.getContext('2d').globalCompositeOperation = "source-over";
     newLayer.getContext('2d').globalAlpha = 1;
     newLayer.getContext('2d').drawImage(img, 0, 0);
     newLayer.getContext('2d').globalAlpha = currTool.opacity;
