@@ -339,7 +339,8 @@ function initDesktopClient() {
             if (string == 'null' || string == '' || string == null) {
                 return;
             }
-            createText(string, currTool.font, { x: pos.x, y: pos.y }, layers[currentLayer]);
+            currTool.color = color1;
+            createText(string, currTool, { x: pos.x, y: pos.y }, layers[currentLayer]);
             if (online) {
                     socket.emit('text', { pos: pos, tool: currTool, text: string });
                 }

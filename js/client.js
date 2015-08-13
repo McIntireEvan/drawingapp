@@ -57,7 +57,7 @@ function initOnline() {
         });
 
         socket.on('text', function(data) {
-            createText(data.text, data.tool.font, { x: data.pos.x, y: data.pos.y }, $('#layer0-remote').get(0));
+            createText(data.text, data.tool, { x: data.pos.x, y: data.pos.y }, $('#layer0-remote').get(0));
         });
     }
 }

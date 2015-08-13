@@ -9,17 +9,20 @@ function addChange() {
     }
 
     changes.push({ layer: currentLayer, context: layers[currentLayer].toDataURL() });
+    console.log(currentChange);
 }
 
 function undo() {
     if (currentChange > 0) {
         currentChange--;
         updateCanvas();
+        console.log(currentChange);
     } else { //Hack to allow undoing to blankness
         for (var i = 0; i < layers.length; i++) {
             clearCanvas(layers[i]);
         }
         clearCanvas($('#background').get(0));
+        console.log(currentChange);
     }
 }
 
