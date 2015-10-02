@@ -167,10 +167,10 @@ function initDesktopClient() {
     }).on('click', '#layer-visible', function () {
         if ($(this).html().indexOf('visible') != -1) {
             $(this).html('<img src="img/icons/layerhidden.png" />');
-            $('#layer' + currentLater + '-control').css('font-stlye','italic');
+            $('#layer' + currentLayer + '-control').css('font-stlye','italic');
         } else {
             $(this).html('<img src="img/icons/layervisible.png" />');
-            $('#layer' + currentLater + '-control').css('font-stlye', 'normal');
+            $('#layer' + currentLayer + '-control').css('font-stlye', 'normal');
         };
         setIconSize();
         $(layers[currentLayer]).toggle();
@@ -234,7 +234,7 @@ function initDesktopClient() {
     setIconSize();
     $('#layer0-control').addClass('selectedRow');
 
-    bindKeys();
+    $.getScript('js/modules/keybinds.js');
 
     $(document).on('wheel', function(evt) {
         evt.preventDefault();
@@ -304,10 +304,11 @@ function initDesktopClient() {
         pos = getMousePos(mouseLayer, evt);
         if (currTool.type == 'pencil' || currTool.type == 'eraser') {
             if (evt.shiftKey) {
-                currentCtx.beginPath();
-                currentCtx.moveTo(lastPos.x, lastPos.y);
-                currentCtx.lineTo(pos.x, pos.y);
-                currentCtx.stroke();
+                drawLine(currentCtx, lastPos, pos);
+                if (online) {
+                    socket.emit('drawline', { start: lastPos, end: pos });
+                    console.log('gdsgdsg');
+                }
                 lastPos = { x: pos.x, y: pos.y };
                 addChange();
                 return;
@@ -363,209 +364,12 @@ function initDesktopClient() {
     });
 }
 
-function bindKeys() {
-    var KeyBinding = function(name, key, shift, alt, ctrl, onPress) {
-        this.name = name;
-        this.onPress = onPress;
-
-        if(localStorage.getItem(name) == null) {
-            this.key = key;
-            this.shift = shift;
-            this.alt = alt;
-            this.ctrl = ctrl;
-            localStorage.setItem(name, JSON.stringify(this));
-        } else {
-            var obj = JSON.parse(localStorage.getItem(name));
-            this.key = obj.key;
-            this.shift = obj.shift;
-            this.alt = obj.alt;
-            this.ctrl = obj.ctrl;
-        }
-    }
-
-    KeyBinding.prototype.call = function(evt) {
-        this.onPress(evt);
-    }
-
-    var bindings = [
-        new KeyBinding('switchColor', 88, false, false, false, function() {
-            var temp = color1;
-            color1 = color2;
-            color2 = temp;
-            color = color1;
-            $('#color1').css({'background':color});
-            $('#color2').css({'background':color2});
-        }),
-        new KeyBinding('finishLayerRename', 13, false, false, false, function() {
-            $('#newName').trigger('blur');
-        }),
-        new KeyBinding('sizeUp', 187, false, false, false, function() {
-            currTool.radius++;
-        }),
-        new KeyBinding('sizeDown', 189, false, false, false, function() {
-            if ( currTool.radius > 1 ) {
-                currTool.radius--;
-            }
-        }),
-        new KeyBinding('opacityUp', 187, true, false, false, function() {
-            if ( currTool.opacity < 1.0 ) {
-                currTool.opacity += 0.01;
-            }
-            $(mouseLayer).css('opacity', currTool.opacity);
-            var o = Math.round(currTool.opacity * 100);
-            $('#brush-opacity-value').html(o);
-            $('#brush-opacity').val(o);
-        }),
-        new KeyBinding('opacityDown', 189, true, false, false, function() {
-            if(currTool.opacity > 0) {
-                currTool.opacity -= 0.01;
-            }
-            $(mouseLayer).css('opacity', currTool.opacity);
-            var o = Math.round(currTool.opacity * 100);
-            $('#brush-opacity-value').html(o);
-            $('#brush-opacity').val(o);
-
-        }),
-        new KeyBinding('save', 83, false, false, true, function(evt) {
-            evt.preventDefault();
-            saveCanvasToImage(merge($('#background').get(0), layers));
-            clearCanvas($('#background').get(0));
-        }),
-        new KeyBinding('undo', 90, false, false, true, function() {
-            undo();
-        }),
-        new KeyBinding('redo', 89, false, false, true, function() {
-            redo();
-        })
-    ];
-
-    $(document).keydown(function(evt) {
-        if(mouseDown) return;
-
-        for(var i = 0; i < bindings.length; i++) {
-            var keybind = bindings[i];
-            if((evt.which == keybind.key)
-             &&(evt.shiftKey == keybind.shift)
-             &&(evt.ctrlKey == keybind.ctrl)
-             &&(evt.altKey == keybind.alt)) {
-                keybind.call(evt);
-            }
-        }
-        $('#brush-size-value').html(currTool.radius);
-        $('#brush-size').val(currTool.radius);
-        drawCursor(pos);
-    });
-
-    $('#Keybinds input').on('keyup', function(evt) {
-        if(!(evt.which == 16 || evt.which == 17 || evt.which == 18)) {
-            var name = this.id.replace('keybind-', '');
-            for(var i = 0; i < bindings.length; i++) {
-                if(name == bindings[i].name) {
-                    bindings[i].key = evt.which;
-                    bindings[i].ctrl = evt.ctrlKey;
-                    bindings[i].shift = evt.shiftKey;
-                    bindings[i].alt = evt.altKey;
-                }
-            }
-        }
-    });
-}
-
 function setIconSize() {
     var size = localStorage.getItem('iconSize');
     $('.windowfy img').css({
         'width': size,
         'height': size
     });
-}
-
-function initMobileClient() {
-    $(document).on('touchstart', function (evt) {
-        stroke = new Stroke(currTool, layers[currentLayer], strokeLayer);
-        stroke.begin({ 'x': evt.originalEvent.changedTouches[0].pageX, 'y': evt.originalEvent.changedTouches[0].pageY });
-        mouseDown = true;
-    }).on('touchmove', function (evt) {
-        pos = getMousePos(mouseLayer, evt.originalEvent.touches[0]);
-        evt.preventDefault();
-        if (mouseDown) {
-            stroke.update(pos);
-        }
-    }).on('touchend', function (evt) {
-        pos = getMousePos(mouseLayer, evt.originalEvent.changedTouches[0]);
-        if (mouseDown) {
-            stroke.end(pos);
-        }
-    }).on('change', '.colorpick', function () {
-        color = $('.colorpick').val();
-        color1 = color;
-        currTool.color = color;
-    });
-
-    $('<input>').attr({
-        'type': 'color',
-        'class': 'colorpick'
-    }).css({
-        'left': '-9999px',
-        'top': '-9999px',
-        'position': 'absolute',
-        'z-index': '3000'
-    }).appendTo('body');
-
-    $("<div/>").attr({
-        'class': 'mobile-toolbox'
-    }).appendTo('body');
-
-    $("<div/>").attr({
-        'class': 'toolbox-item'
-    }).html('Pencil').appendTo('.mobile-toolbox').click(function () {
-        $('.selected').removeClass('selected');
-        $(this).addClass('selected');
-
-        currTool = pencil;
-    });
-
-    $("<div/>").attr({
-        'class': 'toolbox-item'
-    }).html('Eraser').appendTo('.mobile-toolbox').click(function () {
-        $('.selected').removeClass('selected');
-        $(this).addClass('selected');
-
-        currTool = eraser;
-    })
-
-    $("<div/>").attr({
-        'class': 'toolbox-item'
-    }).html('Color').appendTo('.mobile-toolbox').click(function () {
-        $('.selected').removeClass('mobile-selected');
-        $(this).addClass('mobile-selected');
-        $('.colorpick')[0].click()
-    });
-
-    $("<div/>").attr({
-        'class': 'toolbox-item'
-    }).html('Clear').appendTo('.mobile-toolbox').click(function () {
-        $('.selected').removeClass('mobile-selected');
-        $(this).addClass('mobile-selected');
-        if (confirm('Clear?')) {
-            for (var i = 0; i < layers.length; i++) {
-                clearCanvas(layers[i]);
-            }
-            clearCanvas($('#background').get(0));
-        }
-    });
-
-    $("<div/>").attr({
-        'class': 'toolbox-item'
-    }).html('Save').appendTo('.mobile-toolbox').click(function () {
-        $('.selected').removeClass('selected');
-        $(this).addClass('mobile-selected');
-
-        saveCanvasToImage(merge($('#background').get(0), layers));
-        clearCanvas($('#background').get(0));
-    });
-
-    $('#layer1').remove();
-    $('#window-holder').remove();
 }
 
 function initShared() {
@@ -597,12 +401,11 @@ function initCanvases() {
         prepareCanvas( layers[i]);
     }
     prepareCanvas($('#background').get(0));
-    prepareCanvas($('#layer0-remote').get(0));
+    //prepareCanvas($('#layer0-remote').get(0));
     prepareCanvas($('#layer0-remote-stroke').get(0));
     prepareCanvas(strokeLayer);
 }
 
-//TODO: Cleanup
 function bindImports() {
     if (window.File && window.FileReader && window.FileList && window.Blob) {
         $(document).on('dragover dragenter', function (evt) {
@@ -658,9 +461,10 @@ function prepareCanvas(canvas) {
 $(document).ready(function() {
     width = $('body').css('width');
     height = $('body').css('height');
+
     createWindows('ext/config.json', function(){
         if(isMobile()) {
-            initMobileClient();
+            $.getScript('js/modules/mobile.js');
         } else {
             initDesktopClient();
         }

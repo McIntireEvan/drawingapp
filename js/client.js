@@ -44,7 +44,7 @@ function initOnline() {
         });
 
         socket.on('beginStroke', function (data) {
-            rStrokes[data.socket] = new Stroke(data.tool, $('#layer0-remote').get(0), $('#layer0-remote-stroke').get(0));
+            rStrokes[data.socket] = new Stroke(data.tool, $('#layer0').get(0), $('#layer0-remote-stroke').get(0));
             rStrokes[data.socket].begin(data.pos);
         });
 
@@ -57,7 +57,12 @@ function initOnline() {
         });
 
         socket.on('text', function(data) {
-            createText(data.text, data.tool, { x: data.pos.x, y: data.pos.y }, $('#layer0-remote').get(0));
+            createText(data.text, data.tool, { x: data.pos.x, y: data.pos.y }, $('#layer0').get(0));
+        });
+
+        socket.on('drawLine', function (data) {
+            console.log('dsfhgjsdigjoij');
+            drawLine($('#layer0').getContext('2d'), data.start, data.end);
         });
     }
 }

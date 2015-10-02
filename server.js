@@ -50,6 +50,11 @@ io.on('connection', function(socket) {
         socket.broadcast.to(room).emit('endStroke', { 'pos': data.pos, 'socket': socket.id });
     });
 
+    socket.on('drawLine', function (data) {
+        socket.broadcast.to(room).emit('drawLine', { 'start': data.start, 'end': draw.end, 'socket': socket.id });
+        console.log('drawline');
+    });
+
     socket.on('text', function(data) {
         socket.broadcast.to(room).emit('text', { 'pos': data.pos, 'socket':socket.id, 'tool': data.tool, text: data.text });
     });
@@ -64,5 +69,6 @@ io.on('connection', function(socket) {
 
 function deleteRoom(id) {
     rooms.splice(rooms.indexOf(id), 1);
+    console.log('Deleted room ' + id)
     delete meta[id];
 }

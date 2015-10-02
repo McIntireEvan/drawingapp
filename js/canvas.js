@@ -192,6 +192,13 @@ function createText(string, tool, pos, canvas) {
     addChange();
 }
 
+function drawLine(ctx, start, end) {
+    ctx.beginPath();
+    ctx.moveTo(start.x, start.y);
+    ctx.lineTo(end.x, end.y);
+    ctx.stroke();
+}
+
 function drawCursor(pos) {
     if (cursorInWindow) {
         mouseContext.clearRect(0,0, mouseLayer.width, mouseLayer.height);
